@@ -30,7 +30,7 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 if (returnURL == null || returnURL == "" || returnURL.ToLower().Contains("/authentication/login"))
                 {
-                    return RedirectToAction("Dashboard", "Admin");
+                    return RedirectToAction("Dashboard", "Home");
                 }
                 else
                 {
@@ -59,9 +59,9 @@ namespace NITASA.Areas.Admin.Controllers
                     if (Request.QueryString["retUrl"] != null)
                         returnURL = Request.QueryString["retUrl"];
 
-                    if (returnURL == null || returnURL == string.Empty || returnURL.ToLower().Contains("/authentication/login"))
+                    if (returnURL == null || returnURL == string.Empty || returnURL.ToLower().Contains("/authenticate/login"))
                     {
-                        return RedirectToAction("Dashboard", "Admin");
+                        return RedirectToAction("Dashboard", "Home");
                     }
                     else
                     {
@@ -83,15 +83,6 @@ namespace NITASA.Areas.Admin.Controllers
             return RedirectToAction("Login", "Authenticate");
         }
 
-        public ActionResult ChangePassword()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult ChangePassword(ChangePassword cpassword)
-        {
-            return View();
-        }
+       
     }
 }
