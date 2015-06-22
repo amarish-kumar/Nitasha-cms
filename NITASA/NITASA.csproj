@@ -128,6 +128,32 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AuthenticateController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CategoryController.cs" />
+    <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\LabelController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MediaController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MenusController.cs" />
+    <Compile Include="Areas\Admin\Controllers\PageController.cs" />
+    <Compile Include="Areas\Admin\Controllers\PostController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ProfileController.cs" />
+    <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SettingController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SitemapController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ThemeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\UserController.cs" />
+    <Compile Include="Areas\Admin\Models\ActivityLog.cs" />
+    <Compile Include="Areas\Admin\Models\AddOn.cs" />
+    <Compile Include="Areas\Admin\Models\Category.cs" />
+    <Compile Include="Areas\Admin\Models\Comment.cs" />
+    <Compile Include="Areas\Admin\Models\Content.cs" />
+    <Compile Include="Areas\Admin\Models\Label.cs" />
+    <Compile Include="Areas\Admin\Models\Media.cs" />
+    <Compile Include="Areas\Admin\Models\Menu.cs" />
+    <Compile Include="Areas\Admin\Models\Meta.cs" />
+    <Compile Include="Areas\Admin\Models\Role.cs" />
+    <Compile Include="Areas\Admin\Models\Setting.cs" />
+    <Compile Include="Areas\Admin\Models\Slider.cs" />
+    <Compile Include="Areas\Admin\Models\User.cs" />
     <Compile Include="Controllers\ConfigureController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
@@ -224,7 +250,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Admin\Views\Shared\" />
     <Folder Include="Models\" />
   </ItemGroup>

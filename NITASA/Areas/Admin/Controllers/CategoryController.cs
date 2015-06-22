@@ -6,14 +6,15 @@ using System.Web.Mvc;
 
 namespace NITASA.Areas.Admin.Controllers
 {
-    public class AuthenticateController : Controller
+    public class CategoryController : Controller
     {
         //
-        // GET: /Admin/Authenticate/
+        // GET: /Admin/Category/
 
-        public ActionResult Login()
+        public ActionResult Index()
         {
             return View();
         }
+
     }
 }
