@@ -164,6 +164,7 @@
     <Compile Include="Areas\Admin\ViewModels\ChangePassword.cs" />
     <Compile Include="Areas\Admin\ViewModels\Login.cs" />
     <Compile Include="Areas\Admin\ViewModels\WidgetOption.cs" />
+    <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\ConfigureController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
@@ -643,6 +644,7 @@
     <Folder Include="Areas\Admin\assets\js\tinymce\jscripts\tiny_mce\utils\" />
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Models\" />
+    <Folder Include="Views\Category\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
