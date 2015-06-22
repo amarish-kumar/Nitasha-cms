@@ -3,131 +3,143 @@
     ViewBag.Title = "Install CMS";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div>
-    @using (Html.BeginForm("Install", "Configure", FormMethod.Post, new { id = "frmTarget" }))
-    {
-        @Html.HiddenFor(x => x.IsDBInstalled, new { id = "IsDBInstalled", value = ViewBag.confirmRequired })
-        <div class="row block01">
-            <div class="col-full">
-                <div class="wrap-col">
-                    <p>
-                        Below you should enter your database connection details. If you're not sure about
-                        these, contact system admin or your host.
-                    </p>
-                </div>
-            </div>
+<div class="panelBoard">
+    <div class="welcomeKit">
+        <div id="logo"><img src="/assets/images/logo.png" /></div>
+        <div class="titleBar">
+            <h2>Welcome To the NITASA Installation!</h2>
+            <span>Thanks for downloading the NITASA CMS Installer.</span>
         </div>
-        <div class="row">
-            <div class="col-full">
-                <label id="lblMessage" class="red padleft100" runat="server">@ViewBag.invalidData</label>
-            </div>
-        </div>
-        <div class="row block02">
-            <div class="col-1-5">
-                <div class="wrap-col pull-right">
-                    @Html.LabelFor(x => x.DatabaseHost)
-                </div>
-            </div>
-            <div class="col-1-5">
-                <div class="wrap-col">
-                    @Html.TextBoxFor(m => m.DatabaseHost)<br />@Html.ValidationMessageFor(x => x.DatabaseHost)
-                </div>
-            </div>
-            <div class="col-1-3">
-                <div class="wrap-col pull-left">
-                    You can get this info from your web host
-                </div>
-            </div>
-        </div>
-        <div class="row block02">
-            <div class="col-1-5">
-                <div class="wrap-col pull-right">
-                    @Html.LabelFor(x => x.DatabaseName)
-                </div>
-            </div>
-            <div class="col-1-5">
-                <div class="wrap-col">
-                    @Html.TextBoxFor(m => m.DatabaseName)<br />@Html.ValidationMessageFor(x => x.DatabaseName)
-                </div>
-            </div>
-            <div class="col-1-3">
-                <div class="wrap-col pull-left">
-                    Database name you want to run your site
-                </div>
-            </div>
-        </div>
-        <div class="row block02">
-            <div class="col-1-5">
-                <div class="wrap-col pull-right">
-                    @Html.LabelFor(x => x.Username)
-                </div>
-            </div>
-            <div class="col-1-5">
-                <div class="wrap-col">
-                    @Html.TextBoxFor(m => m.Username)<br />@Html.ValidationMessageFor(x => x.Username)
-                </div>
-            </div>
-            <div class="col-1-3">
-                <div class="wrap-col pull-left">
-                    Database username
-                </div>
-            </div>
-        </div>
-        <div class="row block02">
-            <div class="col-1-5">
-                <div class="wrap-col pull-right">
-                    @Html.LabelFor(x => x.Password)
-                </div>
-            </div>
-            <div class="col-1-5">
-                <div class="wrap-col">
-                    @* , new object { value = @Model.Password == null ? "" : @Model.Password  }*@
-                    @Html.TextBoxFor(m => m.Password, new { id = "passwordFix" })<br />
-                    @Html.ValidationMessageFor(x => x.Password)
-                </div>
-            </div>
-            <div class="col-1-3">
-                <div class="wrap-col pull-left">
-                    Database password
-                </div>
-            </div>
-        </div>
-        <div class="row block02">
-            <div class="col-1-5">
-                <div class="wrap-col">
-                </div>
-            </div>
-            <div class="col-1-5">
-                <div class="wrap-col">
-                    <input type="submit" class="button" value="Submit" />
-                </div>
-            </div>
-            <div class="col-1-3">
-                <div class="wrap-col">
-                </div>
-            </div>
-        </div>
+    </div>
+    <div class="welcomeForm">
+        <span class="welcomeHeading">You are just a few minutes away from getting up and running. Just Spent your one minute and get your site ready.</span>
+        <span class="welcomeSubHeading">Enter Your SQL Server details to starts with NITASA.</span>
+        @using (Html.BeginForm("Install", "Configure", FormMethod.Post, new { id = "frmTarget" }))
+        {
+            @Html.HiddenFor(x => x.IsDBInstalled, new { id = "IsDBInstalled", value = ViewBag.confirmRequired })
+            @*<div class="row block01">
+                    <div class="col-full">
+                        <div class="wrap-col">
+                            <p>
+                                @*Below you should enter your database connection details. If you're not sure about
+                                these, contact system admin or your host.*
 
-    }
+                            </p>
+                        </div>
+                    </div>
+                </div>*@
+            <div class="row">
+                <div class="col-full">
+                    <label id="lblMessage" class="red padleft100" runat="server">@ViewBag.invalidData</label>
+                </div>
+            </div>
+            <div class="row block02">
+                <div class="col-1-5">
+                    <div class="wrap-col pull-right">
+                        @Html.LabelFor(x => x.DatabaseHost)
+                    </div>
+                </div>
+                <div class="col-1-5">
+                    <div class="wrap-col">
+                        @Html.TextBoxFor(m => m.DatabaseHost)<br />@Html.ValidationMessageFor(x => x.DatabaseHost)
+                    </div>
+                </div>
+                <div class="col-1-3">
+                    <div class="wrap-col pull-left">
+                        You can get this info from your web host
+                    </div>
+                </div>
+            </div>
+            <div class="row block02">
+                <div class="col-1-5">
+                    <div class="wrap-col pull-right">
+                        @Html.LabelFor(x => x.DatabaseName)
+                    </div>
+                </div>
+                <div class="col-1-5">
+                    <div class="wrap-col">
+                        @Html.TextBoxFor(m => m.DatabaseName)<br />@Html.ValidationMessageFor(x => x.DatabaseName)
+                    </div>
+                </div>
+                <div class="col-1-3">
+                    <div class="wrap-col pull-left">
+                        Database name you want to run your site
+                    </div>
+                </div>
+            </div>
+            <div class="row block02">
+                <div class="col-1-5">
+                    <div class="wrap-col pull-right">
+                        @Html.LabelFor(x => x.Username)
+                    </div>
+                </div>
+                <div class="col-1-5">
+                    <div class="wrap-col">
+                        @Html.TextBoxFor(m => m.Username)<br />@Html.ValidationMessageFor(x => x.Username)
+                    </div>
+                </div>
+                <div class="col-1-3">
+                    <div class="wrap-col pull-left">
+                        Database username
+                    </div>
+                </div>
+            </div>
+            <div class="row block02">
+                <div class="col-1-5">
+                    <div class="wrap-col pull-right">
+                        @Html.LabelFor(x => x.Password)
+                    </div>
+                </div>
+                <div class="col-1-5">
+                    <div class="wrap-col">
+                        @* , new object { value = @Model.Password == null ? "" : @Model.Password  }*@
+                        @Html.TextBoxFor(m => m.Password, new { id = "passwordFix" })<br />
+                        @Html.ValidationMessageFor(x => x.Password)
+                    </div>
+                </div>
+                <div class="col-1-3">
+                    <div class="wrap-col pull-left">
+                        Database password
+                    </div>
+                </div>
+            </div>
+            <div class="row block02">
+                <div class="col-1-5">
+                    <div class="wrap-col">
+                    </div>
+                </div>
+                <div class="col-1-5">
+                    <div class="wrap-col">
+                        <input type="submit" class="button" value="Submit" />
+                    </div>
+                </div>
+                <div class="col-1-3">
+                    <div class="wrap-col">
+                    </div>
+                </div>
+            </div>
+
+        }
+    </div>
 </div>
 <script type="text/javascript">
 @if (ViewBag.confirmRequired != null && ViewBag.confirmRequired == true)
 {
 <text>
-        $('#passwordFix').clone().prop('type','password').insertAfter('#passwordFix').prev().remove();
-       if (confirm("Database already exist, do you want to use existing database for this cms?")) {
-            $("#IsDBInstalled").val("true");
-            console.log($("#IsDBInstalled").val());
-            $("#frmTarget").submit();
-        }
-        else {
-            $("#IsDBInstalled").val("false");
-            console.log($("#IsDBInstalled").val());
-            $("#frmTarget").submit();
-        }
-</text>
+    $('#passwordFix').clone().prop('type', 'password').insertAfter('#passwordFix').prev().remove();
+    if (confirm("Database already exist, do you want to use existing database for this cms?")) {
+        $("#IsDBInstalled").val("true");
+        console.log($("#IsDBInstalled").val());
+        $("#frmTarget").submit();
+    }
+    else {
+        $("#IsDBInstalled").val("false");
+        console.log($("#IsDBInstalled").val());
+        $("#frmTarget").submit();
+    }
+    </text>
 }
-$(document).ready(function () {
-  $('#passwordFix').clone().prop('type','password').insertAfter('#passwordFix').prev().remove();
-});
+    $(document).ready(function () {
+        $('#passwordFix').clone().prop('type', 'password').insertAfter('#passwordFix').prev().remove();
+    });
 </script>

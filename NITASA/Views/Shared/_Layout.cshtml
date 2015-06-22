@@ -5,7 +5,7 @@
 <!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
 <!--[if (gte IE 9)|!(IE)]><!-->
 <html lang="en">
- <!--<![endif]-->
+<!--<![endif]-->
 <head>
     <meta name="viewport" content="width=device-width" />
 
@@ -19,11 +19,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <!-- CSS ================================================== -->
-    <link rel="stylesheet" href="/assets/public/css/zerogrid.css">
+    @*<link rel="stylesheet" href="/assets/public/css/zerogrid.css">*@
     <link rel="stylesheet" href="/assets/public/css/style.css">
     <link rel="stylesheet" href="/assets/public/css/responsive.css">
     <script type="text/javascript" src="/assets/public/js/jquery.min.js"></script>
-
+    <link href="/Content/default.css" rel="stylesheet" />
     <!--[if lt IE 8]>
        <div style=' clear: both; text-align:center; position: relative;'>
          <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
@@ -38,38 +38,31 @@
 
     <link href='/assets//images/favicon.ico' rel='icon' type='image/x-icon' />
 </head>
-<body>
+<body @*style="background: url('/assets/images/configure2.jpg') no-repeat; background-size: cover;"*@ style="background:#5c82A7">
     <!--------------Header--------------->
-    <header>
-        <div class="wrap-header zerogrid">
-            <div id="logo"><a href="#"><img src="/assets/images/logo.png" /></a></div>
-
-            @*<div id="search">
-                    <div class="button-search"></div>
-                    <input type="text" value="Search..." onfocus="if (this.value == &#39;Search...&#39;) {this.value = &#39;&#39;;}" onblur="if (this.value == &#39;&#39;) {this.value = &#39;Search...&#39;;}">
-                </div>*@
-        </div>
-    </header>
+    @*<header>
+            <div class="wrap-header zerogrid">
+                <div id="logo"><a href="#"><img src="/assets/images/logo.png" /></a></div>
+            </div>
+        </header>*@
 
     <!--------------Content--------------->
     <section id="content">
-        <div class="wrap-content zerogrid">
-            @RenderBody()
+        @RenderBody()
 
-            <div class="row block04">
-                <div class="col-full">
-                    <div class="wrap-col">
-                        <p></p>
-                    </div>
+        <div class="row block04">
+            <div class="col-full">
+                <div class="wrap-col">
+                    <p></p>
                 </div>
             </div>
         </div>
     </section>
     <!--------------Footer--------------->
     <footer>
-        <div class="wrap-footer">
+        <div class="wrap-footer" style="text-align:center;">
             <div class="copyright">
-                <p>Copyright © 2012 - <a href="http://www.zerotheme.com" target="_blank">Free Basic Html5 Responsive Templates</a> by Zerotheme.com</p>
+                <p style="color:white;">Copyright © @DateTime.Now.Year - <a style="color:white;text-decoration:none" href="http//www.drcsystems.com" target="_blank">DRCSystems.com</p>
             </div>
         </div>
     </footer>

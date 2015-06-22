@@ -1,0 +1,9 @@
+﻿.panelBoard{background: rgba(255, 255, 255, 0.5) none repeat scroll 0 0;display: block;height: 100%;margin: 0 auto;width: 100%;}
+.welcomeKit {display: table-row;margin: 0 auto;position: relative;}
+.welcomeKit #logo {display:table-cell;padding:25px;}
+.welcomeKit .titleBar {display: table-cell;text-align: center;width: 100%;}
+.welcomeKit h2{ font-family: Georgia;margin:0 auto;color:white;font-size:30px;margin-left:-50px;}
+.welcomeKit span {color:white;display:block;padding-top:10px;margin-left:-50px;}
+.welcomeForm {display:block;position:relative;padding:50px;}
+.welcomeForm .welcomeHeading {color: Darkslategray;font-size:18px;text-align:center;width:100%;display:block;margin:20px 0px;}
+.welcomeForm .welcomeSubHeading {color: Darkslategray;font-size:18px;text-align:center;width:100%;display:block;margin:20px 0px;}
