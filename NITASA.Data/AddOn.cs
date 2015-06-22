@@ -6,7 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace NITASA.Models
+namespace NITASA.Data
 {
     public class AddOn
     {

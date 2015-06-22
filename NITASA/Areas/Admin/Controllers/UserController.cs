@@ -8,10 +8,15 @@ namespace NITASA.Areas.Admin.Controllers
 {
     public class UserController : Controller
     {
-        //
-        // GET: /Admin/User/
-
-        public ActionResult Index()
+        public ActionResult List()
+        {
+            return View();
+        }
+        public ActionResult Add()
+        {
+            return View();
+        }
+        public ActionResult Edit()
         {
             return View();
         }

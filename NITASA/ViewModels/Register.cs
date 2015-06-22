@@ -9,6 +9,17 @@ namespace NITASA.ViewModels
 {
     public class Register
     {
+        [MaxLength(50)]
+        [Required(ErrorMessage = "Please enter first name.")]
+        [StringLength(50, ErrorMessage = "First name cannot exceed 50 characters")]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; }
+
+        [MaxLength(50)]
+        [StringLength(50, ErrorMessage = "Last name cannot exceed 50 characters")]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; }
+
         [Required(ErrorMessage = "Please enter your email address")]
         [RegularExpression(@"^[a-zA-Z0-9][-\w\.]*@([a-zA-Z0-9][\w\-]*\.)+[a-zA-Z]{2,3}$", ErrorMessage = "Please enter a valid email address")]
         //[MaxLength(100)]

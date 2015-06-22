@@ -8,13 +8,19 @@ namespace NITASA.Areas.Admin.Controllers
 {
     public class RoleController : Controller
     {
-        //
-        // GET: /Admin/Role/
-
-        public ActionResult Index()
+        public ActionResult List()
         {
             return View();
         }
-
+        [HttpGet]
+        public ActionResult Add()
+        {
+            return View();
+        }
+        [HttpGet]
+        public ActionResult Edit()
+        {
+            return View();
+        }
     }
 }

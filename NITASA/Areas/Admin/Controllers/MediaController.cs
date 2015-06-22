@@ -8,10 +8,12 @@ namespace NITASA.Areas.Admin.Controllers
 {
     public class MediaController : Controller
     {
-        //
-        // GET: /Admin/Media/
-
-        public ActionResult Index()
+        public ActionResult List()
+        {
+            return View();
+        }
+        [HttpGet]
+        public ActionResult Add()
         {
             return View();
         }

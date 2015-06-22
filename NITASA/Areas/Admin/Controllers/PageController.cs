@@ -8,13 +8,14 @@ namespace NITASA.Areas.Admin.Controllers
 {
     public class PageController : Controller
     {
-        //
-        // GET: /Admin/Page/
-
-        public ActionResult Index()
+        public ActionResult List()
         {
             return View();
         }
-
+        [HttpGet]
+        public ActionResult Add()
+        {
+            return View();
+        }
     }
 }

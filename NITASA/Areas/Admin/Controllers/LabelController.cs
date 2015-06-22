@@ -8,13 +8,14 @@ namespace NITASA.Areas.Admin.Controllers
 {
     public class LabelController : Controller
     {
-        //
-        // GET: /Admin/Label/
-
-        public ActionResult Index()
+        public ActionResult List()
         {
             return View();
         }
-
+        [HttpGet]
+        public ActionResult Add()
+        {
+            return View();
+        }
     }
 }

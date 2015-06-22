@@ -8,10 +8,11 @@ namespace NITASA.Areas.Admin.Controllers
 {
     public class ThemeController : Controller
     {
-        //
-        // GET: /Admin/Theme/
-
-        public ActionResult Index()
+        public ActionResult List()
+        {
+            return View();
+        }
+        public ActionResult Add()
         {
             return View();
         }

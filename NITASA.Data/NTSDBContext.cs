@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
-using System.Web;
 
 namespace NITASA.Data
 {
     public class NTSDBContext : DbContext,IDbContext
     {
-        public NTSDBContext(string ConnectionName)
+        public NTSDBContext(string ConnectionName = "NITASAConnection")
             : base(ConnectionName)
         {
             

@@ -1,4 +1,5 @@
-﻿using NITASA.Data;
+﻿using NITASA.Areas.Admin.Helper;
+using NITASA.Data;
 using NITASA.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -181,11 +182,13 @@ namespace NITASA.Controllers
         }*/
         private bool SaveConfig(string dbName)
         {
-            if (SaveConnectionStringToConfig(dbName))
+            string connectionstring = "";
+            if (SaveConnectionStringToConfig(dbName,ref connectionstring ))
             {
-
                 NTSDBContext context = new NTSDBContext("NITASAConnection");
+                context.Database.Connection.ConnectionString = connectionstring;
                 context.Database.CreateIfNotExists();
+                InitializeDatabase(context);
                 TempData["message"] = "Configuration file updated successfully. Please enter admin login credentials.";
                 return true;
             }
@@ -195,14 +198,17 @@ namespace NITASA.Controllers
             }
             return false;
         }
-        private bool SaveConnectionStringToConfig(string dbname)
+        private bool SaveConnectionStringToConfig(string dbname,ref string connectionstring)
         {
             var result = false;
             try
             {
                 var configuration = WebConfigurationManager.OpenWebConfiguration("~");
                 var section = (ConnectionStringsSection)configuration.GetSection("connectionStrings");
-                section.ConnectionStrings["NITASAConnection"].ConnectionString = ConnectionString.Replace("master", dbname);
+                
+                connectionstring = ConnectionString.Replace("master", dbname);
+                section.ConnectionStrings["NITASAConnection"].ConnectionString = connectionstring;
+
                 string[] allKeys = configuration.AppSettings.Settings.AllKeys;
                 if (allKeys.Contains("Installed"))
                 {
@@ -220,6 +226,196 @@ namespace NITASA.Controllers
             catch { return false; }
             finally { }
             return result;
+        }
+
+        protected void InitializeDatabase(NTSDBContext context)
+        {
+            Role AdminRole = new Role();
+            AdminRole.GUID = Guid.NewGuid().ToString().Replace("-", "");
+            AdminRole.Name = "Administrator";
+            AdminRole.AddedBy = 1;
+            AdminRole.AddedOn = DateTime.UtcNow;
+            context.Role.Add(AdminRole);
+            context.SaveChanges();
+
+            User user = new User();
+            user.GUID = Guid.NewGuid().ToString().Replace("-", "");
+            user.FirstName = "Admin";
+            user.LastName = "DRC";
+            user.Email = "admin@drc.com";
+            user.Password = "jRXwvDYeMhgzKTpu9G673Q==";
+            user.ProfilePicURL = "/Areas/CMSAdmin/assets/images/avatars/noprofile.jpg";
+            user.SaltKey = Convert.ToInt32(ConfigurationManager.AppSettings["EncKey"]);
+            user.IsActive = true;
+            user.IsDefault = true;
+            user.AddedOn = DateTime.UtcNow;
+            user.AddedBy = 1;
+            user.RoleID = AdminRole.ID;
+            context.User.Add(user);
+            context.SaveChanges();
+            int userID = user.ID;
+
+            #region Assign Admin Access Rights
+            List<AccessPermission> AllRightsList = UserRights.GetAllAccessPermission();
+
+            /*List<RightsInRole> AdminRightsInRoleList = new List<RightsInRole>();
+            AdminRightsInRoleList = (from rid in AllRightsList select new RightsInRole { RightsName = rid.Name, RoleID = AdminRole.RoleID }).ToList();
+
+            context.RightsInRole.AddRange(AdminRightsInRoleList);
+            context.SaveChanges();*/
+            #endregion
+
+            #region Add Editors Role and Assign Access Rights
+            Role EditorsRole = new Role();
+            EditorsRole.GUID = Guid.NewGuid().ToString().Replace("-", "");
+            EditorsRole.Name = "Editors";
+            EditorsRole.AddedBy = userID;
+            EditorsRole.AddedOn = DateTime.UtcNow;
+            context.Role.Add(EditorsRole);
+            context.SaveChanges();
+            string[] EditorsRights = new string[]{"ShowDashboard","AddNewMedias","DeleteMedias",
+                "ViewAllPosts","ViewAllPages","ViewRoles","ViewUsers"};
+
+            List<RightsInRole> EditorsRightsInRoleList = new List<RightsInRole>();
+            EditorsRightsInRoleList = (from rid in AllRightsList.Where(m => EditorsRights.Contains(m.Name))
+                                       select new RightsInRole { RightsName = rid.Name, RoleID = EditorsRole.ID }).ToList();
+            context.RightsInRole.AddRange(EditorsRightsInRoleList);
+            context.SaveChanges();
+            #endregion
+
+            /*Config config = new Config();
+            config.FacebookPageName = "netcms";
+            config.FacebookUserName = "netcms";
+            config.GPlusPageName = "netcms";
+            config.GPlusUsername = "netcms";
+            config.LogoPath = "/content/logo.png";
+            config.PintrestUserName = "netcms";
+            config.ShowNoOfLastPost = 5;
+            config.SiteName = "NITASA CMS";
+            config.SiteTitle = "NITASA CMS";
+            config.TwitterUsername = "netcms";
+            context.Config.Add(config);
+            context.SaveChanges();*/
+
+            /*List<ContentTemplate> contentTemplate = new List<ContentTemplate>() 
+            {
+                new ContentTemplate(){TemplateName="Default",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow},
+                new ContentTemplate(){TemplateName="Page",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow},
+                new ContentTemplate(){TemplateName="Testimonial",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow},
+                new ContentTemplate(){TemplateName="Services",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow},
+                new ContentTemplate(){TemplateName="Product",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow},
+                new ContentTemplate(){TemplateName="Project",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow},
+                new ContentTemplate(){TemplateName="Client",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow},
+                new ContentTemplate(){TemplateName="PortFolio",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow},
+                new ContentTemplate(){TemplateName="News",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow},
+                new ContentTemplate(){TemplateName="FAQ",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow}
+            };
+            context.ContentTemplate.AddRange(contentTemplate);
+            context.SaveChanges();*/
+
+            //Add Default Content
+            Content content = new Content();
+            content.GUID = Guid.NewGuid().ToString().Replace("-", "");
+            content.Type = "Post";
+            content.Title = "Welcome to Nixon DotNet CMS ";
+            content.URL = "Welcome-to-Nixon-DotNet-CMS";
+            content.Description = "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.";
+            content.AddedBy = userID;
+            content.AddedOn = DateTime.UtcNow;
+            content.isPublished = true;
+            content.PublishedOn = DateTime.UtcNow;
+            //content.TemplateID = context.ContentTemplate.Where(m => m.TemplateName == "Default").FirstOrDefault().TemplateID;
+            content.IsSlugEdited = true;
+            content.IsFeatured = false;
+            content.EnableComment = true;
+            content.CommentEnabledTill = 180;
+            context.Content.Add(content);
+            context.SaveChanges();
+
+            // Add default category
+            Category conCategory = new Category();
+            conCategory.Name = "DotNet";
+            conCategory.GUID = Guid.NewGuid().ToString().Replace("-", "");
+            conCategory.Slug = "dotnet";
+            conCategory.ParentCategoryID = 0;
+            conCategory.AddedBy = userID;
+            conCategory.AddedOn = DateTime.UtcNow;
+            context.Category.Add(conCategory);
+            context.SaveChanges();
+
+            ContentCategory contentCategory = new ContentCategory();
+            contentCategory.CategoryID = conCategory.ID;
+            contentCategory.ContentID = content.ID;
+            contentCategory.AddedBy = userID;
+            contentCategory.AddedOn = DateTime.UtcNow;
+            context.ContentCategory.Add(contentCategory);
+            context.SaveChanges();
+
+            //Add Default Meta
+            Meta meta = new Meta();
+            meta.ContentID = content.ID;
+            meta.Keyword = "Lorem, Ipsum,dummy,industry";
+            meta.Description = "Contrary to popular belief, Lorem Ipsum is not simply random text.";
+            meta.Author = "Tarun Dudhatra";
+            meta.CreatedOn = DateTime.UtcNow;
+            context.Meta.Add(meta);
+            context.SaveChanges();
+
+            //Add Gadgets
+            Widget gadget = new Widget();
+            gadget.WidgetName = "Recent Content";
+            gadget.WidgetTitle = "Recent Content";
+            gadget.WidgetGUID = Guid.NewGuid().ToString().Replace("-", "");
+            gadget.WidgetOption = "{ \"title\": \"Recent Content\",\"count\": 5,\"showthumb\": false }";
+            gadget.WidgetOrder = 1;
+            gadget.IsActive = true;
+            context.Widget.Add(gadget);
+
+            gadget = new Widget();
+            gadget.WidgetName = "Most Viewed Content";
+            gadget.WidgetTitle = "Most Viewed Content";
+            gadget.WidgetGUID = Guid.NewGuid().ToString().Replace("-", "");
+            gadget.WidgetOption = "{ \"title\": \"Most Viewed Content\",\"count\": 5,\"showthumb\": false }";
+            gadget.WidgetOrder = 2;
+            gadget.IsActive = true;
+            context.Widget.Add(gadget);
+
+            gadget = new Widget();
+            gadget.WidgetName = " Related Content";
+            gadget.WidgetTitle = " Related Content";
+            gadget.WidgetGUID = Guid.NewGuid().ToString().Replace("-", "");
+            gadget.WidgetOption = "{ \"title\": \"Related Content\",\"count\": 3,\"showthumb\": false }";
+            gadget.WidgetOrder = 3;
+            gadget.IsActive = false;
+            context.Widget.Add(gadget);
+
+            gadget = new Widget();
+            gadget.WidgetName = "Total Page View";
+            gadget.WidgetTitle = "Total Page View";
+            gadget.WidgetGUID = Guid.NewGuid().ToString().Replace("-", "");
+            gadget.WidgetOption = "{ \"title\": \"Total Page View\",\"count\": 0,\"showthumb\": false }";
+            gadget.WidgetOrder = 4;
+            gadget.IsActive = false;
+            context.Widget.Add(gadget);
+
+            gadget = new Widget();
+            gadget.WidgetName = "Category List";
+            gadget.WidgetTitle = "Category List";
+            gadget.WidgetGUID = Guid.NewGuid().ToString().Replace("-", "");
+            gadget.WidgetOption = "{ \"title\": \"Category List\",\"count\": 3,\"showthumb\": false }";
+            gadget.WidgetOrder = 5;
+            gadget.IsActive = true;
+            context.Widget.Add(gadget);
+
+            gadget = new Widget();
+            gadget.WidgetName = "Label List";
+            gadget.WidgetTitle = "Label List";
+            gadget.WidgetGUID = Guid.NewGuid().ToString().Replace("-", "");
+            gadget.WidgetOption = "{ \"title\": \"Label List\",\"count\": 3,\"showthumb\": false }";
+            gadget.WidgetOrder = 6;
+            gadget.IsActive = true;
+            context.Widget.Add(gadget);
+            context.SaveChanges();
         }
     }
 }

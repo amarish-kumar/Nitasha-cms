@@ -102,5 +102,18 @@ namespace NITASA.Helpers
             }
             return userID;
         }
+        public static string CurrentUserRole()
+        {
+            string userRoll = string.Empty;
+            if (HttpContext.Current.Session["UserRole"] != null)
+            {
+                try
+                {
+                    userRoll = Convert.ToString(HttpContext.Current.Session["UserRole"]);
+                }
+                catch { }
+            }
+            return userRoll;
+        }
     }
 }
