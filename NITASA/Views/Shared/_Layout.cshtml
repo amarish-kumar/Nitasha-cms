@@ -1,16 +1,79 @@
 ﻿<!DOCTYPE html>
-<html>
+
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="en">
+ <!--<![endif]-->
 <head>
-    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
+
+    <!-- Basic Page Needs  ================================================== -->
+    <meta charset="utf-8">
     <title>@ViewBag.Title</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <meta name="description" content="Free Html5 Templates and Free Responsive Themes Designed by Kimmy | zerotheme.com">
+    <meta name="author" content="www.zerotheme.com">
+
+    <!-- Mobile Specific Metas ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- CSS ================================================== -->
+    <link rel="stylesheet" href="/assets/public/css/zerogrid.css">
+    <link rel="stylesheet" href="/assets/public/css/style.css">
+    <link rel="stylesheet" href="/assets/public/css/responsive.css">
+    <script type="text/javascript" src="/assets/public/js/jquery.min.js"></script>
+
+    <!--[if lt IE 8]>
+       <div style=' clear: both; text-align:center; position: relative;'>
+         <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+           <img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." />
+        </a>
+      </div>
+    <![endif]-->
+    <!--[if lt IE 9]>
+        <script src="/assets/public/js/html5.js"></script>
+        <script src="/assets/public/js/css3-mediaqueries.js"></script>
+    <![endif]-->
+
+    <link href='/assets//images/favicon.ico' rel='icon' type='image/x-icon' />
 </head>
 <body>
-    @RenderBody()
+    <!--------------Header--------------->
+    <header>
+        <div class="wrap-header zerogrid">
+            <div id="logo"><a href="#"><img src="/assets/images/logo.png" /></a></div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @RenderSection("scripts", required: false)
+            @*<div id="search">
+                    <div class="button-search"></div>
+                    <input type="text" value="Search..." onfocus="if (this.value == &#39;Search...&#39;) {this.value = &#39;&#39;;}" onblur="if (this.value == &#39;&#39;) {this.value = &#39;Search...&#39;;}">
+                </div>*@
+        </div>
+    </header>
+
+    <!--------------Content--------------->
+    <section id="content">
+        <div class="wrap-content zerogrid">
+            @RenderBody()
+
+            <div class="row block04">
+                <div class="col-full">
+                    <div class="wrap-col">
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--------------Footer--------------->
+    <footer>
+        <div class="wrap-footer">
+            <div class="copyright">
+                <p>Copyright © 2012 - <a href="http://www.zerotheme.com" target="_blank">Free Basic Html5 Responsive Templates</a> by Zerotheme.com</p>
+            </div>
+        </div>
+    </footer>
+
 </body>
 </html>
+

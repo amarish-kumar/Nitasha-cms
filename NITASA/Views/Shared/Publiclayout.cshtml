@@ -1,0 +1,87 @@
+﻿@{ string bodyID;}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+
+    @{string strController = Convert.ToString(@Request.RequestContext.RouteData.Values["Controller"]).ToLower();}
+    @*@if (strController == "single")
+    {
+        @Html.Raw(AspNetCMS.Helpers.function.GetMetaData(Convert.ToString(@Request.RequestContext.RouteData.Values["contentURL"])))
+    }
+    else
+    {
+        @Html.Raw(AspNetCMS.Helpers.function.GetDefaultMetaData())
+    }*@
+    @if (strController == "home")
+    {
+        bodyID = "home";
+    }
+    else
+    {
+        bodyID = "subpage";
+    }
+
+    <!-- CSS  ================================================== -->
+    <link href="@Url.Content("~/assets/css/templatemo_style.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/assets/css/orman.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/assets/css/nivo-slider.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/assets/css/ddsmoothmenu.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/assets/js/jquery.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/assets/js/ddsmoothmenu.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        ddsmoothmenu.init({
+            mainmenuid: "templatemo_menu", //menu DIV id
+            orientation: 'h', //Horizontal or vertical menu: Set to "h" or "v"
+            classname: 'ddsmoothmenu', //class added to menu's outer DIV
+            //customtheme: ["#1c5a80", "#18374a"],
+            contentsource: "markup" //"markup" or ["container_id", "path_to_menu_file"]
+        })
+
+    </script>
+    <link href="@Url.Content("~/assets/css/slimbox2.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/assets/js/slimbox2.js")" type="text/javascript"></script>
+    @*@Html.Raw(AspNetCMS.Helpers.function.GetFaviconURL())
+    @Html.Raw(AspNetCMS.Helpers.function.GetHeaderCustomCode())
+    @Html.Raw(AspNetCMS.Helpers.function.GetCustomCSS())
+    @Html.Raw(AspNetCMS.Helpers.function.GetCustomJavaScript())
+    @Html.Raw(AspNetCMS.Helpers.function.GetGoogleAnalytics())*@
+</head>
+<body id="@bodyID">
+    <div id="templatemo_wrapper">
+        <div id="templatemo_header">
+
+            @Html.Partial("header")
+            @*@Html.Partial("pagelist")*@
+            @Html.Partial("navigation")
+        </div>
+        <!-- END of header -->
+        @RenderSection("SliderOrPageContent", true)
+
+        @*<div id="templatemo_twitter">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eu nulla vel lorem volutpat tincidunt. Cras congue risus id nibh.
+            </div> <!-- END of twitter -->
+        *@
+
+        <div id="templatemo_main">
+            @RenderBody()
+            @Html.Partial("sidebar")
+            <div class="clear">
+            </div>
+        </div>
+        <!-- END of main -->
+    </div>
+    <!-- END of wrapper -->
+    @Html.Partial("footer")
+    <script type="text/javascript">
+        var message = '@TempData["message"]';
+        if (message != null && message != "") {
+            alert(message);
+        }
+    </script>
+    @*@Html.Raw(AspNetCMS.Helpers.function.GetFooterCustomCode())*@
+</body>
+</html>
