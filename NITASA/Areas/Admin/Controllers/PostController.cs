@@ -8,10 +8,12 @@ namespace NITASA.Areas.Admin.Controllers
 {
     public class PostController : Controller
     {
-        //
-        // GET: /Admin/Post/
-
-        public ActionResult Index()
+        public ActionResult List()
+        {
+            return View();
+        }
+        [HttpGet]
+        public ActionResult Add()
         {
             return View();
         }

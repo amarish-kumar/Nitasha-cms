@@ -11,7 +11,7 @@ namespace NITASA.Areas.Admin.Controllers
         //
         // GET: /Admin/Profile/
 
-        public ActionResult Index()
+        public ActionResult Details()
         {
             return View();
         }

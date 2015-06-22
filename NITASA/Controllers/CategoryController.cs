@@ -10,7 +10,7 @@ namespace NITASA.Controllers
     {
         //
         // GET: /Category/
-        public ActionResult Index()
+        public ActionResult Details()
         {
             return View();
         }

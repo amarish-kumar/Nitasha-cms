@@ -3,6 +3,7 @@ using NITASA.Helpers;
 using NITASA.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -13,29 +14,53 @@ namespace NITASA.Controllers
     public class RegisterController : Controller
     {
         public NTSDBContext context;
-        public RegisterController(NTSDBContext context)
+        public RegisterController()
         {
-            this.context = context;
+            this.context = new NTSDBContext();
         }
         public ActionResult Users()
         {
             return View();
         }
         [HttpPost]
-        public ActionResult Users(Register adminUser)
+        public ActionResult Users(Register model)
         {
             if (ModelState.IsValid)
             {
-                if (adminUser.Password == adminUser.ConfirmPassword)
+                if (model.Password == model.ConfirmPassword)
                 {
-                    if (InsertAdminUser(adminUser.UserEmail, adminUser.Password))
+                    try
                     {
+                        NITASA.Data.User user = new Data.User();
+                        user.FirstName = model.FirstName;
+                        user.LastName = model.LastName;
+                        user.Email = model.UserEmail;
+
+                        int saltKey = Common.GetSaltKey();
+                        string encryptedPassword = Common.Encrypt(model.Password, Convert.ToString(saltKey), true);
+                        user.Password = encryptedPassword;
+                        user.SaltKey = saltKey;
+
+                        user.IsActive = true;
+                        user.IsDefault = true;
+                        user.AddedOn = DateTime.Now;
+                        context.User.Add(user);
+                        context.SaveChanges();
+
                         TempData["message"] = ".Net CMS setup successfully.";
                         return RedirectToAction("Index", "Home");
                     }
-                    else
+                    catch (DbEntityValidationException ex)
                     {
-                        //TempData["message"] = "Error occured while registering admin user.";
+                        var errorMessages = ex.EntityValidationErrors
+                                .SelectMany(x => x.ValidationErrors)
+                                .Select(x => x.ErrorMessage);
+
+                        var fullErrorMessage = string.Join("; ", errorMessages);
+
+                        var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
+
+                        TempData["message"] = ex.Message;
                     }
                 }
                 else
@@ -48,32 +73,6 @@ namespace NITASA.Controllers
                 TempData["message"] = "Please enter required field value.";
             }
             return View();
-        }
-
-        private bool InsertAdminUser(string userName, string password)
-        {
-            try
-            {
-                int saltKey = Common.GetSaltKey();
-                string encryptedPassword = Common.Encrypt(password, Convert.ToString(saltKey), true);
-
-                NITASA.Data.User user = new Data.User();
-                user.Email = userName;
-                user.Password = encryptedPassword;
-                user.SaltKey = saltKey;
-                user.IsActive = true;
-                user.IsDefault = true;
-                user.AddedOn = DateTime.Now;
-                context.User.Add(user);
-                context.SaveChanges();
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                TempData["message"] = ex.Message;
-                return false;
-            }
         }
 	}
 }

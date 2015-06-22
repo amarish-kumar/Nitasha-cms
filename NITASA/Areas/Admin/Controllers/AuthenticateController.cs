@@ -14,12 +14,13 @@ namespace NITASA.Areas.Admin.Controllers
     {
         string returnURL;
         private string keyToDescript = ConfigurationManager.AppSettings["EncKey"];
-
         public NTSDBContext context;
+
         public AuthenticateController()
         {
-            this.context = context;
+            this.context = new NTSDBContext();
         }
+
         public ActionResult Login()
         {
             if (Request.QueryString["retUrl"] != null)
@@ -79,7 +80,18 @@ namespace NITASA.Areas.Admin.Controllers
         {
             Session.RemoveAll();
             TempData["loginmessage"] = "Success: You have succesfully logged out.";
-            return RedirectToAction("Login", "Authentication");
+            return RedirectToAction("Login", "Authenticate");
+        }
+
+        public ActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult ChangePassword(ChangePassword cpassword)
+        {
+            return View();
         }
     }
 }

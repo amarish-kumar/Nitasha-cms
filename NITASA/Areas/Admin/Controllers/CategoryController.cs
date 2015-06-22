@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NITASA.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,10 +12,19 @@ namespace NITASA.Areas.Admin.Controllers
         //
         // GET: /Admin/Category/
 
-        public ActionResult Index()
+        public ActionResult List()
         {
             return View();
         }
-
+        [HttpGet]
+        public ActionResult Add()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Add(Category cmv, string CGUID)
+        {
+            return View();
+        }
     }
 }

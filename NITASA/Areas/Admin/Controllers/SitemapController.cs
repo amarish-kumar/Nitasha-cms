@@ -8,10 +8,7 @@ namespace NITASA.Areas.Admin.Controllers
 {
     public class SitemapController : Controller
     {
-        //
-        // GET: /Admin/Sitemap/
-
-        public ActionResult Index()
+        public ActionResult Generate()
         {
             return View();
         }

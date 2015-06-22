@@ -15,5 +15,9 @@ namespace NITASA.Controllers
         {
             return View();
         }
+        public ActionResult NotFound()
+        {
+            return View();
+        }
     }
 }
