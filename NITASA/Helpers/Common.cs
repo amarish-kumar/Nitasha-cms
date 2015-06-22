@@ -88,5 +88,19 @@ namespace NITASA.Helpers
 
             return (String);
         }
+
+        public static int CurrentUserID()
+        {
+            int userID = 0;
+            if (HttpContext.Current.Session["UserID"] != null)
+            {
+                try
+                {
+                    userID = Convert.ToInt32(HttpContext.Current.Session["UserID"]);
+                }
+                catch { }
+            }
+            return userID;
+        }
     }
 }

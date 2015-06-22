@@ -64,7 +64,7 @@ namespace NITASA.Controllers
                         //}
                         if (SaveConfig(dbName))
                         {
-                            return RedirectToAction("Index", "Register");
+                            return RedirectToAction("Users", "Register");
                         }
                         else
                         {
@@ -82,7 +82,7 @@ namespace NITASA.Controllers
                         {
                             ViewBag.confirmRequired = false;
                             if(SaveConfig(dbName))
-                                return RedirectToAction("Index", "Register");                           
+                                return RedirectToAction("Users", "Register");                           
                         }
                     }
                 }
