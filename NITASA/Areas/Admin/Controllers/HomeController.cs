@@ -23,7 +23,7 @@ namespace NITASA.Areas.Admin.Controllers
         public ActionResult Dashboard()
         {
             if (!UserRights.HasRights(Rights.ShowDashboard))
-                return RedirectToAction("AccessDenied", "Dashboard");
+                return RedirectToAction("AccessDenied", "Home");
 
             CustomizedDashboard dBoard = new CustomizedDashboard();
 

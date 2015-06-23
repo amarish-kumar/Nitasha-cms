@@ -1,4 +1,5 @@
-﻿using NITASA.Areas.Admin.ViewModels;
+﻿using NITASA.Areas.Admin.Helper;
+using NITASA.Areas.Admin.ViewModels;
 using NITASA.Data;
 using NITASA.Helpers;
 using System;
@@ -54,7 +55,7 @@ namespace NITASA.Areas.Admin.Controllers
                 {
                     HttpContext.Session["UserID"] = User.ID;
                     HttpContext.Session["UserRole"] = context.Role.Where(model => model.ID == User.RoleID && model.IsDeleted == false).Select(m => m.Name).FirstOrDefault();
-                    //UserRights.BindRights();
+                    UserRights.BindRights();
 
                     if (Request.QueryString["retUrl"] != null)
                         returnURL = Request.QueryString["retUrl"];
