@@ -42,6 +42,16 @@ namespace NITASA.Areas.Admin.Helper
         PublishOwnPages,
         PublishOtherUsersPages,
 
+        ViewAllAddons,
+        ViewUnPublishedAddons,
+        CreateNewAddons,
+        EditOwnAddons,
+        EditOtherUsersAddons,
+        DeleteOwnAddons,
+        DeleteOtherUsersAddons,
+        PublishOwnAddons,
+        PublishOtherUsersAddons,
+
         ViewRoles,
         CreateNewRoles,
         EditOwnRoles,
@@ -87,6 +97,16 @@ namespace NITASA.Areas.Admin.Helper
             perList.Add("DeleteOtherUsersPages", "Pages");
             perList.Add("PublishOwnPages", "Pages");
             perList.Add("PublishOtherUsersPages", "Pages");
+
+            perList.Add("ViewAllAddons", "Addons");
+            perList.Add("ViewUnPublishedAddons", "Addons");
+            perList.Add("CreateNewAddons", "Addons");
+            perList.Add("EditOwnAddons", "Addons");
+            perList.Add("EditOtherUsersAddons", "Addons");
+            perList.Add("DeleteOwnAddons", "Addons");
+            perList.Add("DeleteOtherUsersAddons", "Addons");
+            perList.Add("PublishOwnAddons", "Addons");
+            perList.Add("PublishOtherUsersAddons", "Addons");
 
             perList.Add("ViewRoles", "Roles");
             perList.Add("CreateNewRoles", "Roles");
