@@ -177,6 +177,7 @@
     <Compile Include="Areas\Admin\Controllers\ThemeController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserController.cs" />
     <Compile Include="Areas\Admin\Controllers\WidgetController.cs" />
+    <Compile Include="Areas\Admin\Helper\ActivityOperation.cs" />
     <Compile Include="Areas\Admin\Helper\CheckLogin.cs" />
     <Compile Include="Areas\Admin\Helper\Sitemap\DropDownHelper.cs" />
     <Compile Include="Areas\Admin\Helper\Sitemap\ISitemapGenerator.cs" />
