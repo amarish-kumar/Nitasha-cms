@@ -587,6 +587,7 @@
     <Content Include="Areas\Admin\Helper\Sitemap\vssver.scc" />
     <Content Include="Areas\Admin\Views\Profile\ChangePassword.cshtml" />
     <Content Include="Areas\Admin\Views\Post\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Media\GetMedia.cshtml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\gridmvc.js" />
     <Content Include="Scripts\gridmvc.lang.ru.js" />
@@ -719,6 +720,7 @@
     <Folder Include="Areas\Admin\assets\js\tinymce\jscripts\tiny_mce\utils\" />
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Admin\Views\OpenID\" />
+    <Folder Include="Content\media\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>

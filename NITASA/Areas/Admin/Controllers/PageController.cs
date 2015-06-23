@@ -35,42 +35,42 @@ namespace NITASA.Areas.Admin.Controllers
                     .OrderByDescending(m => m.AddedOn)
                     .ToList();
             else
-                return RedirectToAction("AccessDenied", "Dashboard");
+                return RedirectToAction("AccessDenied", "Home");
 
             return View(pages);
         }
-/*
+
         [HttpGet]
         public ActionResult Add(string guid = "")
         {
             if (guid.Trim() == string.Empty)
             {
                 if (!UserRights.HasRights(Rights.CreateNewPages))
-                    return RedirectToAction("AccessDenied", "Dashboard");
-                ViewBag.Templatelist = new SelectList(dbContext.ContentTemplate.Where(m => m.IsDeleted == false).ToList(), "TemplateID", "TemplateName");
+                    return RedirectToAction("AccessDenied", "Home");
+                //ViewBag.Templatelist = new SelectList(dbContext.ContentTemplate.Where(m => m.IsDeleted == false).ToList(), "TemplateID", "TemplateName");
                 return View();
             }
             else
             {
-                Content cont = dbContext.Content.Where(m => m.ContentType == "page" && m.ContentGUID == guid).FirstOrDefault();
+                Content cont = dbContext.Content.Where(m => m.Type == "page" && m.GUID == guid).FirstOrDefault();
                 if (cont != null)
                 {
-                    if (cont.CreatedBy == Common.CurrentUserID())
+                    if (cont.AddedBy == Common.CurrentUserID())
                     {
                         if (!UserRights.HasRights(Rights.EditOwnPages))
-                            return RedirectToAction("AccessDenied", "Dashboard");
+                            return RedirectToAction("AccessDenied", "Home");
                     }
                     else
                     {
                         if (!UserRights.HasRights(Rights.EditOtherUsersPage))
-                            return RedirectToAction("AccessDenied", "Dashboard");
+                            return RedirectToAction("AccessDenied", "Home");
                     }
 
                     PageModel pModel = new PageModel();
-                    cont.ContentText = cont.ContentText.Replace("<img src=\"../../", "<img src=\"../../../");
+                    cont.Description= cont.Description.Replace("<img src=\"../../", "<img src=\"../../../");
                     pModel.content = cont;
-                    pModel.meta = dbContext.Meta.Where(m => m.ContentID == cont.ContentID).FirstOrDefault();
-                    ViewBag.Templatelist = new SelectList(dbContext.ContentTemplate.Where(m => m.IsDeleted == false).ToList(), "TemplateID", "TemplateName", cont.TemplateID);
+                    pModel.meta = dbContext.Meta.Where(m => m.ContentID == cont.ID).FirstOrDefault();
+                    //ViewBag.Templatelist = new SelectList(dbContext.ContentTemplate.Where(m => m.IsDeleted == false).ToList(), "TemplateID", "TemplateName", cont.TemplateID);
                     return View(pModel);
                 }
                 else
@@ -86,7 +86,7 @@ namespace NITASA.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                string pageContent = contentPage.content.ContentText.Replace("&nbsp;", "").Replace("<p>", "").Replace("</p>", "").Trim();
+                string pageContent = contentPage.content.Description.Replace("&nbsp;", "").Replace("<p>", "").Replace("</p>", "").Trim();
                 if (pageContent != string.Empty)
                 {
                     if (SaveType == "Publish")
@@ -94,7 +94,7 @@ namespace NITASA.Areas.Admin.Controllers
                     else
                         contentPage.content.isPublished = false;
 
-                    if (Request.Form["content.ContentID"] == null) // Add
+                    if (Request.Form["content.ID"] == null) // Add
                     {
                         AddUpdateContentWithMeta(contentPage, 'A');
                     }
@@ -135,17 +135,17 @@ namespace NITASA.Areas.Admin.Controllers
                 contentNew.Type = "page";
                 contentNew.URL = Common.ToUrlSlug(contentPage.content.URL, "Page", 0);
                 //contentNew.TemplateID = contentPage.content.TemplateID;
-                contentNew.ContentHeaderText = contentPage.content.HeaderText;
-                if (!string.IsNullOrEmpty(contentPage.content.ContentHeaderImage))
+                contentNew.CoverContent = contentPage.content.CoverContent;
+                if (!string.IsNullOrEmpty(contentPage.content.FeaturedImage))
                 {
-                    contentNew.ContentHeaderImage = contentPage.content.ContentHeaderImage;
+                    contentNew.FeaturedImage = contentPage.content.FeaturedImage;
                 }
                 else
                 {
-                    contentNew.ContentHeaderImage = null;
+                    contentNew.FeaturedImage = null;
                 }
-                contentNew.CreatedBy = Common.CurrentUserID();
-                contentNew.CreatedOn = DateTime.Now;
+                contentNew.AddedBy = Common.CurrentUserID();
+                contentNew.AddedOn = DateTime.Now;
                 contentNew.isPublished = contentPage.content.isPublished;
                 if (contentPage.content.isPublished)
                     contentNew.PublishedOn = DateTime.Now;
@@ -153,13 +153,13 @@ namespace NITASA.Areas.Admin.Controllers
                 dbContext.SaveChanges();
 
                 //Page meta data add
-                if (!string.IsNullOrWhiteSpace(contentPage.meta.MetaKeyword) || !string.IsNullOrWhiteSpace(contentPage.meta.MetaDescription) || !string.IsNullOrWhiteSpace(contentPage.meta.MetaAuthor))
+                if (!string.IsNullOrWhiteSpace(contentPage.meta.Keyword) || !string.IsNullOrWhiteSpace(contentPage.meta.Description) || !string.IsNullOrWhiteSpace(contentPage.meta.Author))
                 {
                     Meta metaData = new Meta();
-                    metaData.ContentID = contentNew.ContentID;
-                    metaData.MetaKeyword = contentPage.meta.MetaKeyword;
-                    metaData.MetaDescription = contentPage.meta.MetaDescription;
-                    metaData.MetaAuthor = contentPage.meta.MetaAuthor;
+                    metaData.ContentID = contentNew.ID;
+                    metaData.Keyword = contentPage.meta.Keyword;
+                    metaData.Description = contentPage.meta.Description;
+                    metaData.Author = contentPage.meta.Author;
                     metaData.CreatedOn = DateTime.Now;
                     dbContext.Meta.Add(metaData);
                     dbContext.SaveChanges();
@@ -167,21 +167,21 @@ namespace NITASA.Areas.Admin.Controllers
             }
             else
             {
-                Content contentUpdate = dbContext.Content.Where(m => m.ContentType == "page" && m.ContentGUID == contentPage.content.ContentGUID).FirstOrDefault();
+                Content contentUpdate = dbContext.Content.Where(m => m.Type == "page" && m.GUID == contentPage.content.GUID).FirstOrDefault();
                 //var sanitizer = new Html.HtmlSanitizer();
-                contentUpdate.ContentText = contentPage.content.ContentText.Replace("<img src=\"../../../", "<img src=\"../../");
-                contentUpdate.ContentTitle = contentPage.content.ContentTitle;
-                if (contentUpdate.ContentURL.ToLower() != contentPage.content.ContentURL.ToLower())
-                    contentUpdate.ContentURL = Common.ToUrlSlug(contentPage.content.ContentURL, "Page", contentUpdate.ContentID);
-                contentUpdate.TemplateID = contentPage.content.TemplateID;
-                contentUpdate.ContentHeaderText = contentPage.content.ContentHeaderText;
-                if (!string.IsNullOrEmpty(contentPage.content.ContentHeaderImage))
+                contentUpdate.Description= contentPage.content.Description.Replace("<img src=\"../../../", "<img src=\"../../");
+                contentUpdate.Title = contentPage.content.Title;
+                if (contentUpdate.URL.ToLower() != contentPage.content.URL.ToLower())
+                    contentUpdate.URL = Common.ToUrlSlug(contentPage.content.URL, "Page", contentUpdate.ID);
+                //contentUpdate.TemplateID = contentPage.content.TemplateID;
+                contentUpdate.CoverContent = contentPage.content.CoverContent;
+                if (!string.IsNullOrEmpty(contentPage.content.FeaturedImage))
                 {
-                    contentUpdate.ContentHeaderImage = contentPage.content.ContentHeaderImage;
+                    contentUpdate.FeaturedImage = contentPage.content.FeaturedImage;
                 }
                 else
                 {
-                    contentUpdate.ContentHeaderImage = null;
+                    contentUpdate.FeaturedImage = null;
                 }
                 contentUpdate.ModifiedBy = Common.CurrentUserID();
                 contentUpdate.ModifiedOn = DateTime.Now;
@@ -191,23 +191,23 @@ namespace NITASA.Areas.Admin.Controllers
                 dbContext.SaveChanges();
 
 
-                if (dbContext.Meta.Where(m => m.ContentID == contentUpdate.ContentID).Count() > 0)
+                if (dbContext.Meta.Where(m => m.ContentID == contentUpdate.ID).Count() > 0)
                 {
-                    Meta meta = dbContext.Meta.Where(m => m.ContentID == contentUpdate.ContentID).SingleOrDefault();
-                    meta.MetaKeyword = contentPage.meta.MetaKeyword;
-                    meta.MetaDescription = contentPage.meta.MetaDescription;
-                    meta.MetaAuthor = contentPage.meta.MetaAuthor;
+                    Meta meta = dbContext.Meta.Where(m => m.ContentID == contentUpdate.ID).SingleOrDefault();
+                    meta.Keyword = contentPage.meta.Keyword;
+                    meta.Description = contentPage.meta.Description;
+                    meta.Author = contentPage.meta.Author;
                     dbContext.SaveChanges();
                 }
                 else
                 {
-                    if (!string.IsNullOrWhiteSpace(contentPage.meta.MetaKeyword) || !string.IsNullOrWhiteSpace(contentPage.meta.MetaDescription) || !string.IsNullOrWhiteSpace(contentPage.meta.MetaAuthor))
+                    if (!string.IsNullOrWhiteSpace(contentPage.meta.Keyword) || !string.IsNullOrWhiteSpace(contentPage.meta.Description) || !string.IsNullOrWhiteSpace(contentPage.meta.Author))
                     {
                         Meta metaData = new Meta();
-                        metaData.ContentID = contentUpdate.ContentID;
-                        metaData.MetaKeyword = contentPage.meta.MetaKeyword;
-                        metaData.MetaDescription = contentPage.meta.MetaDescription;
-                        metaData.MetaAuthor = contentPage.meta.MetaAuthor;
+                        metaData.ContentID = contentUpdate.ID;
+                        metaData.Keyword = contentPage.meta.Keyword;
+                        metaData.Description = contentPage.meta.Description;
+                        metaData.Author = contentPage.meta.Author;
                         metaData.CreatedOn = DateTime.Now;
                         dbContext.Meta.Add(metaData);
                         dbContext.SaveChanges();
@@ -218,18 +218,18 @@ namespace NITASA.Areas.Admin.Controllers
 
         public ActionResult Delete(string guid)
         {
-            Content contentToDelete = dbContext.Content.Where(m => m.ContentType == "page" && m.ContentGUID == guid).Single();
+            Content contentToDelete = dbContext.Content.Where(m => m.Type == "page" && m.GUID == guid).Single();
             if (contentToDelete != null)
             {
-                if (contentToDelete.CreatedBy == Common.CurrentUserID())
+                if (contentToDelete.AddedBy == Common.CurrentUserID())
                 {
                     if (!UserRights.HasRights(Rights.DeleteOwnPages))
-                        return RedirectToAction("AccessDenied", "Dashboard");
+                        return RedirectToAction("AccessDenied", "Home");
                 }
                 else
                 {
                     if (!UserRights.HasRights(Rights.DeleteOtherUsersPages))
-                        return RedirectToAction("AccessDenied", "Dashboard");
+                        return RedirectToAction("AccessDenied", "Home");
                 }
                 contentToDelete.IsDeleted = true;
                 dbContext.SaveChanges();
@@ -240,6 +240,6 @@ namespace NITASA.Areas.Admin.Controllers
                 TempData["ErrorMessage"] = "Page Not Found.";
             }
             return RedirectToAction("List");
-        }*/
+        }
     }
 }

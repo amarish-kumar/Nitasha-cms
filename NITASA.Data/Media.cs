@@ -14,15 +14,16 @@ namespace NITASA.Data
         public int ID { get; set; }
 
         public string GUID { get; set; }
-        [MaxLength(100)]
-        [StringLength(100, ErrorMessage = "Media name cannot exceed 100 characters.")]
-        [Display(Name = "Media Name")]
-        [AllowHtml]
-        public string Name { get; set; }
 
-        [Required(ErrorMessage = "Please select media")]
-        [Display(Name = "Select Media ")]
-        public string Path { get; set; }
+        [MaxLength(100)]
+        [StringLength(100, ErrorMessage = "Media file name cannot exceed 100 characters.")]
+        [Display(Name = "Media File Name")]
+        [AllowHtml]
+        public string FileName { get; set; }
+
+        //[Required(ErrorMessage = "Please select media")]
+        //[Display(Name = "Select Media ")]
+        //public string Path { get; set; }
 
         public string Type { get; set; } //(Image,Video)
 

@@ -1,7 +1,342 @@
-﻿
+﻿@model PageModel
+@using NITASA.Data
+@using NITASA.Helpers;
+@using NITASA.Areas.Admin.Helper
 @{
-    ViewBag.Title = "Add";
+    if (Model == null)
+    {
+        ViewBag.Title = "Add Page";
+    }
+    else
+    {
+        ViewBag.Title = "Edit Page";
+    }
+    //List<AddonType> AddonTypeList = Common.GetAddonTypes();
 }
+@section PageLevelStyles{
+    <style type="text/css">
+        #slug-container {
+            color: #666;
+            line-height: 24px;
+            margin-top: 5px;
+            min-height: 25px;
+            padding: 0 10px;
+        }
 
-<h2>Add</h2>
+        strong {
+            font-weight: 600;
+        }
 
+        #slug-container {
+            color: #666;
+            line-height: 24px;
+        }
+
+        .editable-container span {
+            background-color: #fffbcc;
+        }
+
+        .editable-container input {
+            font-size: 13px;
+            height: 22px;
+            margin: 0;
+            width: 16em;
+        }
+
+        .slug-buttons .button-small {
+            border-color: #ccc;
+            border-radius: 3px;
+            border-style: solid;
+            border-width: 1px;
+            color: #555;
+            cursor: pointer;
+            font-size: 13px;
+            line-height: 18px;
+            padding: 0 10px 1px;
+        }
+
+        .slug-buttons .cancel {
+            font-size: 11px;
+            margin-right: 10px;
+        }
+    </style>
+    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/assets/js/tinymce/tinymce.min.js")"></script>
+    <script type="text/javascript">
+        function myFileBrowser(field_name, url, type, win) {
+            var cmsURL = "/Admin/Post/GetMedia";
+            tinyMCE.activeEditor.windowManager.open({
+                file: cmsURL,
+                title: 'Select an Image',
+                width: 750,
+                height: 360,
+                resizable: "yes",
+                inline: "yes",
+                close_previous: "no"
+            }, {
+                window: win,
+                input: field_name
+            });
+            return false;
+        }
+        $ext = 'span[id|name|class|style]';
+        tinyMCE.init({
+            selector: ".edtr",
+            theme: "modern",
+            plugins: [
+                "advlist autolink lists link image charmap preview hr anchor",
+                "searchreplace wordcount visualblocks visualchars code fullscreen",
+                "insertdatetime nonbreaking save table contextmenu directionality",
+                "emoticons template paste textcolor colorpicker textpattern "
+            ],
+            toolbar1: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | Addons",
+            toolbar2: "preview | forecolor backcolor emoticons",
+            image_advtab: false,
+            extended_valid_elements: $ext,
+            force_br_newlines: false,
+            force_p_newlines: false,
+            forced_root_block: '',
+            file_browser_callback: myFileBrowser,
+            setup: function (editor) {
+                editor.addButton('Addons', {
+                    text: 'Addons',
+                    type: 'menubutton',
+                    icon: false,
+                    menu: [
+                        @*@foreach(AddonType item in AddonTypeList)
+                        {
+                        <text>
+                            {
+                                text: '@item.Name',
+                                onclick: function () {
+                                    editor.insertContent('&lt;Addon&gt;@item.Code&lt;/Addon&gt;');
+                                }
+                            },
+                        </text>
+                        }*@
+                    ]
+                });
+            }
+        });
+    </script>
+}
+<div class="main-content">
+    <div class="container-fluid padded">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                <button class="close" data-dismiss="alert" type="button">
+                    ×
+                </button>
+                @TempData["SuccessMessage"]
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-error">
+                <button class="close" data-dismiss="alert" type="button">
+                    ×
+                </button>
+                @TempData["ErrorMessage"]
+            </div>
+        }
+        <div class="row-fluid">
+            @using (Html.BeginForm("Add", "Page", FormMethod.Post, new { id = "frm1" }))
+            {
+                <input type="hidden" id="SaveType" name="SaveType" />
+                if (@Model != null)
+                {
+                    @Html.HiddenFor(m => m.content.ID)
+                    @Html.HiddenFor(m => m.content.GUID)
+                }
+                <div class="span12" style="margin-left: 0px;">
+                    <div class="box">
+                        <div class="box-header">
+                            <span class="title">
+                                <i class="icon-tasks"></i>&nbsp; @(Model == null ? "New Page" : "Edit Page")
+                            </span>
+                        </div>
+                        <div class="box-content">
+                            <div class="padded">
+                                <div class="span12">
+                                    <div class="span9">
+                                        <div class="control-group">
+                                            <div class="controls">
+                                                @Html.TextBoxFor(mbox => mbox.content.Title, new { placeholder = "Page Title", @class = "width100per", style = "margin-bottom: 0px;" })
+                                                <div style="color: red">
+                                                    @Html.ValidationMessageFor(m => m.content.Title)
+                                                </div>
+                                                <div>
+                                                    <div id="slug-container">
+                                                        <strong>Permalink:</strong>
+                                                        <span>
+                                                            /
+                                                            <span class="editable-container">
+                                                                <span id="editable-slug">@(Model != null ? Model.content.URL : "")</span>
+                                                                <input type="text" value="@(Model != null ? Model.content.URL : "")" id="edit-slug-text" style="display: none;" />
+                                                            </span>
+                                                        </span>&lrm;
+                                                        <span class="slug-buttons">
+                                                            <a id="edit-slug" class="button-small" href="#">Edit</a>
+                                                            <a id="save-slug" class="button-small" href="#" style="display: none;">OK</a>
+                                                            <a href="#" id="cancel-slug" class="cancel" style="display: none;">Cancel</a>
+                                                        </span>
+                                                        @Html.HiddenFor(m => m.content.URL)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <div class="controls">
+                                                <label>
+                                                    <b>Page Content: </b>
+                                                </label>
+                                                <div>
+                                                    @Html.TextAreaFor(m => m.content.Description, new { @class = "edtr", style = "width: 100%; max-width: 98%; height:500px; margin: 0px; overflow: hidden; word-wrap: break-word;resize:vertical;" })
+                                                    @*@class = "textarea-html5", *@
+                                                    <div style="color: red">
+                                                        @Html.ValidationMessageFor(m => m.content.Description)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span3">
+                                        <div class="padded" style="padding-top: 0px; padding-left: 0px;">
+                                            @if (UserRights.HasRights(Rights.PublishOwnPages))
+                                            {
+                                                <input type="submit" id="btnPublish" class="btn btn-small btn-green 3" style="text-align: right"
+                                                       value="Publish" />
+                                            }
+                                            else if (@Model != null && Common.CurrentUserID() == @Model.content.AddedBy)
+                                            {
+                                                <input type="submit" id="btnPublish" class="btn btn-small btn-green 2" style="text-align: right"
+                                                       value="Publish" />
+                                            }
+                                            else if (@Model != null && Common.CurrentUserID() != @Model.content.AddedBy)
+                                            {
+                                                <input type="submit" id="btnPublish" class="btn btn-small btn-green 1" style="text-align: right"
+                                                       value="Publish" />
+                                            }&nbsp;
+                                            <input type="submit" id="btnDraft" class="btn btn-small btn-blue" style="text-align: right"
+                                                   value="Save to Draft" />&nbsp;
+                                            <input type="button" class="btn btn-small btn-red" style="text-align: right" value="Back"
+                                                   onclick="window.location = '/Admin/Page/List';" />
+                                        </div>
+                                        @*<div class="box">
+                                            <div class="box-header">
+                                                <span class="title">Template</span>
+                                            </div>
+                                            <div class="box-content">
+                                                <div class="padded">
+                                                    @Html.DropDownListFor(m => m.content.TemplateID, (IEnumerable<SelectListItem>)ViewBag.Templatelist)
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                        <div class="box">
+                                            <div class="box-header">
+                                                <span class="title">Meta</span>
+                                            </div>
+                                            <div class="box-content">
+                                                <div class="padded">
+                                                    @Html.TextBoxFor(m => m.meta.Keyword, new { placeholder = "Keyword", @class = "width100per", id = "txtMetaKeyword" })
+                                                    @Html.TextBoxFor(m => m.meta.Description, new { placeholder = "Description", @class = "width100per", id = "txtMetaDescription" })
+                                                    @Html.TextBoxFor(m => m.meta.Author, new { placeholder = "Author Name", @class = "width100per", id = "txtMetaAuthor" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="box">
+                                            <div class="box-header">
+                                                <span class="title">Cover Content</span>
+                                            </div>
+                                            <div class="box-content">
+                                                <div class="padded" style="text-align: left; vertical-align: top">
+                                                    <label>
+                                                        <b>Content: </b>
+                                                    </label>
+                                                    @Html.TextAreaFor(m => m.content.CoverContent, new { style = "height:100px;" })
+                                                    <label style="display:inline;">
+                                                        <b>Image: </b>
+                                                    </label>
+                                                    @Html.HiddenFor(m => m.content.FeaturedImage)
+                                                    <input type="button" id="btnBImage" class="btn btn-small btn-blue" style="text-align: right" value="Select" />
+                                                    <input type="button" id="btnBRemove" class="btn btn-small btn-red" style="text-align: right" value="Remove" />
+                                                    <img id="uploadedImage" style="height: 100px;max-width: 100px;margin-top:10px;" alt="" @(Model != null ? "src=" + Model.content.FeaturedImage : "")>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                &nbsp;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+@{Html.RenderAction("GetMedia", "Media");}
+@section BottomScript{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            @if (Model == null)
+            {
+                <text>
+            $("#content_Title").on("input", function () {
+                var currText = $("#content_Title").val();
+                var replacedText = currText.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+                $("#editable-slug").html(replacedText);
+                $("#edit-slug-text").val(replacedText);
+                $("#content_URL").val(replacedText);
+            });
+            </text>
+            }
+            $("#edit-slug").click(function () {
+                $("#editable-slug").css("display", "none");
+                $("#edit-slug-text").css("display", "");
+                $("#edit-slug").css("display", "none");
+                $("#save-slug").css("display", "");
+                $("#cancel-slug").css("display", "");
+            });
+            $("#cancel-slug").click(function () {
+                $("#edit-slug-text").val($("#editable-slug").html());
+                $("#editable-slug").css("display", "");
+                $("#edit-slug-text").css("display", "none");
+                $("#edit-slug").css("display", "");
+                $("#save-slug").css("display", "none");
+                $("#cancel-slug").css("display", "none");
+            });
+            $("#save-slug").click(function () {
+                $("#content_URL").val($("#edit-slug-text").val().trim());
+                $("#editable-slug").css("display", "");
+                $("#editable-slug").html($("#edit-slug-text").val().trim());
+                $("#edit-slug-text").css("display", "none");
+                $("#edit-slug").css("display", "");
+                $("#save-slug").css("display", "none");
+                $("#cancel-slug").css("display", "none");
+            });
+            $('#btnPublish').click(function () {
+                $("#SaveType").val("Publish");
+                tinyMCE.triggerSave();
+            });
+            $('#btnDraft').click(function () {
+                $("#SaveType").val("SaveToDraft");
+                tinyMCE.triggerSave();
+            });
+            $('#btnBRemove').click(function () {
+                $('#content_ContentBannerImage').val("");
+                $('#uploadedImage').attr("src", "");
+            });
+            $('#btnBImage').click(function (e) {
+                e.preventDefault();
+                $('#MediaPopup').modal("show");
+            });
+            $(".wizard-input-section .media-thumb .imgSelect").click(function () {
+                var imgPath = $(this).attr('src');
+                $('#content_FeaturedImage').val(imgPath);
+                $('#uploadedImage').attr("src", imgPath);
+                $("#MediaPopup").modal("hide");
+            });
+        });
+    </script>
+}

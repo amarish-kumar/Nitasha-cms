@@ -1,0 +1,86 @@
+﻿@model List<Media>
+@using NITASA.Data
+@{
+    List<string> Attributes = Model.Select(m => m.Attribute).Distinct().ToList();
+}
+
+    <div id="MediaPopup" class="modal hide wizard-modal in" style="margin-top: -239px;
+    width: 750px; margin-left: -375px; display: none;" aria-hidden="false">
+        <div class="wizard-modal-header modal-header">
+            <button type="button" data-dismiss="modal" class="wizard-close close">
+                x
+            </button>
+            <h3 class="wizard-title">
+                Select Media
+            </h3>
+            <span class="wizard-subtitle"></span>
+        </div>
+        @if (Model.Count() > 0)
+        {
+            <div class="pull-left wizard-steps" style="height: 425px;">
+                <div class="wizard-nav-container" style="overflow-y: auto; height: 100%;">
+                    <ul style="padding-bottom: 30px;" class="nav nav-list">
+                        <li id="allAttr" class="wizard-nav-item active">
+                            <a class="wizard-nav-link" style="color:Black;">
+                                <i class="icon-chevron-right"></i>All
+                            </a>
+                        </li>
+                        @foreach (string attr in Attributes)
+                        {
+                            <li id="@attr" class="wizard-nav-item">
+                                <a class="wizard-nav-link" style="color:Black;">
+                                    <i class="icon-chevron-right"></i>@attr
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <div class="wizard-cards" style="height: 425px;">
+                <div class="wizard-card-container" style="overflow-y: auto; height: 100%;">
+
+                    <div id="conallAttr" class="wizard-card" style="height: 84%;display:block;">
+                        @*<h3>Server Group</h3>*@
+                        <div class="wizard-input-section">
+                            @foreach (Media item in Model)
+                            {
+                                <div class="media-thumb">
+                                    <img class="imgSelect" style="height: 100px;width: 100px;cursor:pointer;" alt="" src="@item.Path" />
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    @foreach (string attr in Attributes)
+                    {
+                        <div id="@("con"+@attr)" class="wizard-card" style="height: 84%;">
+                            <div class="wizard-input-section">
+                                @{List<Media> MediaList = Model.Where(m => m.Attribute == attr).ToList();}
+                                @foreach (Media item in MediaList)
+                                {
+                                    <div class="media-thumb">
+                                        <img class="imgSelect" style="height: 100px;width: 100px;cursor:pointer;" alt="" src="@item.Path" />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <h6 style="text-align:center"> There is no media. Please upload the media first. </h6>
+        }
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".wizard-nav-item").click(function (e) {
+                $(".wizard-nav-item").removeClass("active");
+                $(this).addClass("active");
+                $(".wizard-card").css('display', 'none');
+                $("#con" + $(this).attr("id")).css('display', 'block');
+            });
+        });
+    </script>

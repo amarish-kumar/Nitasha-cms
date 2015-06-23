@@ -100,6 +100,10 @@
     <Compile Include="Migrations\201506230643104_Activitylog-changes.Designer.cs">
       <DependentUpon>201506230643104_Activitylog-changes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201506230735398_media-model-change.cs" />
+    <Compile Include="Migrations\201506230735398_media-model-change.Designer.cs">
+      <DependentUpon>201506230735398_media-model-change.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NTSDBContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -119,6 +123,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201506230643104_Activitylog-changes.resx">
       <DependentUpon>201506230643104_Activitylog-changes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506230735398_media-model-change.resx">
+      <DependentUpon>201506230735398_media-model-change.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

@@ -1,6 +1,7 @@
 ﻿using NITASA.Data;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -228,5 +229,41 @@ namespace NITASA.Helpers
             sourceString = sourceString.Replace("&lt;Addon&gt;", string.Empty).Replace("&lt;/Addon&gt;", string.Empty); // replace addon tag
             return sourceString;
         }
+
+        public static string GetNewFileName(string targetFolder, string currentFileName)
+        {
+            string fileExtension = System.IO.Path.GetExtension(currentFileName);
+            string fileName = currentFileName.Replace(fileExtension, "");
+            string newFileName = fileName + fileExtension;
+            string newFilePath = Path.Combine(targetFolder, newFileName);
+            int fileCounter = 1;
+            while (File.Exists(HttpContext.Current.Server.MapPath(newFilePath)))
+            {
+                newFileName = fileName + fileCounter + fileExtension;
+                newFilePath = Path.Combine(targetFolder, newFileName);
+                fileCounter++;
+            }
+
+            return newFilePath;
+        }
+        public static bool IsValidImage(string FileName)
+        {
+            string[] extension = new string[] { ".jpg", ".bmp", ".jpeg", ".png", ".gif" };
+
+            if (extension.Contains(Path.GetExtension(FileName)))
+                return true;
+            else
+                return false;
+        }
+        public static bool IsValidVideo(string FileName)
+        {
+            string[] extension = new string[] { ".mp4" };
+
+            if (extension.Contains(Path.GetExtension(FileName)))
+                return true;
+            else
+                return false;
+        }
+
     }
 }
