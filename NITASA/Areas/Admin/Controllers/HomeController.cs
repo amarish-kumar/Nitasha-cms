@@ -11,6 +11,7 @@ using System.Web.Mvc;
 
 namespace NITASA.Areas.Admin.Controllers
 {
+    [CheckLogin]
     public class HomeController : Controller
     {
         public NTSDBContext context;

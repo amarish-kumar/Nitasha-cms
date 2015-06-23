@@ -1,4 +1,5 @@
-﻿using NITASA.Data;
+﻿using NITASA.Areas.Admin.Helper;
+using NITASA.Data;
 using NITASA.Helpers;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Web.Mvc;
 
 namespace NITASA.Areas.Admin.Controllers
 {
+    [CheckLogin]
     public class CategoryController : Controller
     {
         public NTSDBContext context;

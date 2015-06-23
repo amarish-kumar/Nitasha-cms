@@ -222,5 +222,11 @@ namespace NITASA.Helpers
             }
             return newUrl;
         }
+        public static string RemoveHTMLTags(string sourceString)
+        {
+            sourceString = Regex.Replace(sourceString, @"<[^>]+>|&nbsp;|\n|\r", string.Empty);
+            sourceString = sourceString.Replace("&lt;Addon&gt;", string.Empty).Replace("&lt;/Addon&gt;", string.Empty); // replace addon tag
+            return sourceString;
+        }
     }
 }

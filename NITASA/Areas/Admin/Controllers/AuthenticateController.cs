@@ -29,7 +29,7 @@ namespace NITASA.Areas.Admin.Controllers
 
             if (Common.CurrentUserID() > 0)
             {
-                if (returnURL == null || returnURL == "" || returnURL.ToLower().Contains("/authentication/login"))
+                if (returnURL == null || returnURL == "" || returnURL.ToLower().Contains("/authenticate/login"))
                 {
                     return RedirectToAction("Dashboard", "Home");
                 }

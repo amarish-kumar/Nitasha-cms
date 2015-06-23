@@ -2,9 +2,11 @@
 @using NITASA.Data
 @using NITASA.Helpers
 @{
-    ViewBag.Title = "Add Post";
+    ViewBag.Title = "Edit Post";
+    Meta meta = ViewBag.meta;
     //List<AddonType> AddonTypeList = Common.GetAddonTypes();
 }
+
 @section PageLevelStyles{
     <style type="text/css">
         #slug-container {
@@ -98,14 +100,14 @@
                     menu: [
                         @*@foreach(AddonType item in AddonTypeList)
                         {
-                            <text>
-                                {
-                                    text: '@item.Name',
-                                    onclick: function () {
-                                        editor.insertContent('&lt;Addon&gt;@item.Code&lt;/Addon&gt;');
-                                    }
-                                },
-                            </text>
+                        <text>
+                            {
+                                text: '@item.Name',
+                                onclick: function () {
+                                    editor.insertContent('&lt;Addon&gt;@item.Code&lt;/Addon&gt;');
+                                }
+                            },
+                        </text>
                         }*@
                     ]
                 });
@@ -128,34 +130,29 @@
             <div class="span12">
                 <div class="box">
                     <div class="box-header">
-                        <span class="title"><i class="icon-book"></i>&nbsp; New Post</span> @*<ul class="box-toolbar">
-                                <li>
-                                    <a href="@Url.Action("List", "Post")" title="Back to list" ><i class="icon-reply" style="margin-top: 10px"></i></a>
-                                </li>
-                            </ul>*@
+                        <span class="title"><i class="icon-book"></i>&nbsp; Edit Post</span>
                     </div>
                     <div class="box-content">
                         <div class="padded">
                             <div class="span12">
-                                @using (Html.BeginForm("Add", "Post", FormMethod.Post, new { id = "frm1" }))
+                                @using (Html.BeginForm("Edit", "Post", FormMethod.Post, new { id = "frm1" }))
                                 {
                                     <div class="span9">
                                         <div class="control-group">
                                             <div class="controls">
-                                                <input type="hidden" id="hdnIsPost" name="hdnIsPost" />
+                                                <input type="hidden" id="UpdateType" name="UpdateType" />
                                                 @Html.TextBoxFor(mbox => mbox.ContentTitle, new { placeholder = "Post Title", @class = "width100per", style = "margin-bottom: 0px;" })
                                                 <div style="color: red">
                                                     @Html.ValidationMessageFor(m => m.ContentTitle)
                                                 </div>
-                                                @*<input id="txtPostTitle" type="text" placeholder="Post Title" class="width100per" style="margin-bottom: 0px;" />*@
                                                 <div>
                                                     <div id="slug-container">
                                                         <strong>Permalink:</strong>
                                                         <span>
                                                             /
                                                             <span class="editable-container">
-                                                                <span id="editable-slug"></span>
-                                                                <input type="text" value="" id="edit-slug-text" style="display: none;" />
+                                                                <span id="editable-slug">@Model.ContentURL</span>
+                                                                <input type="text" value="@Model.ContentURL" id="edit-slug-text" style="display: none;" />
                                                             </span>
                                                         </span>&lrm;
                                                         <span class="slug-buttons">
@@ -176,7 +173,7 @@
                                                     <b>Post: </b>
                                                 </label>
                                                 <div>
-                                                    @Html.TextAreaFor(m => m.ContentText, new { style = "width: 100%; max-width: 98%; height:525px; margin: 0px; overflow: hidden; word-wrap: break-word;resize:vertical;" })
+                                                    @Html.TextAreaFor(m => m.ContentText, new { style = "width: 100%; max-width: 98%; height:500px; margin: 0px; overflow: hidden; word-wrap: break-word;resize:vertical;" })
                                                     @*@class = "textarea-html5", *@
                                                     <div style="color: red">
                                                         @Html.ValidationMessageFor(m => m.ContentText)
@@ -187,10 +184,21 @@
                                     </div>
                                     <div class="span3">
                                         <div class="padded" style="padding-top: 0px; padding-left: 0px;">
-                                            @if (UserRights.HasRights(Rights.PublishOwnPosts))
+                                            @if (Common.CurrentUserID() == Model.CreatedBy)
                                             {
-                                                <input type="button" class="btn btn-small btn-green" id="btnPost" style="text-align: right"
-                                                       value="Publish" />
+                                                if (UserRights.HasRights(Rights.PublishOwnPosts))
+                                                {
+                                                    <input type="button" class="btn btn-small btn-green" id="btnPost" style="text-align: right"
+                                                           value="Publish" />
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (UserRights.HasRights(Rights.PublishOtherUsersPosts))
+                                                {
+                                                    <input type="button" class="btn btn-small btn-green" id="btnPost" style="text-align: right"
+                                                           value="Publish" />
+                                                }
                                             }&nbsp;
                                             <input type="button" class="btn btn-small btn-blue" style="text-align: right" value="Save to Draft"
                                                    id="btnSaveToDraft" />&nbsp;
@@ -203,8 +211,14 @@
                                             </div>
                                             <div class="box-content">
                                                 <div class="padded">
-                                                    @Html.DropDownList("LabelId", (IEnumerable<SelectListItem>)ViewBag.Labellist, new { @class = "select2-container select2-container-multi chzn-select", multiple = "multiple", id = "ddlLabels" })
-                                                    <input id="txtNewLabel" name="txtNewLabel" type="text" maxlength="40" placeholder="New Label" style="margin-bottom: 0px;
+                                                    @Html.DropDownList("LabelId", (List<SelectListItem>)ViewBag.Labellist, new { @class = "select2-container select2-container-multi chzn-select", multiple = "multiple", id = "ddlLabels" })
+                                                    @*<select id="ddlLabels" multiple="multiple" class="select2-container select2-container-multi chzn-select">
+                                                            <option value="Facebook">Facebook</option>
+                                                            <option value="Orkut">Orkut</option>
+                                                            <option value="Gplus">Google Plus</option>
+                                                            <option value="Pinterest">Pinterest</option>
+                                                        </select>*@
+                                                    <input id="txtNewLabel" type="text" maxlength="40" placeholder="New Label" style="margin-bottom: 0px;
                                                         width: 84% !important;" />
                                                     &nbsp;
                                                     <button title="Add New Label" id="btnAddLabel" style="border: 0">
@@ -219,6 +233,10 @@
                                             </div>
                                             <div class="box-content">
                                                 <div class="padded">
+                                                    @*@Html.DropDownList("CategoryId", (List<SelectListItem>)ViewBag.Categorylist, new { @class = "select2-container select2-container-multi chzn-select", multiple = "multiple" })
+                                                        <div style="color: red">
+                                                            <span id="cateroryError"></span>
+                                                        </div>*@
                                                     <select name="CategoryId" id="CategoryId" multiple="multiple" data-val-required="Please select category"
                                                             data-val="true" class="select2-container select2-container-multi chzn-select">
                                                         @foreach (SelectListItem item in (IEnumerable<SelectListItem>)ViewBag.Categorylist)
@@ -257,12 +275,9 @@
                                             <div class="box-content">
                                                 <div class="padded">
                                                     @*<textarea class="tags" placeholder="Meta with comma separated"></textarea>*@
-                                                    <input type="text" id="txtMetaKeyword" name="txtMetaKeyword" placeholder="Keyword"
-                                                           class="width100per" />
-                                                    <input type="text" id="txtMetaDescription" name="txtMetaDescription" placeholder="Description"
-                                                           class="width100per" />
-                                                    <input type="text" id="txtMetaAuthor" name="txtMetaAuthor" placeholder="Author Name"
-                                                           class="width100per" />
+                                                    <input type="text" id="txtMetaKeyword" name="txtMetaKeyword" placeholder="Keyword" class="width100per" value="@meta.MetaKeyword" />
+                                                    <input type="text" id="txtMetaDescription" name="txtMetaDescription" placeholder="Description" class="width100per" value="@meta.MetaDescription" />
+                                                    <input type="text" id="txtMetaAuthor" name="txtMetaAuthor" placeholder="Author Name" class="width100per" value="@meta.MetaAuthor" />
                                                 </div>
                                             </div>
                                         </div>
@@ -282,8 +297,7 @@
                                                                 new SelectListItem { Text = "1 Month", Value = "30" },
                                                                 new SelectListItem { Text = "6 Months", Value = "180" },
                                                                 new SelectListItem { Text = "Always", Value = "36000" }
-                                                            }, new { disabled = true })
-
+                                                            })
                                                     </div>
                                                 </div>
                                             </div>
@@ -294,14 +308,15 @@
                                             </div>
                                             <div class="box-content">
                                                 <div class="padded" style="text-align:left;vertical-align:top">
-                                                    @Html.TextBoxFor(mbox => mbox.ContentOrder, new { @value = "0", placeholder = "Content Order To Display", style = "margin-bottom: 0px;" })
+                                                    @Html.TextBoxFor(mbox => mbox.ContentOrder, new { placeholder = "Content Order To Display", style = "margin-bottom: 0px;" })
                                                     <div style="color: red">
                                                         @Html.ValidationMessageFor(m => m.ContentOrder)
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div> }
+                                    </div>
+                                }
                             </div>
                             &nbsp;
                         </div>
@@ -314,14 +329,6 @@
 @section BottomScript{
     <script type="text/javascript">
         $(document).ready(function () {
-
-            $("#ContentTitle").on("input", function () {
-                var currText = $("#ContentTitle").val();
-                var replacedText = currText.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-                $("#editable-slug").html(replacedText);
-                $("#edit-slug-text").val(replacedText);
-                $("#ContentURL").val(replacedText);
-            });
             $("#edit-slug").click(function () {
                 $("#editable-slug").css("display", "none");
                 $("#edit-slug-text").css("display", "");
@@ -352,9 +359,10 @@
                 else
                     $("#CommentEnabledTill").attr("disabled", true);
             });
+            $("#EnableComment").trigger("change");
             $("#btnAddLabel").click(function () {
-
                 if ($.trim($("#txtNewLabel").val()).length > 0) {
+
                     if (ValidateRegex($("#txtNewLabel").val())) {
                         var currLabel = $.trim($("#txtNewLabel").val());
                         $.ajax({
@@ -390,7 +398,6 @@
                     $("#txtNewLabel").val("");
                     alert("Please enter label text");
                 }
-
                 return false;
             });
             $("#btnAddCategory").click(function () {
@@ -434,15 +441,14 @@
 
                 return false;
             });
-
             $('#btnPost').click(function () {
-                $("#hdnIsPost").val("Post");
+                $("#UpdateType").val("Publish");
                 tinyMCE.triggerSave();
                 checkCategory();
             });
 
             $('#btnSaveToDraft').click(function () {
-                $("#hdnIsPost").val("SaveToDraft");
+                $("#UpdateType").val("SaveToDraft");
                 tinyMCE.triggerSave();
                 checkCategory();
             });

@@ -159,6 +159,7 @@
     <Compile Include="Areas\Admin\Controllers\AuthenticateController.cs" />
     <Compile Include="Areas\Admin\Controllers\BackupRestoreController.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoryController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CHeckLogin.cs" />
     <Compile Include="Areas\Admin\Controllers\CommentController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\LabelController.cs" />
@@ -585,6 +586,7 @@
     <Content Include="Areas\Admin\Views\User\Add.cshtml" />
     <Content Include="Areas\Admin\Helper\Sitemap\vssver.scc" />
     <Content Include="Areas\Admin\Views\Profile\ChangePassword.cshtml" />
+    <Content Include="Areas\Admin\Views\Post\Edit.cshtml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\gridmvc.js" />
     <Content Include="Scripts\gridmvc.lang.ru.js" />

@@ -10,9 +10,9 @@ using System.Web.Mvc;
 
 namespace NITASA.Areas.Admin.Controllers
 {
+    [CheckLogin]
     public class PostController : Controller
-    {
-        
+    {   
         public NTSDBContext context;
 
         public PostController()
@@ -249,6 +249,208 @@ namespace NITASA.Areas.Admin.Controllers
                 TempData["ErrorMessage"] = "Category Not Found.";
             }
             return RedirectToAction("List");
+        }
+        [HttpGet]
+        public ActionResult Edit(string GUID)
+        {
+            Content curCont = context.Content.Where(m => m.GUID == GUID).FirstOrDefault();
+            if (curCont != null)    // if content not found
+            {
+                if (Common.CurrentUserID() == curCont.AddedBy)
+                {
+                    if (!UserRights.HasRights(Rights.EditOwnPosts))
+                        return RedirectToAction("AccessDenied", "Dashboard");
+                }
+                else
+                {
+                    if (!UserRights.HasRights(Rights.EditOtherUsersPosts))
+                        return RedirectToAction("AccessDenied", "Dashboard");
+                }
+
+                curCont.Description= curCont.Description.Replace("<img src=\"../../", "<img src=\"../../../");
+
+                List<SelectListItem> Labellist = new SelectList(context.Label.ToList(), "LabelID", "LabelName").ToList();
+                List<string> selectedLabel = (from dt in context.ContentLabel.Where(m => m.ContentID == curCont.ID)
+                                              select dt.LabelID.ToString()).ToList();
+
+                for (int i = 0; i < Labellist.Count(); i++)
+                {
+                    if (selectedLabel.Contains(Labellist[i].Value))
+                    {
+                        Labellist[i].Selected = true;
+                    }
+                }
+                ViewBag.Labellist = Labellist;
+
+                List<SelectListItem> Categorylist = new SelectList(context.Category.Where(m => m.IsDeleted == false).ToList(), "CategoryID", "CategoryName").ToList();
+                List<string> selectedCategory = (from dt in context.ContentCategory.Where(m => m.ContentID == curCont.ID)
+                                                 select dt.CategoryID.ToString()).ToList();
+                for (int i = 0; i < Categorylist.Count(); i++)
+                {
+                    if (selectedCategory.Contains(Categorylist[i].Value))
+                    {
+                        Categorylist[i].Selected = true;
+                    }
+                }
+                ViewBag.Categorylist = Categorylist;
+
+                //ViewBag.Templatelist = new SelectList(context.ContentTemplate.Where(m => m.IsDeleted == false).ToList(), "TemplateID", "TemplateName", curCont.TemplateID);
+                List<Meta> metaList = context.Meta.Where(m => m.ContentID == curCont.ID).ToList();
+                Meta meta = new Meta();
+                if (metaList.Count() == 1)
+                {
+                    meta.Keyword = metaList[0].Keyword;
+                    meta.Description = metaList[0].Description;
+                    meta.Author = metaList[0].Author;
+                }
+                ViewBag.meta = meta;
+
+                return View(curCont);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Post Not Found.";
+                return RedirectToAction("list", "Post");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult Edit(Content Model, string GUID, string UpdateType)
+        {
+            Content content = context.Content.Where(m => m.GUID == GUID).FirstOrDefault();
+            if (content != null)    // if content not found
+            {
+                if (Common.CurrentUserID() == content.AddedBy)
+                {
+                    if (!UserRights.HasRights(Rights.EditOwnPosts))
+                        return RedirectToAction("AccessDenied", "Home");
+                }
+                else
+                {
+                    if (!UserRights.HasRights(Rights.EditOtherUsersPosts))
+                        return RedirectToAction("AccessDenied", "Home");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    CQ doc = CQ.Create(Model.Description);
+                    string[] BlackList = new string[] { "script" };
+                    string selector = String.Join(",", BlackList);
+                    doc = doc[selector].Remove();
+                    Model.Description= doc.Render();
+
+                    string postContent = Model.Description.Replace("&nbsp;", "").Replace("<p>", "").Replace("</p>", "").Trim();
+                    if (!string.IsNullOrEmpty(postContent))
+                    {
+                        content.Title = Model.Title;
+                        content.Description= Model.Description.Replace("<img src=\"../../../", "<img src=\"../../");
+                        if (content.URL.ToLower() != Model.URL.ToLower())
+                            content.URL = Common.ToUrlSlug(Model.URL, "post", content.ID);
+                        //content.TemplateID = Model.TemplateID;
+                        content.IsSlugEdited = Model.IsSlugEdited;
+                        content.IsFeatured = Model.IsFeatured;
+                        content.ContentOrder = Model.ContentOrder;
+                        content.ModifiedOn = DateTime.Now;
+                        content.ModifiedBy = Common.CurrentUserID();
+
+                        content.EnableComment = Model.EnableComment;
+                        content.CommentEnabledTill = Model.CommentEnabledTill;
+
+                        if (UpdateType == "Publish")
+                        {
+                            content.isPublished = true;
+                            content.PublishedOn = content.ModifiedOn;
+                        }
+                        else
+                        {
+                            content.isPublished = false;
+                            content.PublishedOn = null;
+                        }
+                        context.SaveChanges();
+
+                        #region update label
+                        List<ContentLabel> contentLabel = context.ContentLabel.Where(m => m.ContentID == content.ID).ToList();
+                        context.ContentLabel.RemoveRange(contentLabel);
+                        context.SaveChanges();
+                        if (Request.Form["LabelId"] != null)
+                        {
+                            string[] allLables = Request.Form["LabelId"].Split(',');
+                            foreach (string currLblID in allLables)
+                            {
+                                ContentLabel contLabel = new ContentLabel();
+                                contLabel.ContentID = content.ID;
+                                contLabel.LabelID = Convert.ToInt32(currLblID);
+                                contLabel.AddedOn = DateTime.Now;
+                                contLabel.AddedBy = Common.CurrentUserID();
+                                context.ContentLabel.Add(contLabel);
+                                context.SaveChanges();
+                            }
+                        }
+                        #endregion
+                        #region update Category
+                        List<ContentCategory> contentCategoryList = context.ContentCategory.Where(m => m.ContentID == content.ID).ToList();
+                        context.ContentCategory.RemoveRange(contentCategoryList);
+                        context.SaveChanges();
+                        if (Request.Form["CategoryId"] != null)
+                        {
+                            string[] allCategories = Request.Form["CategoryId"].Split(',');
+                            foreach (string currCatID in allCategories)
+                            {
+                                ContentCategory contentCategory = new ContentCategory();
+                                contentCategory.ContentID = content.ID;
+                                contentCategory.CategoryID = Convert.ToInt32(currCatID);
+                                contentCategory.AddedOn = DateTime.Now;
+                                contentCategory.AddedBy = Common.CurrentUserID();
+                                context.ContentCategory.Add(contentCategory);
+                                context.SaveChanges();
+                            }
+                        }
+                        #endregion
+                        #region update meta
+                        if (!string.IsNullOrWhiteSpace(Request.Form["txtMetaKeyword"]) ||
+                            !string.IsNullOrWhiteSpace(Request.Form["txtMetaDescription"]) ||
+                            !string.IsNullOrWhiteSpace(Request.Form["txtMetaAuthor"]))
+                        {
+                            Meta metaData = new Meta();
+                            metaData.ContentID = content.ID;
+                            metaData.Keyword = Request.Form["txtMetaKeyword"].ToString();
+                            metaData.Description = Request.Form["txtMetaDescription"].ToString();
+                            metaData.Author = Request.Form["txtMetaAuthor"].ToString();
+                            metaData.CreatedOn = DateTime.Now;
+
+                            if (context.Meta.Where(m => m.ContentID == content.ID).Count() == 1)
+                            {
+                                Meta metaDataUpdate = context.Meta.Where(m => m.ContentID == content.ID).FirstOrDefault();
+                                metaDataUpdate.Keyword = metaData.Keyword;
+                                metaDataUpdate.Description = metaData.Description;
+                                metaDataUpdate.Author = metaData.Author;
+                                context.SaveChanges();
+                            }
+                            else
+                            {
+                                context.Meta.Add(metaData);
+                                context.SaveChanges();
+                            }
+                        }
+                        #endregion
+                        TempData["SuccessMessage"] = "Post updated successfully.";
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "Please enter post content";
+                        return RedirectToAction("Edit");
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("Edit");
+                }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Post Not Found.";
+            }
+            return RedirectToAction("List", "Post");
         }
     }
 }
