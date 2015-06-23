@@ -2,10 +2,19 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 
 namespace NITASA.Data
 {
+    public class MigrationsContextFactory : IDbContextFactory<NTSDBContext>
+    {
+        public NTSDBContext Create()
+        {
+            return new NTSDBContext("NITASAConnection");
+        }
+    }
+
     public class NTSDBContext : DbContext,IDbContext
     {
         public NTSDBContext(string ConnectionName = "NITASAConnection")

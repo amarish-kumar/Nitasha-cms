@@ -1208,12 +1208,12 @@ table thead tr th a.desc {
 }
 
 .plus {
-    background-image: url(/Areas/CMSAdmin/assets/images/add1.png);
+    background-image: url(/Areas/Admin/assets/images/add1.png);
     background-repeat: no-repeat;
 }
 
 .remove {
-    background-image: url(/Areas/CMSAdmin/assets/images/delete.png);
+    background-image: url(/Areas/Admin/assets/images/delete.png);
     background-repeat: no-repeat;
 }
 
