@@ -7,20 +7,21 @@ using System.Web;
 
 namespace NITASA.Areas.Admin.Helper
 {
+    public enum LogOperation
+    {
+        Add,
+        Update,
+        Delete,
+        Search,
+        View,
+        Active,
+        InActive,
+        Publish,
+        UnPublish
+    }
+
     public class ActivityOperation
     {
-        public enum LogOperation
-        {
-            Add,
-            Update,
-            Delete,
-            Search,
-            View,
-            Active,
-            InActive,
-            Publish,
-            UnPublish
-        }
 
         public static void InsertLog(LogOperation logOp, string title, string description, string pageUrl)
         {
@@ -29,10 +30,13 @@ namespace NITASA.Areas.Admin.Helper
             string operation = getOperationType(logOp);
 
             ActivityLog log = new ActivityLog();
+            log.ActionType = operation;
             log.Title = title;
             log.Description = description;
             log.UserID = UserID;
             log.AddedOn = DateTime.Now;
+            log.PageUrl = pageUrl;
+            log.RemoteAddress = HttpContext.Current.Request.UserHostAddress;
             db.ActivityLog.Add(log);
             db.SaveChanges();
         }

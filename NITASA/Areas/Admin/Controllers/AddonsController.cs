@@ -42,6 +42,7 @@ namespace NITASA.Areas.Admin.Controllers
         }
         public ActionResult Add()
         {
+            ActivityOperation.InsertLog(LogOperation.Add, "New Addon Added", "New Addon added with name='Services', title='Our Services'", Request.Url.ToString());
             return View();
         }
 
