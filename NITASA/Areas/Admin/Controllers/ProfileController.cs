@@ -44,7 +44,7 @@ namespace NITASA.Areas.Admin.Controllers
                 {
                     if (ProfilePicURL != null && ProfilePicURL.ContentLength > 0)
                     {
-                        string relativePath = "/Areas/CMSAdmin/assets/images/avatars/" + ProfilePicURL.FileName;
+                        string relativePath = "/Areas/Admin/assets/images/avatars/" + ProfilePicURL.FileName;
                         string logoFullPath = Server.MapPath(relativePath);
                         ProfilePicURL.SaveAs(logoFullPath);
                         userEdit.ProfilePicURL = relativePath;

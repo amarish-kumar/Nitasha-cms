@@ -122,4 +122,10 @@ namespace NITASA.Data
         public string OSName { get; set; }
         public string OSVersion { get; set; }
     }
+
+    public class PageModel
+    {
+        public Content content { get; set; }
+        public Meta meta { get; set; }
+    }
 }

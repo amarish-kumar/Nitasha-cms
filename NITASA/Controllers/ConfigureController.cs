@@ -244,7 +244,7 @@ namespace NITASA.Controllers
             user.LastName = "DRC";
             user.Email = "admin@drc.com";
             user.Password = "jRXwvDYeMhgzKTpu9G673Q==";
-            user.ProfilePicURL = "/Areas/CMSAdmin/assets/images/avatars/noprofile.jpg";
+            user.ProfilePicURL = "/Areas/Admin/assets/images/avatars/noprofile.jpg";
             user.SaltKey = Convert.ToInt32(ConfigurationManager.AppSettings["EncKey"]);
             user.IsActive = true;
             user.IsDefault = true;

@@ -257,7 +257,18 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+                                        <div class="box">
+                                            <div class="box-header">
+                                                <span class="title">Template</span>
+                                            </div>
+                                            <div class="box-content">
+                                                <div class="padded">
+                                                    @*@Html.DropDownList("TemplateID", (IEnumerable<SelectListItem>)ViewBag.Templatelist)<br />*@
+                                                    @Html.CheckBoxFor(m => m.IsFeatured)
+                                                    <label for="IsFeatured" style="display:inline;">Is Featured</label>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="box">
                                             <div class="box-header">
                                                 <span class="title">Meta</span>
