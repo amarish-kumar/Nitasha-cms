@@ -1,7 +1,613 @@
-﻿
-@{
-    ViewBag.Title = "Dashboard";
-}
+﻿@using Newtonsoft.Json;
+@using NITASA.Helpers;
+@model NITASA.Areas.Admin.ViewModels.CustomizedDashboard
+<script src="~/Areas/Admin/assets/js/Chart.js"></script>
+@*<script src="~/Areas/Admin/assets/js/Chart.Doughnut.js"></script>*@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="area-top clearfix">
+            <div class="pull-left header">
+                <h3 class="title">
+                    <i class="icon-dashboard"></i>Dashboard
+                </h3>
+            </div>
+        </div>
+    </div>
+    @if (TempData["PostMessage"] != null)
+    {
+        <div class="padded" style="padding-top: 0px; padding-right: 0px;">
+            <div class="alert alert-success">
+                <button class="close" data-dismiss="alert" type="button">
+                    ×
+                </button>
+                @TempData["PostMessage"]
+            </div>
+        </div>
+    }
+    <div class="container-fluid padded">
+        <div class="action-nav-normal">
+            <div class="row-fluid">
+                <div class="span2 action-nav-button">
+                    <a href="@Url.Action("List", "Page")" title="Pages">
+                        <i class="icon-file-alt"></i>
+                        <span>Pages</span>
+                    </a>
+                    <span class="label label-green">@Model.TotalPage</span>
+                </div>
 
-<h2>Dashboard</h2>
+                <div class="span2 action-nav-button">
+                    <a href="@Url.Action("List", "Post")" title="Posts">
+                        <i class="icon-pushpin"></i>
+                        <span>Posts</span>
+                    </a>
+                    <span class="label label-green">@Model.TotalPost</span>
+                </div>
+
+                <div class="span2 action-nav-button">
+                    <a href="@Url.Action("List", "Category")" title="Categories">
+                        <i class="icon-tags"></i>
+                        <span>Categories</span>
+                    </a>
+                    <span class="label label-green">@Model.TotalCategory</span>
+                </div>
+
+                <div class="span2 action-nav-button">
+                    <a href="@Url.Action("List", "Media")" title="Medias">
+                        <i class="icon-picture"></i>
+                        <span>Medias</span>
+                    </a>
+                    <span class="label label-green">@Model.TotalMedia</span>
+                </div>
+
+                <div class="span2 action-nav-button">
+                    <a href="@Url.Action("List", "User")" title="Users">
+                        <i class="icon-user"></i>
+                        <span>Users</span>
+                    </a>
+                    <span class="label label-green">@Model.TotalUsers</span>
+                </div>
+
+
+                <div class="span2 action-nav-button">
+                    <a href="@Url.Action("Add", "Page")" title="New Page">
+                        <i class="icon-file-alt"></i>
+                        <span>New Page</span>
+                    </a><span class="triangle-button red"><i class="icon-plus"></i></span>
+                </div>
+            </div>
+        </div>
+        <div class="divider"><span></span></div>
+    </div>
+    <div class="container-fluid padded" style="padding-top: 0px; padding-bottom: 0px;">
+        <div class="row-fluid">
+            <div class="span4">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="title">
+                            <i class="icon-magic">&nbsp; </i>At a Glance
+                        </div>
+                    </div>
+                    <div class="box-content padded">
+                        <div class="span12">
+                            <div class="span9">
+                                <div class="labeled-chart-container">
+                                    <div id="canvas-holder">
+                                        <canvas id="chart-area" height="185" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="span3">
+                                <ul style="margin-left:0px;">
+                                    <li style="list-style: none;margin-top:5px;"><span style="background-color: #C75D5D;">&nbsp; &nbsp; &nbsp;</span> Pages</li>
+                                    <li style="list-style: none;margin-top:5px;"><span style="background-color: #3880AA;">&nbsp; &nbsp; &nbsp;</span> Posts</li>
+                                    <li style="list-style: none;margin-top:5px;"><span style="background-color: #96C877;">&nbsp; &nbsp; &nbsp;</span> Category</li>
+                                    <li style="list-style: none;margin-top:5px;"><span style="background-color: #FF9F01;">&nbsp; &nbsp; &nbsp;</span> Media</li>
+                                    <li style="list-style: none;margin-top:5px;"><span style="background-color: #7C4C00;">&nbsp; &nbsp; &nbsp;</span> Users</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                        <hr class="divider">
+                        <table class="table table-normal">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <i class="icon-file-alt" style="float: left; padding-top: 3px;">&nbsp; </i>@Html.LabelFor(m => m.TotalPage, new { style = "margin-bottom:0px;" })
+                                    </td>
+                                    <td class="status-error" style="text-align: center;">
+                                        @Model.TotalPage
+                                </td>
+                                <td style="width: 80px; text-align: center;">
+                                    <div class="sparkline">
+                                        <!--@Model.LastPages-->
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <i class="icon-pushpin" style="float: left; padding-top: 3px;">&nbsp; </i>@Html.LabelFor(m => m.TotalPost, new { style = "margin-bottom:0px;" })
+                                </td>
+                                <td class="status-success" style="text-align: center;">
+                                    @Model.TotalPost
+                            </td>
+                            <td style="width: 80px; text-align: center;">
+                                <div class="sparkline" data-color="green">
+                                    <!--@Model.LastPosts-->
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <i class="icon-tags" style="float: left; padding-top: 3px;">&nbsp; </i>@Html.LabelFor(m => m.TotalCategory, new { style = "margin-bottom:0px;" })
+                            </td>
+                            <td class="status-error" style="text-align: center;">
+                                @Model.TotalCategory
+                        </td>
+                        <td style="width: 80px; text-align: center;">
+                            <div class="sparkline">
+                                <!--@Model.LastCategories-->
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <i class="icon-picture" style="float: left; padding-top: 3px;">&nbsp; </i>@Html.LabelFor(m => m.TotalMedia, new { style = "margin-bottom:0px;" })
+                        </td>
+                        <td class="status-success" style="text-align: center;">
+                            @Model.TotalMedia
+                    </td>
+                    <td style="width: 80px; text-align: center;">
+                        <div class="sparkline" data-color="green">
+                            <!--@Model.LastMedia-->
+                        </div>
+                    </td>
+                </tr>
+                @*<tr>
+                        <td>
+                            <i class="icon-glass" style="float: left; padding-top: 3px;">&nbsp; </i>@Html.LabelFor(m => m.TotalDraft, new { style = "margin-bottom:0px;" })
+                        </td>
+                        <td class="status-error" style="text-align: center;">@Model.TotalDraft
+                        </td>
+                        <td style="width: 80px; text-align: center;">
+                            <div class="sparkline" data-color="red">
+                                <!--@Model.LastDrafts-->
+                            </div>
+                        </td>
+                    </tr>*@
+                <tr>
+                    <td>
+                        <i class="icon-user" style="float: left; padding-top: 3px;">&nbsp; </i>@Html.LabelFor(m => m.TotalUsers, new { style = "margin-bottom:0px;" })
+                    </td>
+                    <td class="status-success" style="text-align: center;">
+                        @Model.TotalUsers
+                </td>
+                <td style="width: 80px; text-align: center;">
+                    <div class="sparkline" data-color="green">
+                        <!--@Model.LastUsers-->
+                    </div>
+                </td>
+            </tr>
+            @*<tr>
+                    <td><i class="icon-legal" style="float: left; padding-top: 3px;">&nbsp; </i>@Html.LabelFor(m => m.TotalRoles, new { style = "margin-bottom:0px;" })</td>
+                    <td class="status-error" style="text-align: center;">@Model.TotalRoles</td>
+                    <td style="width: 80px; text-align: center;">
+                        <div class="sparkline" data-color="red">
+                            <!--@Model.LastRoles-->
+                        </div>
+                    </td>
+                </tr>*@
+        </tbody>
+    </table>
+</div>
+</div>
+</div>
+<div class="span8">
+    <div class="box">
+        <div class="box-header">
+            <div class="title">
+                <i class="icon-bar-chart">&nbsp; </i>Statistics
+            </div>
+            <ul class="box-toolbar">
+                @*<li><span class="label label-blue">PageViews:</span> <span class="sparkline"><!--@Model.LastPageview--></span></li>*@
+                <li><span class="label label-green">Page Views: @Model.TotalPageview</span></li>
+            </ul>
+        </div>
+        <div class="box-content padded">
+            <div class="row-fluid">
+                @*<div class="span4">
+                        <div class="sparkline-box side">
+                            <div class="sparkline-row">
+                                <h4 class="gray">
+                                    <span>@Html.LabelFor(m => m.TotalPageview)</span> @Model.TotalPageview</h4>
+                                <div class="sparkline big" data-color="gray">
+                                    <!--@Model.LastPageview-->
+                                </div>
+                            </div>
+                            <hr class="divider">
+                            <div class="sparkline-row">
+                                <h4 class="green">
+                                    <span>@Html.LabelFor(m => m.TotalNewUsers)</span> @Model.TotalNewUsers</h4>
+                                <div class="sparkline big" data-color="green">
+                                    <!--@Model.LastNewUsers-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
+                @*<div class="span8" style="margin-left: 0px;">*@
+                <div class="span12">
+                    <div id="chartexample1" style="width: 100%; height: 355px">
+                    </div>
+                    @*<div class="xcharts-line-dotted" style="width: 100%; height: 180px"></div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<div class="container-fluid padded" style="padding-top: 0px; padding-bottom: 0px;">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="title">
+                        <i class=" icon-fighter-jet">&nbsp; </i>Quick Press
+                    </div>
+                </div>
+                <div class="box-content padded">
+                    <div class="row-fluid">
+                        <div class="span4">
+                            @using (Html.BeginForm("AddDraft", "Admin", FormMethod.Post, new { id = "frmPost" }))
+                            {
+                                <h6 style="margin-top: 0px;">Quick Draft</h6>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        @Html.TextBoxFor(m => m.PostTitle, new { placeholder = @Html.DisplayNameFor(m => m.PostTitle), style = "max-width: 95%; width: 95%;" })
+                                        <div style="color: red">
+                                            @Html.ValidationMessageFor(m => m.PostTitle)
+                                        </div>
+                                        @*<input id="txtPostTitle" type="text" placeholder="Title" style="max-width: 95%; width: 95%;" />*@
+                                    </div>
+                                    <div class="controls">
+                                        @Html.TextAreaFor(m => m.PostDescription, new { placeholder = @Html.DisplayNameFor(m => m.PostDescription), style = "height: 60px; min-height: 50px; max-width: 95%; width: 95%; resize: vertical;" })
+                                        @*<textarea id="txtPostDecription" placeholder="Description" style="height: 60px; min-height: 50px; max-width: 95%; width: 95%; resize: vertical;"></textarea>*@
+                                        <div style="color: red">
+                                            @Html.ValidationMessageFor(m => m.PostDescription)
+                                        </div>
+                                    </div>
+                                    <div class="controls">
+                                        <input type="submit" value="Save Draft" class="btn btn-blue btn-small" />
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="span4">
+                            <h6 style="margin-top: 0px;">Top Posts (Last One Week)</h6>
+                            @if (Model.PostList.Count > 0)
+                            {
+                                <div class="box-content scrollable" style="height: 150px; overflow-y: auto">
+                                    @for (int postCount = 0; postCount < Model.PostList.Count; postCount++)
+                                    {
+                                        var monthName = @Model.PostList[postCount].PublishedOn.Value.ToString("MMM");
+                                        var date = @Model.PostList[postCount].PublishedOn.Value.ToString("dd");
+
+                                        var postTitle = @Model.PostList[postCount].Title.ToString();
+                                        var description = @Model.PostList[postCount].Description;
+                                        var redirectUrl = @Model.PostList[postCount].GUID;
+                                        <div class="box-section news with-icons">
+                                            <div class="news-time">
+                                                <span>@date</span>@monthName
+                                            </div>
+                                            <div class="news-content" style="margin-left: 0px; margin-right: 10px;">
+                                                <div class="news-title" style="font-size: 14px;">@Html.ActionLink(postTitle, "Edit/" + redirectUrl, "Post")</div>
+                                                <div class="news-text">
+                                                    @if (Common.RemoveHTMLTags(Convert.ToString(description)).Length > 110)
+                                                    {
+                                                        @Common.RemoveHTMLTags(description.Substring(0, 110)); <text>...</text>
+                                                    }
+                                                    else
+                                                    {
+                                                        @Common.RemoveHTMLTags(description.ToString());
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="box-content scrollable" style="height: 150px; overflow-y: auto">
+                                    <div class="box-section news with-icons">
+                                        <div class="news-content" style="margin-left: 0px; margin-right: 10px;">
+                                            <div class="news-title" style="font-size: 14px;">
+                                                No Posts yet.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="span4">
+                            <h6 style="margin-top: 0px;">Comments pending moderation</h6>
+                            @if (Model.UnModeratedComments.Count > 0)
+                            {
+                                <ul class="chat-box timeline" style="height: 150px; overflow-y: auto">
+                                    @foreach (var comment in Model.UnModeratedComments)
+                                    {
+                                        <li class="arrow-box-left gray">
+                                            <div class="avatar">
+                                                <img class="avatar-small" src="@(comment.ProfilePicUrl ?? Url.Content("~/Assets/images/avatars/profile_b48.png"))">
+                                            </div>
+                                            <div class="info">
+                                                <span class="name"><strong>@comment.UserName</strong></span> <span class="time"><i class="icon-time"></i>@comment.AddedOn.ToString("M")</span>
+                                            </div>
+                                            <div class="content">
+                                                @comment.Description
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                                <a href="@Url.Action("List", "Comment")" class="pull-right">View All</a>
+                            }
+                            else
+                            {
+                                <div class="box-content scrollable" style="height: 150px; overflow-y: auto">
+                                    <div class="box-section news with-icons">
+                                        <div class="news-content" style="margin-left: 0px; margin-right: 10px;">
+                                            <div class="news-title" style="font-size: 14px;">
+                                                No Pending comment moderation.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid padded" style="padding-top: 0px; padding-bottom: 0px;">
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="title">
+                        <i class="icon-tasks">&nbsp; </i>Activity
+                    </div>
+                </div>
+                <div class="box-content padded">
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <h6 style="margin-top: 0px;">Recently Published Posts</h6>
+                            @if (Model.RecentPublishedPostList.Count > 0)
+                            {
+                                <table class="table">
+                                    <tbody>
+                                        @for (int postCount = 0; postCount < Model.RecentPublishedPostList.Count; postCount++)
+                                        {
+                                            var monthName = @Model.RecentPublishedPostList[postCount].PublishedOn.Value.ToString("MMM");
+                                            var date = @Model.RecentPublishedPostList[postCount].PublishedOn.Value.ToString("dd");
+                                            var time = @Model.RecentPublishedPostList[postCount].PublishedOn.Value.ToString("h:mm tt");
+                                            var PostTitle = @Model.RecentPublishedPostList[postCount].Title.ToString();
+                                            if (PostTitle.Length > 100)
+                                                PostTitle = PostTitle.Substring(0, 100) + "..";
+                                            var redirectUrl = @Model.RecentPublishedPostList[postCount].GUID;
+                                            <tr>
+                                                <td width="110px">
+                                                    @monthName @date, @time
+                                                </td>
+                                                <td>
+                                                    @Html.ActionLink(PostTitle, "Edit/" + redirectUrl, "Post", null, new { style = "font-size: 13px; font-weight: 600; color: #58A2C9" })
+                                            </td>
+                                        </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <div class="span">
+                                    No Posts published yet.
+                                </div>
+                            }
+                        </div>
+                        <div class="span4">
+                            <h6 style="margin-top: 0px;">Recent Pages</h6>
+                            @if (Model.RecentPages.Count > 0)
+                            {
+                                <table class="table">
+                                    <tbody>
+                                        @for (int postCount = 0; postCount < Model.RecentPages.Count; postCount++)
+                                        {
+                                            var monthName = @Model.RecentPages[postCount].PublishedOn.Value.ToString("MMM");
+                                            var date = @Model.RecentPages[postCount].PublishedOn.Value.ToString("dd");
+                                            var time = @Model.RecentPages[postCount].PublishedOn.Value.ToString("h:mm tt");
+                                            var PostTitle = @Model.RecentPages[postCount].Title.ToString();
+                                            if (PostTitle.Length > 100)
+                                                PostTitle = PostTitle.Substring(0, 100) + "..";
+                                            var redirectUrl = @Model.RecentPages[postCount].GUID;
+                                            <tr>
+                                                <td width="110px">
+                                                    @monthName @date, @time
+                                                </td>
+                                                <td>
+                                                    @Html.ActionLink(PostTitle, "Add/" + redirectUrl, "Page", null, new { style = "font-size: 13px; font-weight: 600; color: #58A2C9" })
+                                            </td>
+                                        </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <div class="span">
+                                    No Pages created yet.
+                                </div>
+                            }
+                        </div>
+                        <div class="span4">
+                            <h6 style="margin-top: 0px;">Activity Logs</h6>
+                            @if (Model.ActivityLogs.Count > 0)
+                            {
+                                <table class="table">
+                                    <tbody>
+                                        @foreach (var ActivityLog in Model.ActivityLogs)
+                                        {
+                                            var monthName = @ActivityLog.AddedOn.ToString("MMM");
+                                            var date = @ActivityLog.AddedOn.ToString("dd");
+                                            var time = @ActivityLog.AddedOn.ToString("h:mm tt");
+                                            var description = @ActivityLog.Description.ToString();
+                                            if (description.Length > 100)
+                                                description = description.Substring(0, 100) + "..";
+                                            <tr>
+                                                <td width="110px">
+                                                    @monthName @date, @time
+                                                </td>
+                                                <td>
+                                                    @description
+                                            </td>
+                                        </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                                <a href="#" class="pull-right">View All</a>
+                            }
+                            else
+                            {
+                                <div class="span">
+                                    No Activity Logs.
+                                </div>
+                            }
+                        </div>
+                        @*<div class="span4">
+                                <h6 style="margin-top: 0px;">Recent Activity</h6>
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td>Nikhil Commented on <a href="#" style="font-size: 13px; font-weight: 600; color: #58A2C9">Android New Lolypop</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Updated: <a href="#" style="font-size: 13px; font-weight: 600; color: #58A2C9">Twilio API</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Binoy wilson Posted <a href="#" style="font-size: 13px; font-weight: 600; color: #58A2C9">Top 10 Apps Of Android</a></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Nikhil Prajapati created new User - Tarun Dudhatra</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Saraju Kabariya updated Administrator Role.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8" type="text/javascript"></script>
+<link href="@Url.Content("~/Areas/CMSAdmin/assets/css/xcharts.min.css")" rel="stylesheet" type="text/css" />
+<script src="@Url.Content("~/Areas/CMSAdmin/assets/js/xcharts.min.js")" type="text/javascript"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<style type="text/css">
+    .xchart .axis .tick {
+        stroke: #000;
+        stroke-width: 0px;
+    }
+
+    .ex-tooltip {
+        background: #000;
+    }
+</style>
+<script type="text/javascript">
+    var tt = document.createElement('a'),
+		leftOffset = -32, topOffset = -32;
+    tt.className = 'ex-tooltip';
+    document.body.appendChild(tt);
+
+    var data = {
+        "xScale": "ordinal",
+        "yScale": "linear",
+        "main": [
+          {
+              "className": ".pizza",
+              "data": $.parseJSON(@Html.Raw(Json.Encode(Model.chartData)))
+          }
+        ]
+    };
+
+    var myChart = new xChart('line-dotted', data, '#chartexample1',
+ {
+     axisPaddingTop: 5,
+     mouseover: function (d, i) {
+         var pos = $(this).offset();
+         $(tt).text((d.x) + ': ' + d.y + ' Page view(s)')
+             .css({ color: '#FFFF', top: topOffset + pos.top, left: pos.left + leftOffset })
+             .show();
+     },
+     mouseout: function (x) {
+         $(tt).hide();
+     }
+ });
+
+
+    var doughnutData = [
+             {
+                 value: @Model.TotalPage,
+                 color: "#C75D5D",
+                 highlight: "#FF8282",
+                 label: "Pages"
+             },
+            {
+                value: @Model.TotalPost,
+                color:"#3880AA",
+                highlight: "#9AD3EE",
+                label: "Posts"
+            },
+            {
+                value: @Model.TotalCategory,
+                color:"#96C877",
+                highlight: "#D2FFA7",
+                label: "Categories"
+            },
+            {
+                value: @Model.TotalMedia,
+                color: "#FF9F01",
+                highlight: "#FFDF01",
+                label: "Medias"
+            },
+            {
+                value: @Model.TotalUsers,
+                color: "#7C4C00",
+                highlight: "#14171B",
+                label: "Users"
+            }
+    ];
+
+    window.onload = function(){
+        var ctx = document.getElementById("chart-area").getContext("2d");
+        window.myDoughnut = new Chart(ctx).Doughnut(doughnutData, {responsive : true});
+    };
+    //Chart.defaults.global={
+    //    showScale: true,
+    //    percentageInnerCutout : 50,
+    //    animation: true,
+    //    animationEasing: "easeOutCirc",
+    //    animateRotate : true,
+    //    legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>",
+    //    onAnimationComplete: function(){}
+    //}
+
+
+
+</script>
+
+
+
 

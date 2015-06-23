@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace NITASA.Helpers
@@ -114,6 +115,13 @@ namespace NITASA.Helpers
                 catch { }
             }
             return userRoll;
+        }
+
+        public static string RemoveHTMLTags(string sourceString)
+        {
+            sourceString = Regex.Replace(sourceString, @"<[^>]+>|&nbsp;|\n|\r", string.Empty);
+            sourceString = sourceString.Replace("&lt;Addon&gt;", string.Empty).Replace("&lt;/Addon&gt;", string.Empty); // replace addon tag
+            return sourceString;
         }
     }
 }

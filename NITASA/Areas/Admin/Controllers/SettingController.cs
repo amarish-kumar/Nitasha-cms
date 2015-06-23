@@ -8,7 +8,7 @@ namespace NITASA.Areas.Admin.Controllers
 {
     public class SettingController : Controller
     {
-        public ActionResult List()
+        public ActionResult Index()
         {
             return View();
         }

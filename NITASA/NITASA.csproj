@@ -196,6 +196,7 @@
     <Compile Include="Areas\Admin\Helper\UserRights.cs" />
     <Compile Include="Helpers\function.cs" />
     <Compile Include="Helpers\Imager.cs" />
+    <Compile Include="Helpers\SharedHelper.cs" />
     <Compile Include="Helpers\SortingPaging.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\Install.cs" />
@@ -567,7 +568,7 @@
     <Content Include="Areas\Admin\Views\Role\List.cshtml" />
     <Content Include="Areas\Admin\Views\Role\Add.cshtml" />
     <Content Include="Areas\Admin\Views\Role\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\Setting\List.cshtml" />
+    <Content Include="Areas\Admin\Views\Setting\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Sitemap\Generate.cshtml" />
     <Content Include="Areas\Admin\Views\Slider\List.cshtml" />
     <Content Include="Areas\Admin\Views\Slides\List.cshtml" />
