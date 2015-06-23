@@ -1,5 +1,6 @@
 ﻿@model Content
 @using NITASA.Data
+@using NITASA.Areas.Admin.Helper
 @using NITASA.Helpers
 @{
     ViewBag.Title = "Edit Post";
@@ -54,11 +55,11 @@
             margin-right: 10px;
         }
     </style>
-    <script src="@Url.Content("~/Areas/CMSAdmin/assets/js/tinymce/tinymce.min.js")"></script>
+    <script src="@Url.Content("~/Areas/Admin/assets/js/tinymce/tinymce.min.js")"></script>
     <script type="text/javascript">
         function myFileBrowser(field_name, url, type, win) {
 
-            var cmsURL = "/CMSAdmin/Post/GetMedia";
+            var cmsURL = "/Admin/Post/GetMedia";
 
             tinyMCE.activeEditor.windowManager.open({
                 file: cmsURL,
@@ -141,9 +142,9 @@
                                         <div class="control-group">
                                             <div class="controls">
                                                 <input type="hidden" id="UpdateType" name="UpdateType" />
-                                                @Html.TextBoxFor(mbox => mbox.ContentTitle, new { placeholder = "Post Title", @class = "width100per", style = "margin-bottom: 0px;" })
+                                                @Html.TextBoxFor(mbox => mbox.Title, new { placeholder = "Post Title", @class = "width100per", style = "margin-bottom: 0px;" })
                                                 <div style="color: red">
-                                                    @Html.ValidationMessageFor(m => m.ContentTitle)
+                                                    @Html.ValidationMessageFor(m => m.Title)
                                                 </div>
                                                 <div>
                                                     <div id="slug-container">
@@ -151,8 +152,8 @@
                                                         <span>
                                                             /
                                                             <span class="editable-container">
-                                                                <span id="editable-slug">@Model.ContentURL</span>
-                                                                <input type="text" value="@Model.ContentURL" id="edit-slug-text" style="display: none;" />
+                                                                <span id="editable-slug">@Model.URL</span>
+                                                                <input type="text" value="@Model.URL" id="edit-slug-text" style="display: none;" />
                                                             </span>
                                                         </span>&lrm;
                                                         <span class="slug-buttons">
@@ -161,7 +162,7 @@
                                                             <a id="save-slug" class="button-small" href="#" style="display: none;">OK</a>
                                                             <a href="#" id="cancel-slug" class="cancel" style="display: none;">Cancel</a>
                                                         </span>
-                                                        @Html.HiddenFor(m => m.ContentURL)
+                                                        @Html.HiddenFor(m => m.URL)
                                                         @Html.CheckBoxFor(m => m.IsSlugEdited, new { style = "display:none;" })
                                                     </div>
                                                 </div>
@@ -173,10 +174,10 @@
                                                     <b>Post: </b>
                                                 </label>
                                                 <div>
-                                                    @Html.TextAreaFor(m => m.ContentText, new { style = "width: 100%; max-width: 98%; height:500px; margin: 0px; overflow: hidden; word-wrap: break-word;resize:vertical;" })
+                                                    @Html.TextAreaFor(m => m.Description, new { style = "width: 100%; max-width: 98%; height:500px; margin: 0px; overflow: hidden; word-wrap: break-word;resize:vertical;" })
                                                     @*@class = "textarea-html5", *@
                                                     <div style="color: red">
-                                                        @Html.ValidationMessageFor(m => m.ContentText)
+                                                        @Html.ValidationMessageFor(m => m.Description)
                                                     </div>
                                                 </div>
                                             </div>
@@ -184,7 +185,7 @@
                                     </div>
                                     <div class="span3">
                                         <div class="padded" style="padding-top: 0px; padding-left: 0px;">
-                                            @if (Common.CurrentUserID() == Model.CreatedBy)
+                                            @if (Common.CurrentUserID() == Model.AddedBy)
                                             {
                                                 if (UserRights.HasRights(Rights.PublishOwnPosts))
                                                 {
@@ -203,7 +204,7 @@
                                             <input type="button" class="btn btn-small btn-blue" style="text-align: right" value="Save to Draft"
                                                    id="btnSaveToDraft" />&nbsp;
                                             <input type="button" class="btn btn-small btn-red" style="text-align: right" value="Back"
-                                                   onclick="window.location = '/CMSAdmin/Post/List';" />
+                                                   onclick="window.location = '/Admin/Post/List';" />
                                         </div>
                                         <div class="box">
                                             <div class="box-header">
@@ -256,18 +257,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="box">
-                                            <div class="box-header">
-                                                <span class="title">Template</span>
-                                            </div>
-                                            <div class="box-content">
-                                                <div class="padded">
-                                                    @Html.DropDownList("TemplateID", (IEnumerable<SelectListItem>)ViewBag.Templatelist)<br />
-                                                    @Html.CheckBoxFor(m => m.IsFeatured)
-                                                    <label for="IsFeatured" style="display:inline;">Is Featured</label>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        
                                         <div class="box">
                                             <div class="box-header">
                                                 <span class="title">Meta</span>
@@ -275,9 +265,9 @@
                                             <div class="box-content">
                                                 <div class="padded">
                                                     @*<textarea class="tags" placeholder="Meta with comma separated"></textarea>*@
-                                                    <input type="text" id="txtMetaKeyword" name="txtMetaKeyword" placeholder="Keyword" class="width100per" value="@meta.MetaKeyword" />
-                                                    <input type="text" id="txtMetaDescription" name="txtMetaDescription" placeholder="Description" class="width100per" value="@meta.MetaDescription" />
-                                                    <input type="text" id="txtMetaAuthor" name="txtMetaAuthor" placeholder="Author Name" class="width100per" value="@meta.MetaAuthor" />
+                                                    <input type="text" id="txtMetaKeyword" name="txtMetaKeyword" placeholder="Keyword" class="width100per" value="@meta.Keyword" />
+                                                    <input type="text" id="txtMetaDescription" name="txtMetaDescription" placeholder="Description" class="width100per" value="@meta.Description" />
+                                                    <input type="text" id="txtMetaAuthor" name="txtMetaAuthor" placeholder="Author Name" class="width100per" value="@meta.Author" />
                                                 </div>
                                             </div>
                                         </div>
@@ -345,7 +335,7 @@
                 $("#cancel-slug").css("display", "none");
             });
             $("#save-slug").click(function () {
-                $("#ContentURL").val($("#edit-slug-text").val().trim());
+                $("#URL").val($("#edit-slug-text").val().trim());
                 $("#editable-slug").css("display", "");
                 $("#editable-slug").html($("#edit-slug-text").val().trim());
                 $("#edit-slug-text").css("display", "none");
@@ -367,7 +357,7 @@
                         var currLabel = $.trim($("#txtNewLabel").val());
                         $.ajax({
                             type: "POST",
-                            url: '/CMSAdmin/Post/AddLabel',
+                            url: '/Admin/Post/AddLabel',
                             data: { labelName: currLabel },
                             dataType: "json",
                             success: function (data) {
@@ -407,7 +397,7 @@
                         var currCat = $.trim($("#txtNewCategory").val());
                         $.ajax({
                             type: "POST",
-                            url: '/CMSAdmin/Post/AddCategory',
+                            url: '/Admin/Post/AddCategory',
                             data: { CategoryName: currCat },
                             dataType: "json",
                             success: function (data) {

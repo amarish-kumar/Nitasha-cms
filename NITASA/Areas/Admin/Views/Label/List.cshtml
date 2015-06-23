@@ -75,7 +75,7 @@
                                     <div class="controls">
                                         @Html.TextAreaFor(m => m.Description, new { style = "width:90%" })
                                         <div style="color: red">
-                                            @Html.ValidationMessageFor(m => m.LabelDescription)
+                                            @Html.ValidationMessageFor(m => m.Description)
                                         </div>
                                     </div>
                                 </div>
@@ -134,8 +134,8 @@
                                                 </text>
                                         ),
                                         grid.Column(header: "Action", style: "col1", format: @<text>
-                                            @Html.ActionLink("Edit", null, null, new { id = @item.LabelGUID, @class = "btn btn-small btn-blue edit-lbl" })
-                                            @Html.ActionLink("Delete", "Delete", new { GUID = item.LabelGUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Label ?');" })
+                                            @Html.ActionLink("Edit", null, null, new { id = @item.GUID, @class = "btn btn-small btn-blue edit-lbl" })
+                                            @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Label ?');" })
                                         </text>
                                                                  )
                                                          )

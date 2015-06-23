@@ -28,7 +28,7 @@ namespace NITASA.Areas.Admin.Controllers
                 return RedirectToAction("AccessDenied", "Home");
 
             List<Category> categoryList = context.Category.Where(m => m.IsDeleted == false).ToList();
-            ViewBag.categoryList = new SelectList(categoryList, "CategoryID", "CategoryName");
+            ViewBag.categoryList = new SelectList(categoryList, "ID", "Name");
 
             IQueryable<Content> Content = context.Content.Include("user").Include("contentCategory").Include("contentLabel");
             if (ViewAllPostsRights)
@@ -49,8 +49,8 @@ namespace NITASA.Areas.Admin.Controllers
             if (!UserRights.HasRights(Rights.CreateNewPosts))
                 return RedirectToAction("AccessDenied", "Home");
 
-            ViewBag.Labellist = new SelectList(context.Label.ToList(), "LabelID", "LabelName");
-            ViewBag.Categorylist = new SelectList(context.Category.Where(m => m.IsDeleted == false).ToList(), "CategoryID", "CategoryName");
+            ViewBag.Labellist = new SelectList(context.Label.ToList(), "ID", "Name");
+            ViewBag.Categorylist = new SelectList(context.Category.Where(m => m.IsDeleted == false).ToList(), "ID", "Name");
             //ViewBag.Templatelist = new SelectList(context.ContentTemplate.Where(m => m.IsDeleted == false).ToList(), "TemplateID", "TemplateName");
 
             return View();
@@ -87,8 +87,8 @@ namespace NITASA.Areas.Admin.Controllers
                     TempData["ErrorMessage"] = "Please enter post content";
                 }
             }
-            ViewBag.Labellist = new SelectList(context.Label.ToList(), "LabelID", "LabelName");
-            ViewBag.Categorylist = new SelectList(context.Category.Where(m => m.IsDeleted == false).ToList(), "CategoryID", "CategoryName");
+            ViewBag.Labellist = new SelectList(context.Label.ToList(), "ID", "Name");
+            ViewBag.Categorylist = new SelectList(context.Category.Where(m => m.IsDeleted == false).ToList(), "ID", "Name");
             //ViewBag.Templatelist = new SelectList(context.ContentTemplate.Where(m => m.IsDeleted == false).ToList(), "TemplateID", "TemplateName");
 
             return View(content);
@@ -269,7 +269,7 @@ namespace NITASA.Areas.Admin.Controllers
 
                 curCont.Description= curCont.Description.Replace("<img src=\"../../", "<img src=\"../../../");
 
-                List<SelectListItem> Labellist = new SelectList(context.Label.ToList(), "LabelID", "LabelName").ToList();
+                List<SelectListItem> Labellist = new SelectList(context.Label.ToList(), "ID", "Name").ToList();
                 List<string> selectedLabel = (from dt in context.ContentLabel.Where(m => m.ContentID == curCont.ID)
                                               select dt.LabelID.ToString()).ToList();
 
@@ -282,7 +282,7 @@ namespace NITASA.Areas.Admin.Controllers
                 }
                 ViewBag.Labellist = Labellist;
 
-                List<SelectListItem> Categorylist = new SelectList(context.Category.Where(m => m.IsDeleted == false).ToList(), "CategoryID", "CategoryName").ToList();
+                List<SelectListItem> Categorylist = new SelectList(context.Category.Where(m => m.IsDeleted == false).ToList(), "ID", "Name").ToList();
                 List<string> selectedCategory = (from dt in context.ContentCategory.Where(m => m.ContentID == curCont.ID)
                                                  select dt.CategoryID.ToString()).ToList();
                 for (int i = 0; i < Categorylist.Count(); i++)

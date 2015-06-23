@@ -1,6 +1,7 @@
 ﻿@model List<Content>
 @using NITASA.Data
 @using NITASA.Areas.Admin.Helper
+@using NITASA.Helpers
 @{
     ViewBag.Title = "Post List";
 
@@ -97,13 +98,13 @@
                                 @grid.GetHtml(tableStyle: "table table-normal", headerStyle: "head", alternatingRowStyle: "alt", firstText: "First", nextText: "Next", previousText: "Prev", lastText: "Last", footerStyle: "custom-pagination",
                                 mode: WebGridPagerModes.All,
                                 columns: grid.Columns(
-                                       grid.Column(columnName: "ContentTitle", header: "Post Title", style: "col1"),
+                                       grid.Column(columnName: "Title", header: "Post Title", style: "col1"),
                                        grid.Column("contentCategory", "Categories", format: (subitem) =>
                                        {
                                            string temp2 = string.Empty;
                                            foreach (var member in subitem.contentCategory)
                                            {
-                                               temp2 += member.categoryName.CategoryName + ", ";
+                                               temp2 += member.Category.Name + ", ";
                                            }
                                            return new HtmlString(temp2);
                                        }),
@@ -112,7 +113,7 @@
                                            string temp2 = string.Empty;
                                            foreach (var member in subitem.contentLabel)
                                            {
-                                               temp2 += member.labelName.LabelName + ", ";
+                                               temp2 += member.Label.Name + ", ";
                                            }
                                            return new HtmlString(temp2);
                                        }),
@@ -122,32 +123,32 @@
                                        format: (item) => item.isPublished == true ? "Published" : "Draft"
                                        ),
                                         grid.Column(header: "Action", style: "col3", format: @<text>
-                                        @if (Common.CurrentUserID() == item.CreatedBy)
+                                        @if (Common.CurrentUserID() == item.AddedBy)
                                         {
                                             if (UserRights.HasRights(Rights.EditOwnPosts))
                                             {
-                                                @Html.ActionLink("Edit", "Edit", new { GUID = item.ContentGUID }, new { @class = "btn btn-small btn-blue" })
+                                                @Html.ActionLink("Edit", "Edit", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
                                             }
                                         }
                                         else
                                         {
                                             if (UserRights.HasRights(Rights.EditOtherUsersPosts))
                                             {
-                                                @Html.ActionLink("Edit", "Edit", new { GUID = item.ContentGUID }, new { @class = "btn btn-small btn-blue" })
+                                                @Html.ActionLink("Edit", "Edit", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
                                             }
                                         }
-                                        @if (Common.CurrentUserID() == item.CreatedBy)
+                                        @if (Common.CurrentUserID() == item.AddedBy)
                                         {
                                             if (UserRights.HasRights(Rights.DeleteOwnPosts))
                                             {
-                                                @Html.ActionLink("Delete", "Delete", new { GUID = item.ContentGUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Post ?');" })
+                                                @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Post ?');" })
                                             }
                                         }
                                         else
                                         {
                                             if (UserRights.HasRights(Rights.DeleteOtherUsersPosts))
                                             {
-                                                @Html.ActionLink("Delete", "Delete", new { GUID = item.ContentGUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Post ?');" })
+                                                @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Post ?');" })
                                             }
                                         }</text>
                                                              )
