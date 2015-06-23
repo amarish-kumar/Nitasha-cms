@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NITASA.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -10,6 +11,8 @@ namespace NITASA.Helpers
 {
     public class Common
     {
+        private static NTSDBContext _dbContext = new NTSDBContext();
+
         public static string Encrypt(string toEncrypt, string key, bool useHashing)
         {
             byte[] keyArray;
@@ -116,12 +119,108 @@ namespace NITASA.Helpers
             }
             return userRoll;
         }
-
-        public static string RemoveHTMLTags(string sourceString)
+        public static string GetRandomGUID()
         {
-            sourceString = Regex.Replace(sourceString, @"<[^>]+>|&nbsp;|\n|\r", string.Empty);
-            sourceString = sourceString.Replace("&lt;Addon&gt;", string.Empty).Replace("&lt;/Addon&gt;", string.Empty); // replace addon tag
-            return sourceString;
+            return Guid.NewGuid().ToString().Replace("-", "");
+        }
+        public static string ToUrlSlug(string value, string type, int id)
+        {
+            //First to lower case
+            value = value.ToLowerInvariant();
+            //Remove all accents
+            var bytes = Encoding.GetEncoding("Cyrillic").GetBytes(value);
+            value = Encoding.ASCII.GetString(bytes);
+            //Replace spaces
+            value = Regex.Replace(value, @"\s", "-", RegexOptions.Compiled);
+            //Remove invalid chars
+            value = Regex.Replace(value, @"[^\w\s\p{Pd}]", "", RegexOptions.Compiled);
+            //Trim dashes from end
+            value = value.Trim('-', '_');
+            //Replace double occurences of - or \_
+            value = Regex.Replace(value, @"([-_]){2,}", "$1", RegexOptions.Compiled);
+
+            //return value;
+            return Common.GetNewUrl(value, type, id);
+        }
+        public static string GetNewUrl(string url, string type, int id)
+        {
+            string newUrl = url.ToLower();
+
+            // check for Post
+            //if (type.ToLower() == "post")
+            //{
+            //    bool toContinue = true;
+            //    int urlCounter = 1;
+            //    do
+            //    {
+            //        var checkUrlExist = _dbContext.Content.Where(m => m.ContentType.ToLower() == "post").Where(m => 
+            //                m.ContentURL.ToLower() == newUrl && (id==0 ||  m.ContentID != id));
+            //        if (checkUrlExist.Count() > 0)
+            //        {
+            //            newUrl = url + urlCounter.ToString();
+            //            urlCounter++;
+            //        }
+            //        else
+            //        {
+            //            toContinue = false;
+            //        }
+            //    } while (toContinue);
+            //}
+            if (type.ToLower() == "category")
+            {
+                bool toContinue = true;
+                int urlCounter = 1;
+                do
+                {
+                    var checkUrlExist = _dbContext.Category.Where(m => m.Slug.ToLower() == newUrl && (id == 0 || m.ID != id));
+                    if (checkUrlExist.Count() > 0)
+                    {
+                        newUrl = url + urlCounter.ToString();
+                        urlCounter++;
+                    }
+                    else
+                    {
+                        toContinue = false;
+                    }
+                } while (toContinue);
+            }
+            else if (type.ToLower() == "label")
+            {
+                bool toContinue = true;
+                int urlCounter = 1;
+                do
+                {
+                    var checkUrlExist = _dbContext.Label.Where(m => m.Slug.ToLower() == newUrl && (id == 0 || m.ID != id));
+                    if (checkUrlExist.Count() > 0)
+                    {
+                        newUrl = url + urlCounter.ToString();
+                        urlCounter++;
+                    }
+                    else
+                    {
+                        toContinue = false;
+                    }
+                } while (toContinue);
+            }
+            else // for Page and post
+            {
+                bool toContinue = true;
+                int urlCounter = 1;
+                do
+                {
+                    var checkUrlExist = _dbContext.Content.Where(m => m.URL.ToLower() == newUrl && (id == 0 || m.ID != id));
+                    if (checkUrlExist.Count() > 0)
+                    {
+                        newUrl = url + urlCounter.ToString();
+                        urlCounter++;
+                    }
+                    else
+                    {
+                        toContinue = false;
+                    }
+                } while (toContinue);
+            }
+            return newUrl;
         }
     }
 }
