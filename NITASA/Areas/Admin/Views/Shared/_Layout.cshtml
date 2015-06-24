@@ -90,75 +90,112 @@
                     </a>
                 </li>
             }
+            @if (UserRights.HasRights(Rights.ViewAllPosts) || UserRights.HasRights(Rights.ViewUnPublishedPosts) || UserRights.HasRights(Rights.CreateNewPosts))
+            {
+                <li class="dark-nav ">
+                    <span class="glow"></span>
+                    <a class="accordion-toggle collapsed " data-toggle="collapse" href="#ancPostLink">
+                        <i class="icon-book icon-1x"></i>
+                        <span>
+                            Posts
+                            <i class="icon-caret-down"></i>
+                        </span>
 
-            <li class="dark-nav ">
-                <span class="glow"></span>
-                <a class="accordion-toggle collapsed " data-toggle="collapse" href="#ancPostLink">
-                    <i class="icon-book icon-1x"></i>
-                    <span>
-                        Posts
-                        <i class="icon-caret-down"></i>
-                    </span>
+                    </a>
+                    <ul id="ancPostLink" class="collapse ">
+                        @if (UserRights.HasRights(Rights.ViewAllPosts) || UserRights.HasRights(Rights.ViewUnPublishedPosts))
+                        {
+                            <li class="">
+                                <a href="@Url.Action("List", "Post")">
+                                    <i class="icon-folder-open-alt"></i>Browse Post
+                                </a>
+                            </li>
+                        }
+                        @if (UserRights.HasRights(Rights.CreateNewPosts))
+                        {
+                            <li class="">
+                                <a href="@Url.Action("Add", "Post")">
+                                    <i class="icon-file"></i>New Post
+                                </a>
+                            </li>
+                        }
+                        <li class="">
+                            <a href="@Url.Action("List", "Category")">
+                                <i class="icon-tags icon-1x"></i>Categories
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href="@Url.Action("List", "Label")">
+                                <i class="icon-tags icon-1x"></i>Labels
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            }
+            @if (UserRights.HasRights(Rights.ViewAllPages) || UserRights.HasRights(Rights.ViewUnPublishedPages) || UserRights.HasRights(Rights.CreateNewPages))
+            {
+                <li class="dark-nav ">
+                    <span class="glow"></span>
+                    <a class="accordion-toggle collapsed " data-toggle="collapse" href="#ancPageLink">
+                        <i class="icon-tasks icon-1x"></i>
+                        <span>
+                            Pages
+                            <i class="icon-caret-down"></i>
+                        </span>
 
-                </a>
-                <ul id="ancPostLink" class="collapse ">
-                    @if (UserRights.HasRights(Rights.ViewAllPosts) || UserRights.HasRights(Rights.ViewUnPublishedPosts))
-                    {
-                        <li class="">
-                            <a href="@Url.Action("List", "Post")">
-                                <i class="icon-folder-open-alt"></i>Browse Post
-                            </a>
-                        </li>
-                    }
-                    @if (UserRights.HasRights(Rights.CreateNewPosts))
-                    {
-                        <li class="">
-                            <a href="@Url.Action("Add", "Post")">
-                                <i class="icon-file"></i>New Post
-                            </a>
-                        </li>
-                    }
-                    <li class="">
-                        <a href="@Url.Action("List", "Category")">
-                            <i class="icon-tags icon-1x"></i>Categories
-                        </a>
-                    </li>
-                    <li class="">
-                        <a href="@Url.Action("List", "Label")">
-                            <i class="icon-tags icon-1x"></i>Labels
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="dark-nav ">
-                <span class="glow"></span>
-                <a class="accordion-toggle collapsed " data-toggle="collapse" href="#ancPageLink">
-                    <i class="icon-tasks icon-1x"></i>
-                    <span>
-                        Pages
-                        <i class="icon-caret-down"></i>
-                    </span>
+                    </a>
+                    <ul id="ancPageLink" class="collapse ">
+                        @if (UserRights.HasRights(Rights.ViewAllPages) || UserRights.HasRights(Rights.ViewUnPublishedPages))
+                        {
+                            <li class="">
+                                <a href="@Url.Action("List", "Page")">
+                                    <i class="icon-folder-open-alt"></i>Browse Page
+                                </a>
+                            </li>
+                        }
+                        @if (UserRights.HasRights(Rights.CreateNewPages))
+                        {
+                            <li class="">
+                                <a href="@Url.Action("Add", "Page")">
+                                    <i class="icon-file"></i>New Page
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+            @if (UserRights.HasRights(Rights.ViewAllAddons) || UserRights.HasRights(Rights.ViewUnPublishedAddons) || UserRights.HasRights(Rights.CreateNewAddons))
+            {
+                <li class="dark-nav ">
+                    <span class="glow"></span>
+                    <a class="accordion-toggle collapsed " data-toggle="collapse" href="#ancAddOnsLink">
+                        <i class="icon-hdd icon-1x"></i>
+                        <span>
+                            Addons
+                            <i class="icon-caret-down"></i>
+                        </span>
 
-                </a>
-                <ul id="ancPageLink" class="collapse ">
-                    @if (UserRights.HasRights(Rights.ViewAllPages) || UserRights.HasRights(Rights.ViewUnPublishedPages))
-                    {
+                    </a>
+                    <ul id="ancAddOnsLink" class="collapse ">
+                        @if (UserRights.HasRights(Rights.ViewAllAddons) || UserRights.HasRights(Rights.ViewUnPublishedAddons))
+                        {
                         <li class="">
-                            <a href="@Url.Action("List", "Page")">
-                                <i class="icon-folder-open-alt"></i>Browse Page
+                            <a href="@Url.Action("List", "Addons")">
+                                <i class="icon-folder-open-alt"></i>Browse Addons
                             </a>
                         </li>
-                    }
-                    @if (UserRights.HasRights(Rights.CreateNewPages))
-                    {
+                        }
+                        @if (UserRights.HasRights(Rights.CreateNewAddons))
+                        {
                         <li class="">
-                            <a href="@Url.Action("Add", "Page")">
-                                <i class="icon-file"></i>New Page
+                            <a href="@Url.Action("Add", "Addons")">
+                                <i class="icon-file"></i>New Addon
                             </a>
                         </li>
-                    }
-                </ul>
-            </li>
+                        }
+                    </ul>
+                </li>
+            }
             <li class="dark-nav ">
                 <span class="glow"></span>
                 <a class="accordion-toggle collapsed " data-toggle="collapse" href="#ancAppearanceLink">
@@ -228,57 +265,60 @@
                 </a>
             </li>
             @*<li class="dark-nav ">
-                <span class="glow"></span>
-                <a href="@Url.Action("list", "Plugin")">
-                    <i class="icon-picture icon-1x"></i>
-                    <span>Plugins </span>
-                </a>
-            </li>*@
+                    <span class="glow"></span>
+                    <a href="@Url.Action("list", "Plugin")">
+                        <i class="icon-picture icon-1x"></i>
+                        <span>Plugins </span>
+                    </a>
+                </li>*@
             @*@{ Html.RenderPartial("~/Areas/CMSAdmin/Views/Shared/RenderPluginMenu.cshtml"); }*@
-            <li class="dark-nav ">
-                <span class="glow"></span>
-                <a class="accordion-toggle collapsed " data-toggle="collapse" href="#ancSecurityLink">
-                    <i class="icon-group icon-1x"></i>
-                    <span>
-                        User Manager
-                        <i class="icon-caret-down"></i>
-                    </span>
-                </a>
-                <ul id="ancSecurityLink" class="collapse ">
-                    @if (UserRights.HasRights(Rights.ViewUsers))
-                    {
-                        <li class="">
-                            <a href="@Url.Action("List", "User")">
-                                <i class="icon-folder-open-alt"></i>&nbsp;Browse User
-                            </a>
-                        </li>
-                    }
-                    @if (UserRights.HasRights(Rights.CreateNewUsers))
-                    {
-                        <li class="">
-                            <a href="@Url.Action("Add", "User")">
-                                <i class="icon-file"></i>&nbsp;New User
-                            </a>
-                        </li>
-                    }
-                    @if (UserRights.HasRights(Rights.ViewRoles))
-                    {
-                        <li class="">
-                            <a href="@Url.Action("List", "Role")">
-                                <i class="icon-folder-open-alt"></i>&nbsp;Browse Role
-                            </a>
-                        </li>
-                    }
-                    @if (UserRights.HasRights(Rights.CreateNewRoles))
-                    {
-                        <li class="">
-                            <a href="@Url.Action("Add", "Role")">
-                                <i class="icon-file"></i>&nbsp;New Role
-                            </a>
-                        </li>
-                    }
-                </ul>
-            </li>
+            @if (UserRights.HasRights(Rights.ViewUsers) || UserRights.HasRights(Rights.CreateNewUsers) || UserRights.HasRights(Rights.ViewRoles) || UserRights.HasRights(Rights.CreateNewRoles))
+            {
+                <li class="dark-nav ">
+                    <span class="glow"></span>
+                    <a class="accordion-toggle collapsed " data-toggle="collapse" href="#ancSecurityLink">
+                        <i class="icon-group icon-1x"></i>
+                        <span>
+                            User Manager
+                            <i class="icon-caret-down"></i>
+                        </span>
+                    </a>
+                    <ul id="ancSecurityLink" class="collapse ">
+                        @if (UserRights.HasRights(Rights.ViewUsers))
+                        {
+                            <li class="">
+                                <a href="@Url.Action("List", "User")">
+                                    <i class="icon-folder-open-alt"></i>&nbsp;Browse User
+                                </a>
+                            </li>
+                        }
+                        @if (UserRights.HasRights(Rights.CreateNewUsers))
+                        {
+                            <li class="">
+                                <a href="@Url.Action("Add", "User")">
+                                    <i class="icon-file"></i>&nbsp;New User
+                                </a>
+                            </li>
+                        }
+                        @if (UserRights.HasRights(Rights.ViewRoles))
+                        {
+                            <li class="">
+                                <a href="@Url.Action("List", "Role")">
+                                    <i class="icon-folder-open-alt"></i>&nbsp;Browse Role
+                                </a>
+                            </li>
+                        }
+                        @if (UserRights.HasRights(Rights.CreateNewRoles))
+                        {
+                            <li class="">
+                                <a href="@Url.Action("Add", "Role")">
+                                    <i class="icon-file"></i>&nbsp;New Role
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
             @if (UserRights.HasRights(Rights.ManageSettings))
             {
                 <li class="">

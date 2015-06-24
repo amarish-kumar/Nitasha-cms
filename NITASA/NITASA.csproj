@@ -189,6 +189,7 @@
     <Compile Include="Areas\Admin\ViewModels\Dashboard.cs" />
     <Compile Include="Areas\Admin\ViewModels\Login.cs" />
     <Compile Include="Areas\Admin\ViewModels\Sitemap.cs" />
+    <Compile Include="Areas\Admin\ViewModels\SiteSettings.cs" />
     <Compile Include="Areas\Admin\ViewModels\WidgetOption.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\ConfigureController.cs" />
@@ -589,6 +590,7 @@
     <Content Include="Areas\Admin\Views\Profile\ChangePassword.cshtml" />
     <Content Include="Areas\Admin\Views\Post\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Media\GetMedia.cshtml" />
+    <Content Include="Areas\Admin\Views\Addons\Edit.cshtml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\gridmvc.js" />
     <Content Include="Scripts\gridmvc.lang.ru.js" />

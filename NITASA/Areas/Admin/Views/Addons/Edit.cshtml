@@ -3,15 +3,10 @@
 @using NITASA.Areas.Admin.Helper
 @using NITASA.Helpers
 @{
-    ViewBag.Title = "New Addon";
+    ViewBag.Title = "Update Addon";
+    Meta meta = ViewBag.meta;
     //List<AddonType> AddonTypeList = Common.GetAddonTypes();
 }
-@section PageLevelStyles{
-    <style type="text/css">
-        strong {
-            font-weight: 600;
-        }
-    </style>
     <script src="@Url.Content("~/Areas/Admin/assets/js/tinymce/tinymce.min.js")"></script>
     <script type="text/javascript">
         function myFileBrowser(field_name, url, type, win) {
@@ -42,14 +37,34 @@
                 "insertdatetime nonbreaking save table contextmenu directionality",
                 "emoticons template paste textcolor colorpicker textpattern "
             ],
-            toolbar1: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
+            toolbar1: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | Addons",
             toolbar2: "preview | forecolor backcolor emoticons",
             image_advtab: false,
             extended_valid_elements: $ext,
             force_br_newlines: false,
             force_p_newlines: false,
             forced_root_block: '',
-            file_browser_callback: myFileBrowser
+            file_browser_callback: myFileBrowser,
+            setup: function (editor) {
+                editor.addButton('Addons', {
+                    text: 'Addons',
+                    type: 'menubutton',
+                    icon: false,
+                    menu: [
+                        @*@foreach(AddonType item in AddonTypeList)
+                        {
+                        <text>
+                            {
+                                text: '@item.Name',
+                                onclick: function () {
+                                    editor.insertContent('&lt;Addon&gt;@item.Code&lt;/Addon&gt;');
+                                }
+                            },
+                        </text>
+                        }*@
+                    ]
+                });
+            }
         });
     </script>
 }
@@ -68,32 +83,17 @@
             <div class="span12">
                 <div class="box">
                     <div class="box-header">
-                        <span class="title"><i class="icon-book"></i>&nbsp; New Addon</span> @*<ul class="box-toolbar">
-                                <li>
-                                    <a href="@Url.Action("List", "Post")" title="Back to list" ><i class="icon-reply" style="margin-top: 10px"></i></a>
-                                </li>
-                            </ul>*@
+                        <span class="title"><i class="icon-book"></i>&nbsp; Update Addon</span>
                     </div>
                     <div class="box-content">
                         <div class="padded">
                             <div class="span12">
-                                @using (Html.BeginForm("Add", "Addons", FormMethod.Post, new { id = "frm1" }))
+                                @using (Html.BeginForm("Edit", "Addons", FormMethod.Post, new { id = "frm1" }))
                                 {
                                     <div class="span9">
-                                        @*<div class="control-group">
-                                                <div class="controls">
-                                                    @Html.DropDownList("AddonId", (IEnumerable<SelectListItem>)ViewBag.Addonlist, new { @class = "select2-container select2-container-multi chzn-select", multiple = "multiple", id = "ddlAddons" })
-                                                    <input id="txtNewAddon" name="txtNewAddon" type="text" maxlength="40" placeholder="New Label" style="margin-bottom: 0px;
-                                                            width: 84% !important;" />
-                                                        &nbsp;
-                                                        <button title="Add New Addon" id="btnAddAddon" style="border: 0">
-                                                            <i class="icon-plus-sign" style="font-size: 20px"></i>
-                                                        </button>
-                                                </div>
-                                            </div>*@
                                         <div class="control-group">
                                             <div class="controls">
-                                                @Html.TextBoxFor(mbox => mbox.Type, new { placeholder = "Addon Name", @class = "width100per", style = "margin-bottom: 0px;",id="txtAddonName" })
+                                                @Html.TextBoxFor(mbox => mbox.Type, new { placeholder = "Addon Name", @class = "width100per", style = "margin-bottom: 0px;", id = "txtAddonName" })
                                                 <div style="color: red">
                                                     @Html.ValidationMessageFor(m => m.Type)
                                                 </div>
@@ -101,7 +101,7 @@
                                         </div>
                                         <div class="control-group">
                                             <div class="controls">
-                                                <input type="hidden" id="hdnIsPost" name="hdnIsPost" />
+                                                <input type="hidden" id="UpdateType" name="UpdateType" />
                                                 @Html.TextBoxFor(mbox => mbox.Title, new { placeholder = "Addon Title", @class = "width100per", style = "margin-bottom: 0px;" })
                                                 <div style="color: red">
                                                     @Html.ValidationMessageFor(m => m.Title)
@@ -114,7 +114,7 @@
                                                     <b>Content: </b>
                                                 </label>
                                                 <div>
-                                                    @Html.TextAreaFor(m => m.Description, new { style = "width: 100%; max-width: 98%; height:525px; margin: 0px; overflow: hidden; word-wrap: break-word;resize:vertical;" })
+                                                    @Html.TextAreaFor(m => m.Description, new { style = "width: 100%; max-width: 98%; height:500px; margin: 0px; overflow: hidden; word-wrap: break-word;resize:vertical;" })
                                                     @*@class = "textarea-html5", *@
                                                     <div style="color: red">
                                                         @Html.ValidationMessageFor(m => m.Description)
@@ -125,30 +125,42 @@
                                     </div>
                                     <div class="span3">
                                         <div class="padded" style="padding-top: 0px; padding-left: 0px;">
-                                            @if (UserRights.HasRights(Rights.PublishOwnAddons))
+                                            @if (Common.CurrentUserID() == Model.AddedBy)
                                             {
-                                            <input type="button" class="btn btn-small btn-green" id="btnPost" style="text-align: right"
-                                                   value="Publish" />
+                                                if (UserRights.HasRights(Rights.PublishOwnAddons))
+                                                {
+                                                    <input type="button" class="btn btn-small btn-green" id="btnPost" style="text-align: right"
+                                                           value="Publish" />
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (UserRights.HasRights(Rights.PublishOtherUsersAddons))
+                                                {
+                                                    <input type="button" class="btn btn-small btn-green" id="btnPost" style="text-align: right"
+                                                           value="Publish" />
+                                                }
                                             }&nbsp;
                                             <input type="button" class="btn btn-small btn-blue" style="text-align: right" value="Save to Draft"
                                                    id="btnSaveToDraft" />&nbsp;
                                             <input type="button" class="btn btn-small btn-red" style="text-align: right" value="Back"
                                                    onclick="window.location = '/Admin/Addons/List';" />
-                                        </div>                                        
+                                        </div>
                                         <div class="box">
                                             <div class="box-header">
                                                 <span class="title">Display Order</span>
                                             </div>
                                             <div class="box-content">
                                                 <div class="padded" style="text-align:left;vertical-align:top">
-                                                    @Html.TextBoxFor(mbox => mbox.ContentOrder, new { Value = "0", placeholder = "Addon Order To Display", style = "margin-bottom: 0px;" })
+                                                    @Html.TextBoxFor(mbox => mbox.ContentOrder, new { placeholder = "Content Order To Display", style = "margin-bottom: 0px;" })
                                                     <div style="color: red">
                                                         @Html.ValidationMessageFor(m => m.ContentOrder)
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div> }
+                                    </div>
+                                }
                             </div>
                             &nbsp;
                         </div>
@@ -160,25 +172,24 @@
 </div>
 @section BottomScript{
     <script type="text/javascript">
-        $(document).ready(function () {
-
+        $(document).ready(function () {            
             $('#btnPost').click(function () {
-                $("#hdnIsPost").val("Post");
+                $("#UpdateType").val("Publish");
                 tinyMCE.triggerSave();
-                if ($("#frm1").valid()) {
-                    $('#frm1').submit();
-                }
+                checkCategory();
             });
 
             $('#btnSaveToDraft').click(function () {
-                $("#hdnIsPost").val("SaveToDraft");
+                $("#UpdateType").val("SaveToDraft");
                 tinyMCE.triggerSave();
+                checkCategory();
+            });
+            function checkCategory() {
                 if ($("#frm1").valid()) {
                     $('#frm1').submit();
                 }
-            });
+            }
         });
-
         $(function () {
             $("#txtAddonName").autocomplete({
                 source: '@Url.Action("GetAddonNames", "Addons")',

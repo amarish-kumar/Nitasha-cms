@@ -1,7 +1,233 @@
-﻿
+﻿@model NITASA.Areas.Admin.ViewModels.SiteSettings
 @{
-    ViewBag.Title = "List";
+    ViewBag.Title = "Settings";
 }
+<div class="main-content">
+    <div class="container-fluid padded">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                <button class="close" data-dismiss="alert" type="button">×</button>
+                @TempData["SuccessMessage"]
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-error">
+                <button class="close" data-dismiss="alert" type="button">×</button>
+                @TempData["ErrorMessage"]
+            </div>
+        }
 
-<h2>List</h2>
+        @using (Html.BeginForm("Index", "Setting", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+        {
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="box">
+                        <div class="box-header">
+                            @*<span class="title">Configuration</span>*@
+                            <ul class="nav nav-tabs nav-tabs-left">
+                                <li class="active">
+                                    <a href="#home" data-toggle="tab">
+                                        <i class="icon-home"></i>
+                                        <span title="General">General</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#CustomCode" data-toggle="tab">
+                                        <i class="icon-fighter-jet"></i>
+                                        <span title="Custom Code">Custom Code</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="box-content padded">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="home">
+                                    <div class="span6">
+                                        <div class="box-content">
+                                            <div class="padded">
+                                                <div class="form-horizontal fill-up">
+                                                    <div class="control-group" style="margin-bottom: 0px">
+                                                        <label class="control-label" style="text-align: left;">@Html.LabelFor(x => x.LogoPath)</label>
+                                                        <div class="controls">
+                                                            <input type="file" name="logopath" id="logopath" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        <label class="control-label" style="text-align: left;"></label>
+                                                        <div class="controls">(Only .jpg, .bmp, .jpeg, .png, .gif files are allowed.)</div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        <label class="control-label" style="text-align: left;"></label>
+                                                        <div class="controls">
+                                                            <img title="logo" src="@Model.LogoPath" alt="Logo Image" style="width:50%;" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group" style="margin-bottom: 0px">
+                                                        <label class="control-label" style="text-align: left;">@Html.LabelFor(x => x.FaviconPath)</label>
+                                                        <div class="controls">
+                                                            <input type="file" name="FaviconIcon" id="FaviconIcon" />
+                                                            <img title="logo" src="@Model.FaviconPath" alt="" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        <label class="control-label" style="text-align: left;"></label>
+                                                        <div class="controls">(Only .ico files are allowed.)</div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        <label class="control-label" style="text-align: left;">@Html.LabelFor(x => x.SiteName)</label>
+                                                        <div class="controls">
+                                                            @Html.TextBoxFor(x => x.SiteName)
+                                                            <div style="color: red">
+                                                                @Html.ValidationMessageFor(m => m.SiteName)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        <label class="control-label" style="text-align: left;">@Html.LabelFor(x => x.SiteTitle)</label>
+                                                        <div class="controls">
+                                                            @Html.TextBoxFor(x => x.SiteTitle)
+                                                            <div style="color: red">
+                                                                @Html.ValidationMessageFor(m => m.SiteTitle)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        <label class="control-label" style="text-align: left;">@Html.LabelFor(x => x.ShowNoOfLastPostsAtHome)</label>
+                                                        <div class="controls">
+                                                            @Html.DropDownListFor(x => x.ShowNoOfLastPostsAtHome, new List<SelectListItem>() { new SelectListItem { Text = "5", Value = "5" }, new SelectListItem { Text = "7", Value = "7" }, new SelectListItem { Text = "10", Value = "10" } })
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        <input type="submit" value="Save Config" class="btn btn-blue" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" style="text-align: left;">
+                                                @Html.LabelFor(x => x.TwitterURL)
+                                            </label>
+                                            <div class="controls">
+                                                @Html.TextBoxFor(x => x.TwitterURL)
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label" style="text-align: left;">
+                                                @Html.LabelFor(x => x.FacebookURL)
+                                            </label>
+                                            <div class="controls">
+                                                @Html.TextBoxFor(x => x.FacebookURL)
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label" style="text-align: left;">
+                                                @Html.LabelFor(x => x.GooglePlusURL)
+                                            </label>
+                                            <div class="controls">
+                                                @Html.TextBoxFor(x => x.GooglePlusURL)
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label" style="text-align: left;">
+                                                @Html.LabelFor(x => x.LinkedInURL)
+                                            </label>
+                                            <div class="controls">
+                                                @Html.TextBoxFor(x => x.LinkedInURL)
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="control-label" style="text-align: left;">
+                                                @Html.LabelFor(x => x.PinterestURL)
+                                            </label>
+                                            <div class="controls">
+                                                @Html.TextBoxFor(x => x.PinterestURL)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="clear: both">
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="CustomCode">
+                                    <div class="span12">
+                                        <div class="box-content">
+                                            <div class="padded">
+                                                <div class="form-horizontal fill-up">
+                                                    <div class="control-group">
+                                                        @Html.LabelFor(m => m.CustomHeadTag)
+                                                        @*<label class="control-label" style="text-align: left;width:100%;">Add custom code to the HTML Head section </label>*@
+                                                        <div class="controls" style="margin-left: 0px">
+                                                            @Html.TextAreaFor(m => m.CustomHeadTag, new { style = "width: 100%; max-width: 98%;min-height: 100px; height:200px; margin: 0px; overflow: hidden; word-wrap: break-word;resize:vertical;overflow-y:scroll;", id = "txtHeaderScript" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        <label class="control-label" style="text-align: left; width: 100%;">Default Meta Tags. (This will be included in head section of the page.)</label>
+                                                        <div class="controls" style="margin-left: 0px">
+                                                            @Html.TextAreaFor(m => m.DefaultMetaTags, new { style = "width: 100%; max-width: 98%; height:150px; min-height: 70px; margin: 0px; overflow: hidden; word-wrap: break-word;resize:vertical;overflow-y:scroll;", id = "txtMetaTags", placeholder = "" })
+                                                            <div class="hint">
+                                                                @*  @HTMl.("<meta name=\"description\" content=\"Web Development\">")
+                                                                    @Html.Raw("<meta name=\"keyword\" content=\".Net, IIS, C#\">")
+                                                                    @Html.Raw("<meta name=\"author\" content=\"Nikhil Prajapati\">")*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        @Html.LabelFor(m => m.CustomCSS)
+                                                        <div class="controls" style="margin-left: 0px">
+                                                            @Html.TextAreaFor(mbox => mbox.CustomCSS, new { placeholder = "place your custom css here.", style = "width: 100%; max-width: 98%; height:150px; min-height: 70px; margin: 0px; overflow: hidden; word-wrap: break-word;resize:vertical;overflow-y:scroll;" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        @Html.LabelFor(m => m.CustomJavaScript)
+                                                        <div class="controls" style="margin-left: 0px">
+                                                            @Html.TextAreaFor(mbox => mbox.CustomJavaScript, new { placeholder = "place your custom java script here.", style = "width: 100%; max-width: 98%; height:150px; min-height: 70px; margin: 0px; overflow: hidden; word-wrap: break-word;resize:vertical;overflow-y:scroll;", })
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        @Html.LabelFor(m => m.GoogleAnalytics)
+                                                        <div class="controls" style="margin-left: 0px">
+                                                            @Html.TextAreaFor(mbox => mbox.GoogleAnalytics, new { placeholder = "place your google analytics code here.", style = "width: 100%; max-width: 98%; height:150px; min-height: 70px; margin: 0px; overflow: hidden; word-wrap: break-word;resize:vertical;overflow-y:scroll;", })
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        <input type="submit" value="Save" class="btn btn-blue" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="clear: both">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+@section BottomScript{
+    <script>
+        var placeholder = '<meta name="description" content="Web Development">\n<meta name="keyword" content=".Net, IIS, C#">\n<meta name="author" content="Nikhil Prajapati">';
 
+        $('#txtMetaTags').focus(function () {
+            if ($('#txtMetaTags').val() == '') {
+                if ($(this).val() === placeholder) {
+                    $(this).attr('value', '');
+                }
+            }
+        });
+
+        $('#txtMetaTags').blur(function () {
+            if ($('#txtMetaTags').val() == '') {
+                if ($(this).val() === '') {
+                    $(this).attr('value', placeholder);
+                }
+            }
+        });
+    </script>
+}

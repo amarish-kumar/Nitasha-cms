@@ -37,7 +37,7 @@ namespace NITASA.Data
         public bool IsFeatured { get; set; }
 
         [DefaultValue(0)]
-        [RegularExpression(@"^[0-9]*$", ErrorMessage = "Enter only integer value")]
+        [RegularExpression(@"^[0-9]*$", ErrorMessage = "Enter only integer value")]        
         public int ContentOrder { get; set; }
         [Display(Name = "Comment Enabled?")]
         public bool EnableComment { get; set; }
