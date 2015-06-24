@@ -1,4 +1,5 @@
-﻿using NITASA.Data;
+﻿using Newtonsoft.Json;
+using NITASA.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,8 +13,6 @@ namespace NITASA.Helpers
 {
     public class Common
     {
-        private static NTSDBContext _dbContext = new NTSDBContext();
-
         public static string Encrypt(string toEncrypt, string key, bool useHashing)
         {
             byte[] keyArray;
@@ -37,6 +36,7 @@ namespace NITASA.Helpers
 
             return Convert.ToBase64String(resultArray, 0, resultArray.Length);
         }
+
         public static string Decrypt(string toDecrypt, string key, bool useHashing)
         {
             byte[] keyArray;
@@ -70,6 +70,7 @@ namespace NITASA.Helpers
 
             return decryptValue;
         }
+
         public static int GetSaltKey()
         {
             Random ran = new Random();
@@ -77,6 +78,7 @@ namespace NITASA.Helpers
             ran.Next();
             return number;
         }
+
         public static string GeneratePassword(byte Length)
         {
             char[] Chars = new char[] {
@@ -107,6 +109,7 @@ namespace NITASA.Helpers
             }
             return userID;
         }
+
         public static string CurrentUserRole()
         {
             string userRoll = string.Empty;
@@ -120,10 +123,12 @@ namespace NITASA.Helpers
             }
             return userRoll;
         }
+
         public static string GetRandomGUID()
         {
             return Guid.NewGuid().ToString().Replace("-", "");
         }
+
         public static string ToUrlSlug(string value, string type, int id)
         {
             //First to lower case
@@ -143,10 +148,12 @@ namespace NITASA.Helpers
             //return value;
             return Common.GetNewUrl(value, type, id);
         }
+
         public static string GetNewUrl(string url, string type, int id)
         {
             string newUrl = url.ToLower();
-
+            using (NTSDBContext _dbContext = new NTSDBContext())
+            {
             // check for Post
             //if (type.ToLower() == "post")
             //{
@@ -203,7 +210,7 @@ namespace NITASA.Helpers
                     }
                 } while (toContinue);
             }
-            else // for Page and post
+                else // for page and post
             {
                 bool toContinue = true;
                 int urlCounter = 1;
@@ -221,8 +228,10 @@ namespace NITASA.Helpers
                     }
                 } while (toContinue);
             }
+            }
             return newUrl;
         }
+
         public static string RemoveHTMLTags(string sourceString)
         {
             sourceString = Regex.Replace(sourceString, @"<[^>]+>|&nbsp;|\n|\r", string.Empty);
@@ -246,6 +255,7 @@ namespace NITASA.Helpers
 
             return newFilePath;
         }
+
         public static bool IsValidImage(string FileName)
         {
             string[] extension = new string[] { ".jpg", ".bmp", ".jpeg", ".png", ".gif" };
@@ -255,6 +265,7 @@ namespace NITASA.Helpers
             else
                 return false;
         }
+
         public static bool IsValidVideo(string FileName)
         {
             string[] extension = new string[] { ".mp4" };
@@ -265,5 +276,120 @@ namespace NITASA.Helpers
                 return false;
         }
 
+        public static string CurrentTimeStamp()
+        {
+            StringBuilder sbTimeStamp = new StringBuilder();
+            sbTimeStamp.Append(DateTime.Now.Year.ToString());
+            sbTimeStamp.Append(DateTime.Now.Month.ToString());
+            sbTimeStamp.Append(DateTime.Now.Day.ToString());
+            sbTimeStamp.Append(DateTime.Now.Hour.ToString());
+            sbTimeStamp.Append(DateTime.Now.Minute.ToString());
+            sbTimeStamp.Append(DateTime.Now.Second.ToString());
+            return sbTimeStamp.ToString();
+        }
+        //public static string GetAddons()
+        //{
+        //    NTSDBContext _dbContext = new NTSDBContext();
+
+        //    List<string> temp = new List<string> { "page", "post" };
+        //    List<Content> AllAddons = _dbContext.Content.Where(x => x.isPublished==true && x.IsDeleted == false && !temp.Contains(x.Type)).ToList();
+
+        //    List<string> addontypes = AllAddons .Select(x => x.Type).Distinct().ToList();
+
+        //    string strAddons = string.Empty;
+
+        //    foreach (string name in addontypes)
+        //    {
+        //        List<Content> contents = AllAddons.Where(x => x.Type == name).ToList();
+        //        string allcontents = string.Join("", contents.Select(x => "&lt;Addon name=\"" + x.Title + "\"&gt;" + x.ID + "&lt;/Addon&gt;").ToList());
+        //        strAddons += "{" +
+        //        "text: '" + name + "'," +
+        //        //"onclick: function(){" +
+        //        //"             editor.insertContent('" + allcontents + "');return false;" +
+        //        //"}," +
+        //        "menu: [";
+
+        //        if (contents.Count() > 1)
+        //        {
+        //            strAddons += "    {" +
+        //                        "        text: 'All'," +
+        //                        "        id:'foobar',"+
+        //                        "        onclick: function(){" +
+        //                        "             editor.insertContent('" + allcontents + "');" +
+        //                        "        }" +
+        //                        "    },";
+        //        }
+        //        foreach (var item in contents)
+        //        {
+        //            strAddons += "    {" +
+        //                        "        text: '" + item.Title + "'," +
+        //                        "        onclick: function(){" +
+        //                        "             editor.insertContent('&lt;Addon name=\"" + item.Title + "\"&gt;" + item.ID + "&lt;/Addon&gt;');" +
+        //                        "        }" +
+        //                        "    },";
+        //        }
+        //        strAddons = strAddons.Remove(strAddons.LastIndexOf(","), 1);
+        //        strAddons += "]" +
+        //        "},";
+        //    }
+        //    strAddons = strAddons.Remove(strAddons.LastIndexOf(","), 1);
+        //    return strAddons;
+        //}
+        public static string GetAddons()
+        {
+            NTSDBContext _dbContext = new NTSDBContext();
+            List<string> temp = new List<string> { "page", "post" };
+            List<Content> AllAddons = _dbContext.Content.Where(x => x.isPublished == true && x.IsDeleted == false && !temp.Contains(x.Type)).ToList();
+
+            List<string> addontypes = AllAddons.Select(x => x.Type).Distinct().ToList();
+
+            List<Menu> itemList =new List<Menu>();
+            itemList = (from at in addontypes
+                       select
+                            new Menu{
+                                    text=at,
+                                    SubMenu = (from ad in AllAddons
+                                              where ad.Type == at
+                                              select new Menu {id = ad.ID.ToString(),text =ad.Title}).ToList()
+                            }
+                        ).ToList();
+            Random r = new Random();
+            itemList.ForEach(x=>
+                x.SubMenu.InsertRange(0, new List<Menu> { new Menu { id = string.Concat("tinyAll",r.Next()), text = "All" } })
+            );
+            string json = JsonConvert.SerializeObject(itemList);
+
+            /*string json = JsonConvert.SerializeObject(
+                                new List<Menu>
+                                    {
+                                        new Menu{ 
+                                            //id ="1", 
+                                            text ="A"
+                                        },
+                                        new Menu{ 
+                                            //id ="2", 
+                                            text ="B",
+                                            SubMenu =  new List<Menu> {
+                                                new Menu{ 
+                                                    id ="3", 
+                                                    text ="C"
+                                                },
+                                                new Menu{ 
+                                                    id ="4", 
+                                                    text ="D' company"
+                                                }
+                                            }
+                                        }
+                                    });*/
+            return json;
+        }
+    }
+
+    public class Menu
+    {
+        public string text { get; set; }
+        public string id { get; set; }
+        [JsonProperty(PropertyName = "menu")]
+        public List<Menu> SubMenu { get; set; }
     }
 }

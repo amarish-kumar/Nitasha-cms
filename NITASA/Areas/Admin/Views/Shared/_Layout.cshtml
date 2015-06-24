@@ -329,6 +329,17 @@
                     </a>
                 </li>
             }
+            @if (UserRights.HasRights(Rights.ManageTemplates))
+            {
+                <li class="">
+                    <span class="glow"></span>
+                    <a href="@Url.Action("index", "template")">
+                        <i class=" icon-cog icon-1x"></i>
+                        <span>Template</span>
+                    </a>
+                </li>
+            }
+
             <li class="dark-nav ">
                 <span class="glow"></span>
                 <a class="accordion-toggle collapsed " data-toggle="collapse" href="#ancToolsLink">

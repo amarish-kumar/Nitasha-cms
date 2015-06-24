@@ -58,15 +58,15 @@
                             @grid.GetHtml(tableStyle: "table table-normal", headerStyle: "head", alternatingRowStyle: "alt", firstText: "First", nextText: "Next", previousText: "Prev", lastText: "Last", footerStyle: "custom-pagination",
                             mode: WebGridPagerModes.All,
                             columns: grid.Columns(
-                                        grid.Column(columnName: "ContentTitle", header: "Page Title", style: "col1"),
+                                        grid.Column(columnName: "Title", header: "Page Title", style: "col1"),
                                                   grid.Column(columnName: "ContentView", header: "Views", style: "col2"),
                                                        grid.Column(columnName: "User.FullName", header: "Author", style: "col2"),
                                         grid.Column(columnName: "isPublished", header: "Type", style: "col2",
                                                 format: (item) => item.isPublished == true ? "Published" : "Draft"
                                         ),
                                         grid.Column(header: "Action", style: "col3", format: @<text>
-                                            @Html.ActionLink("Edit", "Add", "Page", new { guid = item.ContentGUID }, new { @class = "btn btn-small btn-blue" })
-                                            @Html.ActionLink("Delete", "Delete", "Page", new { guid = item.ContentGUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Page ?');" })
+                                            @Html.ActionLink("Edit", "Add", "Page", new { guid = item.GUID }, new { @class = "btn btn-small btn-blue" })
+                                            @Html.ActionLink("Delete", "Delete", "Page", new { guid = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Page ?');" })
                                         </text>
                                                                      )
                                                          )

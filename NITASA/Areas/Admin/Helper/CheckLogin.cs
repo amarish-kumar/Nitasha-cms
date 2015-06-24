@@ -17,8 +17,18 @@ namespace NITASA.Areas.Admin.Helper
             }
             else
             {
-                string url = HttpContext.Current.Request.Url.AbsoluteUri;
                 HttpContext hContext = HttpContext.Current;
+#if DEBUG
+                if (hContext.Session["UserID"] == null) 
+                { 
+                    hContext.Session["UserID"] = 1;
+                    hContext.Session["UserRole"] = new NITASA.Data.NTSDBContext().Role.Where(model => model.ID == 1 && model.IsDeleted == false).Select(m => m.Name).FirstOrDefault();
+                    UserRights.BindRights();
+                }
+#endif
+
+                string url = HttpContext.Current.Request.Url.AbsoluteUri;
+                
                 if (hContext.Session["UserID"] == null)
                     filterContext.Result = new RedirectResult(@"~/Admin/Authenticate/Login?retUrl=" + HttpUtility.UrlEncode(url));
             }
