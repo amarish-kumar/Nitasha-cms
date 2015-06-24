@@ -51,13 +51,13 @@
 
                                         <tr class="status-pending">
                                             <td class="icon"><i class="icon-certificate"></i></td>
-                                            <td><a href="#">@Model[i].WidgetName</a></td>
-                                            <td><a href="#">@Model[i].WidgetTitle</a></td>
-                                            <td style="text-align:center"><a href="#">@Model[i].WidgetOrder</a></td>
+                                            <td><a href="#">@Model[i].Name</a></td>
+                                            <td><a href="#">@Model[i].Title</a></td>
+                                            <td style="text-align:center"><a href="#">@Model[i].DisplayOrder</a></td>
                                             <td style="text-align:center">
                                                 @if (UserRights.HasRights(Rights.ManageWidgets))
                                                 {
-                                                    <input class="iButton-icons" type="checkbox" onchange="changestatus(this,'@Model[i].WidgetGUID');" @(Model[i].IsActive == true ? "checked='checked'" : "") />
+                                                    <input class="iButton-icons" type="checkbox" onchange="changestatus(this,'@Model[i].GUID');" @(Model[i].IsActive == true ? "checked='checked'" : "") />
                                                 }
                                             </td>
                                             @*<td style="text-align:center"><b>@(Model[i].IsActive == true ? "Active" : "In Active")</b></td>
@@ -75,11 +75,11 @@
                                                 {
                                                     <div class="btn-group">
                                                         <div>
-                                                            <a data-widgetid='@Model[i].WidgetID' data-order='@Model[i].WidgetOrder'
+                                                            <a data-widgetid='@Model[i].ID' data-order='@Model[i].DisplayOrder'
                                                                class="model-config btn btn-mini btn-default dropdown-toggle" style="padding:2px 6px;">
                                                                 <i class="icon-cog" style="margin-top:5px;"></i>
                                                             </a>
-                                                            <input type="hidden" class="woption" value='@Model[i].WidgetOption' />
+                                                            <input type="hidden" class="woption" value='@Model[i].Option' />
                                                         </div>
                                                     </div>
                                                 }
@@ -115,14 +115,14 @@
             <div class="modal-body">
                 <ul class="padded separate-sections">
                     <div style="display:none;">
-                        @Html.TextBox("WidgetID", null, new { id = "WidgetID" })
+                        @Html.TextBox("ID", null, new { id = "WidgetID" })
                     </div>
                     @*<input id="WidgetID" type="hidden" value="0" />*@
                     <li class="input li_input_bottom_space_settings">
                         <label for="For Badge" class="required">
                             Widget Order
                         </label>
-                        @Html.DropDownList("WidgetOrder", new List<SelectListItem>() {
+                        @Html.DropDownList("DisplayOrder", new List<SelectListItem>() {
                                                     new SelectListItem { Text = "1", Value = "1" },
                                                     new SelectListItem { Text = "2", Value = "2" },
                                                     new SelectListItem { Text = "3", Value = "3" },

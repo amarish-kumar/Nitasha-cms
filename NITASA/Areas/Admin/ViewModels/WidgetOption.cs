@@ -10,9 +10,9 @@ namespace NITASA.Areas.Admin.ViewModels
     {
         [AllowHtml]
         public string Title { get; set; }
-        public string WidgetID { get; set; }
+        public string ID { get; set; }
         public int Count { get; set; }
         public bool ShowThumbnail { get; set; }
-        public int WidgetOrder { get; set; }
+        public int DisplayOrder { get; set; }
     }
 }

@@ -21,7 +21,7 @@ namespace NITASA.Areas.Admin.Controllers
 
         public ActionResult List()
         {
-            List<Widget> widgets = context.Widget.OrderByDescending(m => m.IsActive).ThenBy(m => m.WidgetOrder).ToList();
+            List<Widget> widgets = context.Widget.OrderByDescending(m => m.IsActive).ThenBy(m => m.DisplayOrder).ToList();
             return View(widgets);
         }
 
@@ -66,7 +66,7 @@ namespace NITASA.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult changeStatus(string GUID, bool isActive)
         {
-            Widget widget = context.Widget.Where(m => m.WidgetGUID == GUID).FirstOrDefault();
+            Widget widget = context.Widget.Where(m => m.GUID == GUID).FirstOrDefault();
             if (widget != null)
             {
                 if (!UserRights.HasRights(Rights.ManageWidgets))
@@ -90,10 +90,10 @@ namespace NITASA.Areas.Admin.Controllers
             if (!UserRights.HasRights(Rights.ManageWidgets))
                 return RedirectToAction("AccessDenied", "Home");
 
-            if (wOption.WidgetID != null)
+            if (wOption.ID != null)
             {
-                int widgetID = Convert.ToInt32(wOption.WidgetID);
-                Widget widgetToUpdate = context.Widget.Where(m => m.WidgetID == widgetID).FirstOrDefault();
+                int widgetID = Convert.ToInt32(wOption.ID);
+                Widget widgetToUpdate = context.Widget.Where(m => m.ID == widgetID).FirstOrDefault();
                 if (widgetToUpdate == null)
                 {
                     return RedirectToAction("NotFound", "Home");
@@ -101,17 +101,17 @@ namespace NITASA.Areas.Admin.Controllers
                 else
                 {
                     string widgetOption = "{ \"title\": \"" + wOption.Title + "\",\"count\": \"" + wOption.Count + "\",\"showthumb\": \"" + wOption.ShowThumbnail.ToString().ToLower() + "\" }";
-                    widgetToUpdate.WidgetOrder = wOption.WidgetOrder;
-                    widgetToUpdate.WidgetTitle = wOption.Title;
-                    widgetToUpdate.WidgetOption = widgetOption;
+                    widgetToUpdate.DisplayOrder = wOption.DisplayOrder;
+                    widgetToUpdate.Title = wOption.Title;
+                    widgetToUpdate.Option = widgetOption;
                     context.SaveChanges();
-                    TempData["Message"] = "Widget configuration setup successfully.";
+                    TempData["SuccessMessage"] = "Widget configuration setup successfully.";
                 }
                 return RedirectToAction("List");
             }
             else
             {
-                TempData["Error"] = "Error occured while updating widget configuration.";
+                TempData["ErrorMessage"] = "Error occured while updating widget configuration.";
                 return RedirectToAction("List");
             }
         }
