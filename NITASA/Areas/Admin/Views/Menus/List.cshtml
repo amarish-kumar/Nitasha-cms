@@ -1,7 +1,458 @@
-﻿
+﻿@using NITASA.Data;
 @{
-    ViewBag.Title = "List";
+    ViewBag.Title = "Manage Menu";
+    List<Category> categoryList = ViewBag.categoryList;
+    List<Label> labelList = ViewBag.labelList;
+    List<Content> pageList = ViewBag.pageList;
+
+    string strURL = Request.Url.AbsoluteUri.ToString();
+    strURL = strURL.Remove(strURL.IndexOf(Request.Url.AbsolutePath.ToString()));
+
 }
+@section PageLevelStyles{
+    <link href="~/Areas/Admin/assets/css/nested-menu.css" rel="stylesheet" />
+    <style type="text/css">
+        .menu-item-settings {
+            background-color: white;
+            position: relative;
+            z-index: 100;
+            border: 1px solid rgb(205, 205, 205);
+            padding: 10px;
+            margin: -6px 0px 0px 30px;
+            width: 89%;
+            display: none;
+        }
 
-<h2>List</h2>
+        .showSetting {
+            width: 100%;
+        }
 
+        .menutitle {
+            width: 80%;
+            display: inline;
+            text-align: left;
+        }
+
+        .menutype {
+            width: 20%;
+            float: right;
+            text-align: right;
+            color: gray;
+        }
+
+        .itemtitle {
+            width: 70%;
+        }
+    </style>
+}
+<div class="main-content">
+    <div class="container-fluid padded">
+        @if (TempData["MenuMessage"] != null)
+        {
+            <div class="alert alert-success">
+                <button class="close" data-dismiss="alert" type="button">×</button>
+                @TempData["MenuMessage"]
+            </div>
+        }
+        @if (TempData["MenuError"] != null)
+        {
+            <div class="alert alert-error">
+                <button class="close" data-dismiss="alert" type="button">×</button>
+                @TempData["MenuError"]
+            </div>
+        }
+        <div class="row-fluid" style="">
+            <div class="span6" style="">
+                <div class="accordion" id="accordion2">
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+                                Category
+                            </a>
+                        </div>
+                        <div id="collapseOne" class="accordion-body collapse in">
+                            <div class="accordion-inner">
+                                <div id="catCHList" style="max-height: 140px; overflow-y: auto;">
+                                    <div class="row-fluid" style="margin-left: 0;">
+                                        @for (int i = 0; i < categoryList.Count(); i++)
+                                        {
+                                            <div class="span6" style="width: 48% !important; margin-left: 0;">
+                                                <input type="checkbox" class="chkCat" id="@("cat" + categoryList[i].ID)" style="float:left;" name="@("cat" + categoryList[i].ID)" />
+                                                <label class="catitem" for="@("cat" + categoryList[i].ID)" style="margin-left:25px;"
+                                                       cat-id="@categoryList[i].ID" cat-title="@categoryList[i].Name" cat-slug="@categoryList[i].Slug">
+                                                    @categoryList[i].Name
+                                                </label>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div style="text-align: right; margin-top: 10px">
+                                    @if (categoryList.Count() > 0)
+                                    {
+                                        <label style="width: 100px; text-align: left; display: inline; float: left;">
+                                            <input id="chkAllCat" type="checkbox" style="float: left;" />
+                                            <label class="lblitem" for="chkAllCat" style="margin-left: 25px;">
+                                                Select All
+                                            </label>
+                                        </label>
+                                        <button class="btn btn-blue btn-small" id="AddCat">
+                                            Add to Menu
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <div>No category to display</div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                                Label
+                            </a>
+                        </div>
+                        <div id="collapseTwo" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <div id="lblCHList" style="max-height: 140px; overflow-y: auto;">
+                                    <div class="row-fluid" style="margin-left: 0;">
+                                        @for (int i = 0; i < labelList.Count(); i++)
+                                        {
+                                            <div class="span6" style="width: 48% !important; margin-left: 0;">
+                                                <input type="checkbox" class="chkLabel" id="@("lbl" + labelList[i].ID)" name="@("lbl" + labelList[i].ID)" style="float:left;" />
+                                                <label class="lblitem" for="@("lbl" + labelList[i].ID)" style="margin-left:25px;"
+                                                       lbl-id="@labelList[i].ID" lbl-title="@labelList[i].Name" lbl-slug="@labelList[i].Slug">
+                                                    @labelList[i].Name
+                                                </label>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div style="text-align: right; margin-top: 10px">
+                                    @if (labelList.Count() > 0)
+                                    {
+                                        <label style="width: 100px; text-align: left; display: inline; float: left;">
+                                            <input id="chkAllLabel" type="checkbox" style="float: left;" />
+                                            <label class="lblitem" for="chkAllLabel" style="margin-left: 25px;">
+                                                Select All
+                                            </label>
+                                        </label>
+                                        <button class="btn btn-blue btn-small" id="AddLabel">
+                                            Add to Menu
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <div>No label to display</div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">
+                                Page
+                            </a>
+                        </div>
+                        <div id="collapseThree" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <div id="pgCHList" style="max-height: 140px; overflow-y: auto;">
+                                    <div class="row-fluid" style="margin-left: 0;">
+                                        @for (int i = 0; i < pageList.Count(); i++)
+                                        {
+                                            <div class="span6" style="width: 48% !important; margin-left: 0;">
+                                                <input type="checkbox" class="chkPage" id="@("pg" + pageList[i].ID)" name="@("pg" + pageList[i].ID)" style="float:left;" />
+                                                <label class="pgitem" for="@("pg" + pageList[i].ID)" style="margin-left:25px;"
+                                                       pg-id="@pageList[i].ID" pg-title="@pageList[i].Title" pg-slug="@pageList[i].URL">
+                                                    @pageList[i].Title
+                                                </label>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div style="text-align: right; margin-top: 10px">
+                                    @if (pageList.Count() > 0)
+                                    {
+
+                                        <label style="width: 100px; text-align: left; display: inline; float: left;">
+                                            <input id="chkAllPage" type="checkbox" style="float: left;" />
+                                            <label class="lblitem" for="chkAllPage" style="margin-left: 25px;">
+                                                Select All
+                                            </label>
+                                        </label>
+                                        <button class="btn btn-blue btn-small" id="AddPage">
+                                            Add to Menu
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <div>No pages to display</div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFour">
+                                Link
+                            </a>
+                        </div>
+                        <div id="collapseFour" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <form action="#" id="frmLink">
+                                    <div>
+                                        <div class="control-group">
+                                            <div class="controls">
+                                                <label>
+                                                    Navigation Title
+                                                </label>
+                                                <input type="text" value="" maxlength="40" style="width: 70%" name="nav-title" id="nav-title"
+                                                       data-val-required="Enter Navigation Title" data-val="true" class="input-validation-error">
+                                                <div style="color: red">
+                                                    <span id="nav-title-error" data-valmsg-replace="true" data-valmsg-for="nav-title"
+                                                          class="field-validation-valid"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <div class="controls">
+                                                <label>
+                                                    Navigation URL
+                                                </label>
+                                                <input type="text" name="nav-url" id="nav-url" style="width: 90%" value="http://"
+                                                       data-val-required="Enter Navigation URL" placeholder="http://www.example.com"
+                                                       data-val-regex-pattern="^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$"
+                                                       data-val-regex="Enter Valid Navigation URL" data-val="true">
+                                                <div style="color: red">
+                                                    <span id="nav-url-error" data-valmsg-replace="true" data-valmsg-for="nav-url" class="field-validation-valid">
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <button class="btn btn-blue btn-small" id="AddNavUrl">
+                                            Add to Menu
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="span6" style="">
+                <div class="box">
+                    <div class="box-header">
+                        <span class="title">Menu</span>
+                    </div>
+                    <div class="box-content">
+                        <div class="padded">
+                            <div class="box-content">
+                                <div class="padded" style="padding-top: 0px">
+                                    <div class="">
+                                        <div class="nestedmenu">
+                                            <div class="cf nestable-lists" style="border: none">
+                                                <div class="dd" id="nestable3" style="width: 100%">
+                                                    <ol class="dd-list">
+                                                        @Html.Raw(ViewBag.strMenu)
+                                                    </ol>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @*<br><textarea id="nestable3-output" style="width: 100%;"></textarea>*@
+                                        <div style="text-align: right;padding-top:15px;">
+                                            <button class="btn btn-blue btn-small" id="SaveMenu">
+                                                Save Menu
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section BottomScript{
+    @*<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>*@
+    <script src="~/Areas/Admin/assets/js/jquery.nestable.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $("#chkAllCat").on("change", function () {
+                var isChecked = $(this).is(":checked");
+                $("#catCHList input[type=checkbox].chkCat").each(function () {
+                    $(this).prop('checked', isChecked);
+                });
+            });
+            $("#chkAllLabel").on("change", function () {
+                var isChecked = $(this).is(":checked");
+                $("#lblCHList input[type=checkbox].chkLabel").each(function () {
+                    $(this).prop('checked', isChecked);
+                });
+            });
+            $("#chkAllPage").on("change", function () {
+                var isChecked = $(this).is(":checked");
+                $("#pgCHList input[type=checkbox].chkPage").each(function () {
+                    $(this).prop('checked', isChecked);
+                });
+            });
+
+            registerScript();
+            var autoid = -1;
+            function getURLSlug(type, slug) {
+                var orgURL = "@strURL" + "/" + type + "/Details/" + slug;
+                return orgURL;
+            }
+            $("#AddNavUrl").click(function () {
+                if ($("#frmLink").valid()) {
+                    autoid++;
+                    addItem(0, $('#nav-title').val().trim(), $('#nav-url').val().trim(), 'Link');
+                    //registerScript();
+                    $('#nav-title').val(''); $('#nav-url').val('http://');
+                }
+                return false;
+            });
+            $("#AddCat").click(function () {
+                $('.dd-list .menu-item-settings').hide();
+                $("#catCHList input[type=checkbox]").each(function () {
+                    if ($(this).is(":checked")) {
+                        var catitem = $(this).closest('.span6').find('.catitem');
+                        var categoryid = catitem.attr('cat-id');
+                        var categorytitle = catitem.attr('cat-title');
+                        var categoryslug = getURLSlug("Category", catitem.attr('cat-slug'));
+                        autoid++;
+                        addItem(categoryid, categorytitle, categoryslug, 'Category');
+                        $(this).prop('checked', false);
+                    }
+                });
+                $("#chkAllCat").prop('checked', false);
+                //registerScript();
+            });
+
+            $("#AddLabel").click(function () {
+                $('.dd-list .menu-item-settings').hide();
+                $("#lblCHList input[type=checkbox]").each(function () {
+
+                    if ($(this).is(":checked")) {
+                        var lblitem = $(this).closest('.span6').find('.lblitem');
+                        var lblid = lblitem.attr('lbl-id');
+                        var labeltitle = lblitem.attr('lbl-title');
+                        var lblslug = getURLSlug("Label", lblitem.attr('lbl-slug'));
+                        autoid++;
+                        addItem(lblid, labeltitle, lblslug, 'Label');
+                        $(this).prop('checked', false);
+                    }
+                });
+                $("#chkAllLabel").prop('checked', false);
+                //registerScript();
+            });
+            $("#AddPage").click(function () {
+                $('.dd-list .menu-item-settings').hide();
+                $("#pgCHList input[type=checkbox]").each(function () {
+                    if ($(this).is(":checked")) {
+                        var pageitem = $(this).closest('.span6').find('.pgitem');
+                        var pageid = pageitem.attr('pg-id');
+                        var pagetitle = pageitem.attr('pg-title');
+                        var pageslug = getURLSlug("Content", pageitem.attr('pg-slug'));
+                        autoid++;
+                        addItem(pageid, pagetitle, pageslug, 'Page');
+                        $(this).prop('checked', false);
+                    }
+                });
+                $("#chkAllPage").prop('checked', false);
+                //registerScript();
+            });
+            function addItem(id, title, slug, type) {
+                if (title.length > 40) {
+                    title = title.substr(0, 39)
+                }
+                var menuItem = '<li class="dd-item dd3-item"  data-type=' + type + ' data-slug=' + slug + ' data-title=' + title + '  data-id=' + id + ' data-autoid=' + autoid + ' >' +
+                                    '<div class="dd-handle dd3-handle"></div>' +
+                                    '<div class="dd3-content">' +
+                                        '<div class="showSetting">' +
+                                            '<span class="menutitle">' + title + '</span>' +
+                                            '<span class="menutype">' + type + '</span>' +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<div class="menu-item-settings">' +
+                                        '<p>Navigation Title<br>' +
+                                            '<input type="text" value="' + title.trim() + '" class="itemtitle" maxlength="40" />' +
+                                        '</p>' +
+                                        '<p>Navigation URL <br><a target="_blank" href="' + slug + '">' + slug + '</a></p>' +
+                                        '<a class="item-delete">Remove</a> | <a class="item-cancel">Cancel</a>' +
+                                    '</div>' +
+                                '</li>';
+
+                $('.dd-list').html($('.dd-list').html() + menuItem);
+            }
+
+            $("#SaveMenu").click(function () {
+                //                $('#nestable3').nestable();
+                //                var cnt = 0;
+                $(".dd-list .dd-item").each(function () {
+                    var itemtitle = $(this).find('.menu-item-settings').first().find('input[type=text].itemtitle');
+
+                    $(this).attr('data-title', itemtitle.val());
+
+
+                });
+                //console.log($('#nestable3').nestable('serialize'));
+                $.ajax({
+                    type: "POST",
+                    url: '/Menus/AddMenu',
+                    data: { jMenu: window.JSON.stringify($('#nestable3').nestable('serialize')) },
+                    dataType: "json",
+                    success: function (data) {
+                        window.location = '/Admin/Menus/List';
+                    },
+                    error: function (data) {
+                        window.location = '/Admin/Menus/List';
+                    }
+                });
+
+            });
+
+            function registerScript() {
+                $(".nestedmenu").delegate(".item-delete", "click", function () {
+                    var ddItemCount = $(this).closest('.dd-list').find('.dd-item').length;
+                    if (ddItemCount == 1)
+                        $(this).closest('.dd-list').remove();
+                    else
+                        $(this).closest('.dd-item').remove();
+                    if ($("#nestable3").html().trim() == "") {
+                        $("#nestable3").html('<ol class="dd-list"></ol>');
+                    }
+                    $('#nestable3').nestable();
+                });
+                $(".nestedmenu").delegate(".item-cancel", "click", function () {
+                    $(this).closest('.menu-item-settings').hide();
+                });
+
+                $(".nestedmenu").delegate(".showSetting", "click", function () {
+                    var showhide = $(this).closest('.dd-item').find('.menu-item-settings').css('display');
+                    $('.dd-list .menu-item-settings').hide();
+                    if (showhide == 'none')
+                        $(this).closest('.dd-item').find('.menu-item-settings').first().show();
+                    else
+                        $(this).closest('.dd-item').find('.menu-item-settings').first().hide();
+                });
+
+                $(".nestedmenu").delegate(".itemtitle", "input", function () {
+                    $(this).attr('value', $(this).val());
+                    $(this).attr('value', $(this).val());
+                    $(this).closest('.dd-item').find('.menutitle').first().html($(this).val());
+                });
+            }
+
+            $('#nestable3').nestable();
+
+        });
+    </script>
+}

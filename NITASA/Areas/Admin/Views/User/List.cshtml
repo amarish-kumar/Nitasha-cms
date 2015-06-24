@@ -1,7 +1,185 @@
-﻿
+﻿@model List<Tuple<User, string>>
+@using NITASA.Data
+@using NITASA.Helpers
+@using NITASA.Areas.Admin.Helper
 @{
-    ViewBag.Title = "List";
+    ViewBag.Title = "User List";
+
+    WebGrid grid = new WebGrid(Model, rowsPerPage: 10, canSort: true);
 }
+@section PageLevelStyles
+{
+    <style>
+        tfoot td {
+            line-height: 3 !important;
+        }
 
-<h2>List</h2>
+        .custom-pagination td {
+            padding-left: 10px !important;
+        }
 
+        .table-normal tbody td.col1 {
+            width: 100px;
+            text-align: center;
+        }
+
+        .table-normal tbody td.col2 {
+            width: 100px;
+            text-align: center;
+        }
+
+        .table-normal tbody td.col3 {
+            width: 115px;
+            text-align: center;
+        }
+    </style>
+}
+        <div class="main-content">
+            <div class="container-fluid padded">
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="padded">
+                        <div class="alert alert-success">
+                            <button class="close" data-dismiss="alert" type="button">×</button>
+                            @TempData["SuccessMessage"]
+                        </div>
+                    </div>
+                }
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="padded">
+                        <div class="alert alert-error">
+                            <button class="close" data-dismiss="alert" type="button">×</button>
+                            @TempData["ErrorMessage"]
+                        </div>
+                    </div>
+                }
+                <div class="row-fluid">
+                    <div class="span12">
+                        @using (Html.BeginForm("List", "User", FormMethod.Get))
+                        {
+                            <div class="box">
+                                <div class="box-header">
+                                    <span class="title">Search User</span>
+                                    @if (UserRights.HasRights(Rights.CreateNewUsers))
+                                    {
+                                        <ul class="box-toolbar">
+                                            <li><a href="@Url.Action("Add")" title="Add User"><i class="icon-plus-sign" style="margin-top: 10px"></i></a></li>
+                                        </ul>
+                                    }
+                                </div>
+                                <div class="box-content">
+                                    <div class="padded">
+                                        <table class="form-horizontal fill-up validatable width100per">
+                                            <tr>
+                                                <td class="width10per">User</td>
+                                                <td class="width70per">
+                                                    <input type="text" id="txtSearchUser" name="userName" class="width100per" placeholder="Enter First Name, Last Name" />
+                                                </td>
+                                                <td class="width20per">
+                                                    <input type="submit" class="btn btn-blue" value="Search" />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="box">
+                            <div class="box-header">
+                                <span class="title">Browse Users</span>
+                            </div>
+                            <div class="box-content">
+                                @if (Model.Count() > 0)
+                                {
+                                    @grid.GetHtml(tableStyle: "table table-normal", headerStyle: "head", alternatingRowStyle: "alt",
+                                firstText: "First", nextText: "Next", previousText: "Prev", lastText: "Last", footerStyle: "custom-pagination",
+                                mode: WebGridPagerModes.All, columns: grid.Columns(
+                                        grid.Column(columnName: "item1.FullName", header: "Name", style: "col0"),
+                                        grid.Column(columnName: "item1.Email", header: "Email", style: "col0"),
+                                        grid.Column(columnName: "item2", header: "Roles", style: "col1"),
+                                        grid.Column(columnName: "item1.IsActive", header: "Status", style: "col2",
+                                        format: @<text>
+                                            @(item.item1.IsActive == true ? "Active" : "In Active")
+                                        </text>
+                                        ),
+                                        grid.Column(header: "Change Status", style: "col3", format: @<text>
+                                            @if (item.item2 != "Administrator")
+                                            {
+                                                if (Common.CurrentUserID() == item.item1.ID)
+                                                {
+                                                    if (UserRights.HasRights(Rights.EditUserSelf))
+                                                    {
+                                                        <input class="iButton-icons" type="checkbox" onchange="changestatus(this,'@item.item1.GUID');" @(item.item1.IsActive == true ? "checked='checked'" : "") />
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (UserRights.HasRights(Rights.EditOtherUsers))
+                                                    {
+                                                        <input class="iButton-icons" type="checkbox" onchange="changestatus(this,'@item.item1.GUID');" @(item.item1.IsActive == true ? "checked='checked'" : "") />
+                                                    }
+                                                }
+                                            }</text>
+                                        ),
+                                        grid.Column(header: "Action", style: "col3", format: @<text>
+                                            @if (item.item2 != "Administrator")
+                                            {
+                                                if (Common.CurrentUserID() == item.item1.ID)
+                                                {
+                                                    if (UserRights.HasRights(Rights.EditUserSelf))
+                                                    {
+                                                        @Html.ActionLink("Edit", "Edit", new { GUID = item.item1.GUID }, new { @class = "btn btn-small btn-blue" })
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (UserRights.HasRights(Rights.EditOtherUsers))
+                                                    {
+                                                        @Html.ActionLink("Edit", "Edit", new { GUID = item.item1.GUID }, new { @class = "btn btn-small btn-blue" })
+                                                    }
+                                                }
+                                                if (Common.CurrentUserID() == item.item1.ID)
+                                                {
+                                                    if (UserRights.HasRights(Rights.DeleteUserSelf))
+                                                    {
+                                                        @Html.ActionLink("Delete", "Delete", new { GUID = item.item1.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this User ?');" })
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (UserRights.HasRights(Rights.DeleteOtherUsers))
+                                                    {
+                                                        @Html.ActionLink("Delete", "Delete", new { GUID = item.item1.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this User ?');" })
+                                                    }
+                                                }
+                                            }</text>
+                                                                 )
+                                                             )
+                                                     )
+                                }
+                                else
+                                {
+                                    <div class="padded">No Users Found.</div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display:none">
+            @using (Html.BeginForm("changeStatus", "User", FormMethod.Get, new { id = "frmCS" }))
+            {
+                <input type="hidden" name="isActive" id="isActive" />
+                <input type="hidden" name="GUID" id="GUID" />
+            }
+        </div>
+
+        <script>
+            function changestatus(obj, GUID) {
+                $("#isActive").val(obj.checked);
+                $("#GUID").val(GUID);
+                $("#frmCS").submit();
+            };
+        </script>

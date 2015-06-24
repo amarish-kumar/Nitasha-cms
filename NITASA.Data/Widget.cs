@@ -10,14 +10,14 @@ namespace NITASA.Data
     public class Widget
     {
         [Key]
-        public int WidgetID { get; set; }
-        public string WidgetGUID { get; set; }
+        public int ID { get; set; }
+        public string GUID { get; set; }
         [AllowHtml]
-        public string WidgetName { get; set; }
+        public string Name { get; set; }
         [AllowHtml]
-        public string WidgetTitle { get; set; }
-        public string WidgetOption { get; set; }
-        public int WidgetOrder { get; set; }
+        public string Title { get; set; }
+        public string Option { get; set; }
+        public int DisplayOrder { get; set; }
         public bool IsActive { get; set; }
         public int? ActiveBy { get; set; }
         public DateTime? ActiveOn { get; set; }

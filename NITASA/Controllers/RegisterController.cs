@@ -1,8 +1,10 @@
-﻿using NITASA.Data;
+﻿using NITASA.Areas.Admin.Helper;
+using NITASA.Data;
 using NITASA.Helpers;
 using NITASA.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web;
@@ -32,22 +34,21 @@ namespace NITASA.Controllers
                     try
                     {
                         NITASA.Data.User user = new Data.User();
+                        user.GUID = Common.GetRandomGUID();
                         user.FirstName = model.FirstName;
                         user.LastName = model.LastName;
                         user.Email = model.UserEmail;
-
-                        int saltKey = Common.GetSaltKey();
-                        string encryptedPassword = Common.Encrypt(model.Password, Convert.ToString(saltKey), true);
-                        user.Password = encryptedPassword;
-                        user.SaltKey = saltKey;
-
+                        user.SaltKey = CryptoUtility.GetNewSalt();
+                        user.Password = CryptoUtility.GetPasswordHash(model.Password, user.SaltKey);
+                        user.ProfilePicURL = "/Areas/Admin/assets/images/avatars/noprofile.jpg";
                         user.IsActive = true;
                         user.IsDefault = true;
                         user.AddedOn = DateTime.Now;
+                        user.RoleID = 2;
                         context.User.Add(user);
                         context.SaveChanges();
 
-                        TempData["message"] = ".Net CMS setup successfully.";
+                        TempData["message"] = "NITASA CMS setup successfully.";
                         return RedirectToAction("Index", "Home");
                     }
                     catch (DbEntityValidationException ex)
