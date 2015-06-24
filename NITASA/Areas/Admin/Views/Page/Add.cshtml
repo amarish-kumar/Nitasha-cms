@@ -11,7 +11,7 @@
     {
         ViewBag.Title = "Edit Page";
     }
-    //List<AddonType> AddonTypeList = Common.GetAddonTypes();
+    string Addons = Common.GetAddons();    
 }
 @section PageLevelStyles{
     <style type="text/css">
@@ -101,19 +101,7 @@
                     text: 'Addons',
                     type: 'menubutton',
                     icon: false,
-                    menu: [
-                        @*@foreach(AddonType item in AddonTypeList)
-                        {
-                        <text>
-                            {
-                                text: '@item.Name',
-                                onclick: function () {
-                                    editor.insertContent('&lt;Addon&gt;@item.Code&lt;/Addon&gt;');
-                                }
-                            },
-                        </text>
-                        }*@
-                    ]
+                    menu: @Html.Raw(Addons)
                 });
             }
         });
@@ -279,17 +267,35 @@
 @section BottomScript{
     <script type="text/javascript">
         $(document).ready(function () {
+            $("body").delegate(".mce-menu-item", "click", function () {
+                var did= $(this).attr("id");
+                if(did.indexOf('mceu')==-1){                    
+                    if(did.indexOf('tinyAll')!=-1){
+                        $(this).parent().find(".mce-menu-item").each(function( i ) {
+                            var id = $(this).attr("id");
+                            if (id.indexOf('tinyAll')==-1) {
+                                var name = $("#"+id+"-text").text();
+                                tinyMCE.activeEditor.execCommand('mceInsertContent', false, "&lt;Addon name=\"" + name + "\"&gt;" + id+ "&lt;/Addon&gt;");
+                            }
+                        });
+                    }
+                    else{
+                        var name = $("#"+did+"-text").text();
+                        tinyMCE.activeEditor.execCommand('mceInsertContent', false, "&lt;Addon name=\"" + name + "\"&gt;" + did+ "&lt;/Addon&gt;");
+                    }
+                }
+            });
             @if (Model == null)
             {
                 <text>
-            $("#content_Title").on("input", function () {
-                var currText = $("#content_Title").val();
-                var replacedText = currText.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-                $("#editable-slug").html(replacedText);
-                $("#edit-slug-text").val(replacedText);
-                $("#content_URL").val(replacedText);
-            });
-            </text>
+                    $("#content_Title").on("input", function () {
+                        var currText = $("#content_Title").val();
+                        var replacedText = currText.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+                        $("#editable-slug").html(replacedText);
+                        $("#edit-slug-text").val(replacedText);
+                        $("#content_URL").val(replacedText);
+                    });
+                </text>
             }
             $("#edit-slug").click(function () {
                 $("#editable-slug").css("display", "none");
@@ -337,6 +343,7 @@
                 $('#uploadedImage').attr("src", imgPath);
                 $("#MediaPopup").modal("hide");
             });
+
         });
     </script>
 }

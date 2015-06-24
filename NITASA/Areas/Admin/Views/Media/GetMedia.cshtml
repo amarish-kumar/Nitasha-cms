@@ -46,7 +46,7 @@
                             @foreach (Media item in Model)
                             {
                                 <div class="media-thumb">
-                                    <img class="imgSelect" style="height: 100px;width: 100px;cursor:pointer;" alt="" src="@item.Path" />
+                                    <img class="imgSelect" style="height: 100px;width: 100px;cursor:pointer;" alt="" src="/content/media/@item.FileName" />
                                 </div>
                             }
                         </div>
@@ -59,7 +59,7 @@
                                 @foreach (Media item in MediaList)
                                 {
                                     <div class="media-thumb">
-                                        <img class="imgSelect" style="height: 100px;width: 100px;cursor:pointer;" alt="" src="@item.Path" />
+                                        <img class="imgSelect" style="height: 100px;width: 100px;cursor:pointer;" alt="" src="/content/media/@item.FileName" />
                                     </div>
                                 }
                             </div>

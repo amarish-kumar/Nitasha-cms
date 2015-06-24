@@ -1,4 +1,5 @@
-﻿using NITASA.Data;
+﻿using Newtonsoft.Json;
+using NITASA.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,8 +13,6 @@ namespace NITASA.Helpers
 {
     public class Common
     {
-        private static NTSDBContext _dbContext = new NTSDBContext();
-
         public static string Encrypt(string toEncrypt, string key, bool useHashing)
         {
             byte[] keyArray;
@@ -146,80 +145,82 @@ namespace NITASA.Helpers
         public static string GetNewUrl(string url, string type, int id)
         {
             string newUrl = url.ToLower();
-
-            // check for Post
-            //if (type.ToLower() == "post")
-            //{
-            //    bool toContinue = true;
-            //    int urlCounter = 1;
-            //    do
-            //    {
-            //        var checkUrlExist = _dbContext.Content.Where(m => m.ContentType.ToLower() == "post").Where(m => 
-            //                m.ContentURL.ToLower() == newUrl && (id==0 ||  m.ContentID != id));
-            //        if (checkUrlExist.Count() > 0)
-            //        {
-            //            newUrl = url + urlCounter.ToString();
-            //            urlCounter++;
-            //        }
-            //        else
-            //        {
-            //            toContinue = false;
-            //        }
-            //    } while (toContinue);
-            //}
-            if (type.ToLower() == "category")
+            using (NTSDBContext _dbContext = new NTSDBContext())
             {
-                bool toContinue = true;
-                int urlCounter = 1;
-                do
+                // check for Post
+                //if (type.ToLower() == "post")
+                //{
+                //    bool toContinue = true;
+                //    int urlCounter = 1;
+                //    do
+                //    {
+                //        var checkUrlExist = _dbContext.Content.Where(m => m.ContentType.ToLower() == "post").Where(m => 
+                //                m.ContentURL.ToLower() == newUrl && (id==0 ||  m.ContentID != id));
+                //        if (checkUrlExist.Count() > 0)
+                //        {
+                //            newUrl = url + urlCounter.ToString();
+                //            urlCounter++;
+                //        }
+                //        else
+                //        {
+                //            toContinue = false;
+                //        }
+                //    } while (toContinue);
+                //}
+                if (type.ToLower() == "category")
                 {
-                    var checkUrlExist = _dbContext.Category.Where(m => m.Slug.ToLower() == newUrl && (id == 0 || m.ID != id));
-                    if (checkUrlExist.Count() > 0)
+                    bool toContinue = true;
+                    int urlCounter = 1;
+                    do
                     {
-                        newUrl = url + urlCounter.ToString();
-                        urlCounter++;
-                    }
-                    else
-                    {
-                        toContinue = false;
-                    }
-                } while (toContinue);
-            }
-            else if (type.ToLower() == "label")
-            {
-                bool toContinue = true;
-                int urlCounter = 1;
-                do
+                        var checkUrlExist = _dbContext.Category.Where(m => m.Slug.ToLower() == newUrl && (id == 0 || m.ID != id));
+                        if (checkUrlExist.Count() > 0)
+                        {
+                            newUrl = url + urlCounter.ToString();
+                            urlCounter++;
+                        }
+                        else
+                        {
+                            toContinue = false;
+                        }
+                    } while (toContinue);
+                }
+                else if (type.ToLower() == "label")
                 {
-                    var checkUrlExist = _dbContext.Label.Where(m => m.Slug.ToLower() == newUrl && (id == 0 || m.ID != id));
-                    if (checkUrlExist.Count() > 0)
+                    bool toContinue = true;
+                    int urlCounter = 1;
+                    do
                     {
-                        newUrl = url + urlCounter.ToString();
-                        urlCounter++;
-                    }
-                    else
-                    {
-                        toContinue = false;
-                    }
-                } while (toContinue);
-            }
-            else // for Page and post
-            {
-                bool toContinue = true;
-                int urlCounter = 1;
-                do
+                        var checkUrlExist = _dbContext.Label.Where(m => m.Slug.ToLower() == newUrl && (id == 0 || m.ID != id));
+                        if (checkUrlExist.Count() > 0)
+                        {
+                            newUrl = url + urlCounter.ToString();
+                            urlCounter++;
+                        }
+                        else
+                        {
+                            toContinue = false;
+                        }
+                    } while (toContinue);
+                }
+                else // for page and post
                 {
-                    var checkUrlExist = _dbContext.Content.Where(m => m.URL.ToLower() == newUrl && (id == 0 || m.ID != id));
-                    if (checkUrlExist.Count() > 0)
+                    bool toContinue = true;
+                    int urlCounter = 1;
+                    do
                     {
-                        newUrl = url + urlCounter.ToString();
-                        urlCounter++;
-                    }
-                    else
-                    {
-                        toContinue = false;
-                    }
-                } while (toContinue);
+                        var checkUrlExist = _dbContext.Content.Where(m => m.URL.ToLower() == newUrl && (id == 0 || m.ID != id));
+                        if (checkUrlExist.Count() > 0)
+                        {
+                            newUrl = url + urlCounter.ToString();
+                            urlCounter++;
+                        }
+                        else
+                        {
+                            toContinue = false;
+                        }
+                    } while (toContinue);
+                }
             }
             return newUrl;
         }
@@ -265,5 +266,109 @@ namespace NITASA.Helpers
                 return false;
         }
 
+        //public static string GetAddons()
+        //{
+        //    NTSDBContext _dbContext = new NTSDBContext();
+
+        //    List<string> temp = new List<string> { "page", "post" };
+        //    List<Content> AllAddons = _dbContext.Content.Where(x => x.isPublished==true && x.IsDeleted == false && !temp.Contains(x.Type)).ToList();
+
+        //    List<string> addontypes = AllAddons .Select(x => x.Type).Distinct().ToList();
+
+        //    string strAddons = string.Empty;
+
+        //    foreach (string name in addontypes)
+        //    {
+        //        List<Content> contents = AllAddons.Where(x => x.Type == name).ToList();
+        //        string allcontents = string.Join("", contents.Select(x => "&lt;Addon name=\"" + x.Title + "\"&gt;" + x.ID + "&lt;/Addon&gt;").ToList());
+        //        strAddons += "{" +
+        //        "text: '" + name + "'," +
+        //        //"onclick: function(){" +
+        //        //"             editor.insertContent('" + allcontents + "');return false;" +
+        //        //"}," +
+        //        "menu: [";
+
+        //        if (contents.Count() > 1)
+        //        {
+        //            strAddons += "    {" +
+        //                        "        text: 'All'," +
+        //                        "        id:'foobar',"+
+        //                        "        onclick: function(){" +
+        //                        "             editor.insertContent('" + allcontents + "');" +
+        //                        "        }" +
+        //                        "    },";
+        //        }
+        //        foreach (var item in contents)
+        //        {
+        //            strAddons += "    {" +
+        //                        "        text: '" + item.Title + "'," +
+        //                        "        onclick: function(){" +
+        //                        "             editor.insertContent('&lt;Addon name=\"" + item.Title + "\"&gt;" + item.ID + "&lt;/Addon&gt;');" +
+        //                        "        }" +
+        //                        "    },";
+        //        }
+        //        strAddons = strAddons.Remove(strAddons.LastIndexOf(","), 1);
+        //        strAddons += "]" +
+        //        "},";
+        //    }
+        //    strAddons = strAddons.Remove(strAddons.LastIndexOf(","), 1);
+        //    return strAddons;
+        //}
+        public static string GetAddons()
+        {
+            NTSDBContext _dbContext = new NTSDBContext();
+            List<string> temp = new List<string> { "page", "post" };
+            List<Content> AllAddons = _dbContext.Content.Where(x => x.isPublished == true && x.IsDeleted == false && !temp.Contains(x.Type)).ToList();
+
+            List<string> addontypes = AllAddons.Select(x => x.Type).Distinct().ToList();
+
+            List<Menu> itemList =new List<Menu>();
+            itemList = (from at in addontypes
+                       select
+                            new Menu{
+                                    text=at,
+                                    SubMenu = (from ad in AllAddons
+                                              where ad.Type == at
+                                              select new Menu {id = ad.ID.ToString(),text =ad.Title}).ToList()
+                            }
+                        ).ToList();
+            Random r = new Random();
+            itemList.ForEach(x=>
+                x.SubMenu.InsertRange(0, new List<Menu> { new Menu { id = string.Concat("tinyAll",r.Next()), text = "All" } })
+            );
+            string json = JsonConvert.SerializeObject(itemList);
+
+            /*string json = JsonConvert.SerializeObject(
+                                new List<Menu>
+                                    {
+                                        new Menu{ 
+                                            //id ="1", 
+                                            text ="A"
+                                        },
+                                        new Menu{ 
+                                            //id ="2", 
+                                            text ="B",
+                                            SubMenu =  new List<Menu> {
+                                                new Menu{ 
+                                                    id ="3", 
+                                                    text ="C"
+                                                },
+                                                new Menu{ 
+                                                    id ="4", 
+                                                    text ="D' company"
+                                                }
+                                            }
+                                        }
+                                    });*/
+            return json;
+        }
+    }
+
+    public class Menu
+    {
+        public string text { get; set; }
+        public string id { get; set; }
+        [JsonProperty(PropertyName = "menu")]
+        public List<Menu> SubMenu { get; set; }
     }
 }

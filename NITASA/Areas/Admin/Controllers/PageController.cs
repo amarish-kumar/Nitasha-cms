@@ -47,7 +47,6 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 if (!UserRights.HasRights(Rights.CreateNewPages))
                     return RedirectToAction("AccessDenied", "Home");
-                //ViewBag.Templatelist = new SelectList(dbContext.ContentTemplate.Where(m => m.IsDeleted == false).ToList(), "TemplateID", "TemplateName");
                 return View();
             }
             else
@@ -70,7 +69,6 @@ namespace NITASA.Areas.Admin.Controllers
                     cont.Description= cont.Description.Replace("<img src=\"../../", "<img src=\"../../../");
                     pModel.content = cont;
                     pModel.meta = dbContext.Meta.Where(m => m.ContentID == cont.ID).FirstOrDefault();
-                    //ViewBag.Templatelist = new SelectList(dbContext.ContentTemplate.Where(m => m.IsDeleted == false).ToList(), "TemplateID", "TemplateName", cont.TemplateID);
                     return View(pModel);
                 }
                 else
@@ -133,8 +131,7 @@ namespace NITASA.Areas.Admin.Controllers
                 contentNew.Description= contentPage.content.Description;
                 contentNew.Title = contentPage.content.Title;
                 contentNew.Type = "page";
-                contentNew.URL = Common.ToUrlSlug(contentPage.content.URL, "Page", 0);
-                //contentNew.TemplateID = contentPage.content.TemplateID;
+                contentNew.URL = Common.ToUrlSlug(contentPage.content.URL, "page", 0);
                 contentNew.CoverContent = contentPage.content.CoverContent;
                 if (!string.IsNullOrEmpty(contentPage.content.FeaturedImage))
                 {
@@ -173,7 +170,6 @@ namespace NITASA.Areas.Admin.Controllers
                 contentUpdate.Title = contentPage.content.Title;
                 if (contentUpdate.URL.ToLower() != contentPage.content.URL.ToLower())
                     contentUpdate.URL = Common.ToUrlSlug(contentPage.content.URL, "Page", contentUpdate.ID);
-                //contentUpdate.TemplateID = contentPage.content.TemplateID;
                 contentUpdate.CoverContent = contentPage.content.CoverContent;
                 if (!string.IsNullOrEmpty(contentPage.content.FeaturedImage))
                 {
