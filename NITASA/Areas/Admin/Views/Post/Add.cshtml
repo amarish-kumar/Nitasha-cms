@@ -83,34 +83,14 @@
                 "insertdatetime nonbreaking save table contextmenu directionality",
                 "emoticons template paste textcolor colorpicker textpattern "
             ],
-            toolbar1: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | Addons",
+            toolbar1: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
             toolbar2: "preview | forecolor backcolor emoticons",
             image_advtab: false,
             extended_valid_elements: $ext,
             force_br_newlines: false,
             force_p_newlines: false,
             forced_root_block: '',
-            file_browser_callback: myFileBrowser,
-            setup: function (editor) {
-                editor.addButton('Addons', {
-                    text: 'Addons',
-                    type: 'menubutton',
-                    icon: false,
-                    menu: [
-                        @*@foreach(AddonType item in AddonTypeList)
-                        {
-                            <text>
-                                {
-                                    text: '@item.Name',
-                                    onclick: function () {
-                                        editor.insertContent('&lt;Addon&gt;@item.Code&lt;/Addon&gt;');
-                                    }
-                                },
-                            </text>
-                        }*@
-                    ]
-                });
-            }
+            file_browser_callback: myFileBrowser
         });
     </script>
 }

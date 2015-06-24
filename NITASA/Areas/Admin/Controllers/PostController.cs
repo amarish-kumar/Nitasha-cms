@@ -51,7 +51,6 @@ namespace NITASA.Areas.Admin.Controllers
 
             ViewBag.Labellist = new SelectList(context.Label.ToList(), "ID", "Name");
             ViewBag.Categorylist = new SelectList(context.Category.Where(m => m.IsDeleted == false).ToList(), "ID", "Name");
-            //ViewBag.Templatelist = new SelectList(context.ContentTemplate.Where(m => m.IsDeleted == false).ToList(), "TemplateID", "TemplateName");
 
             return View();
         }
@@ -89,14 +88,13 @@ namespace NITASA.Areas.Admin.Controllers
             }
             ViewBag.Labellist = new SelectList(context.Label.ToList(), "ID", "Name");
             ViewBag.Categorylist = new SelectList(context.Category.Where(m => m.IsDeleted == false).ToList(), "ID", "Name");
-            //ViewBag.Templatelist = new SelectList(context.ContentTemplate.Where(m => m.IsDeleted == false).ToList(), "TemplateID", "TemplateName");
 
             return View(content);
         }
         public void SavePostDetails(Content Model, bool isPublished)
         {
             Content cont = new Content();
-            cont.Type = "Post";
+            cont.Type = "post";
             cont.Title = Model.Title;
 
             //var sanitizer = new Html.HtmlSanitizer();
@@ -109,7 +107,6 @@ namespace NITASA.Areas.Admin.Controllers
             cont.Description = Model.Description;
             cont.GUID = Common.GetRandomGUID();
             cont.URL = Common.ToUrlSlug(Model.URL, "post", 0);
-            //cont.TemplateID = Model.TemplateID;
             cont.IsSlugEdited = Model.IsSlugEdited;
             cont.IsFeatured = Model.IsFeatured;
             cont.ContentOrder = Model.ContentOrder;
@@ -246,7 +243,7 @@ namespace NITASA.Areas.Admin.Controllers
             }
             else
             {
-                TempData["ErrorMessage"] = "Category Not Found.";
+                TempData["ErrorMessage"] = "Post Not Found.";
             }
             return RedirectToAction("List");
         }
@@ -259,12 +256,12 @@ namespace NITASA.Areas.Admin.Controllers
                 if (Common.CurrentUserID() == curCont.AddedBy)
                 {
                     if (!UserRights.HasRights(Rights.EditOwnPosts))
-                        return RedirectToAction("AccessDenied", "Dashboard");
+                        return RedirectToAction("AccessDenied", "Home");
                 }
                 else
                 {
                     if (!UserRights.HasRights(Rights.EditOtherUsersPosts))
-                        return RedirectToAction("AccessDenied", "Dashboard");
+                        return RedirectToAction("AccessDenied", "Home");
                 }
 
                 curCont.Description= curCont.Description.Replace("<img src=\"../../", "<img src=\"../../../");
@@ -294,7 +291,6 @@ namespace NITASA.Areas.Admin.Controllers
                 }
                 ViewBag.Categorylist = Categorylist;
 
-                //ViewBag.Templatelist = new SelectList(context.ContentTemplate.Where(m => m.IsDeleted == false).ToList(), "TemplateID", "TemplateName", curCont.TemplateID);
                 List<Meta> metaList = context.Meta.Where(m => m.ContentID == curCont.ID).ToList();
                 Meta meta = new Meta();
                 if (metaList.Count() == 1)
@@ -346,7 +342,6 @@ namespace NITASA.Areas.Admin.Controllers
                         content.Description= Model.Description.Replace("<img src=\"../../../", "<img src=\"../../");
                         if (content.URL.ToLower() != Model.URL.ToLower())
                             content.URL = Common.ToUrlSlug(Model.URL, "post", content.ID);
-                        //content.TemplateID = Model.TemplateID;
                         content.IsSlugEdited = Model.IsSlugEdited;
                         content.IsFeatured = Model.IsFeatured;
                         content.ContentOrder = Model.ContentOrder;
