@@ -74,7 +74,6 @@ namespace NITASA.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult ChangePassword(ChangePassword cpassword)
         {
-            string keyToDescript = ConfigurationManager.AppSettings["EncKey"];
             if (string.IsNullOrWhiteSpace(cpassword.currentpassword) || string.IsNullOrWhiteSpace(cpassword.newpassword) || string.IsNullOrWhiteSpace(cpassword.confirmpassword))
             {
                 TempData["Error"] = "Please enter all 3 password value to change password";
@@ -96,16 +95,19 @@ namespace NITASA.Areas.Admin.Controllers
                     }
                     else
                     {
-                        string password = Common.Decrypt(userToChange.Password, keyToDescript, true);
-                        if (password != cpassword.currentpassword)
+                        //string password = Common.Decrypt(userToChange.Password, keyToDescript, true);
+                        string passwordHash = CryptoUtility.GetPasswordHash(cpassword.currentpassword, userToChange.SaltKey);
+                        if (string.Compare(userToChange.Password, passwordHash, false) == 0)
                         {
-                            TempData["Error"] = "Please enter correct current password";
+                            userToChange.SaltKey = CryptoUtility.GetNewSalt();
+                            userToChange.Password = CryptoUtility.GetPasswordHash(cpassword.newpassword, userToChange.SaltKey);
+                            //userToChange.Password = Common.Encrypt(cpassword.newpassword, keyToDescript, true);
+                            context.SaveChanges();
+                            TempData["Message"] = "Password changed successfully";
                         }
                         else
                         {
-                            userToChange.Password = Common.Encrypt(cpassword.newpassword, keyToDescript, true);
-                            context.SaveChanges();
-                            TempData["Message"] = "Password changed successfully";
+                            TempData["Error"] = "Please enter correct current password";
                         }
                     }
                 }

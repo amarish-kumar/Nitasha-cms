@@ -1,5 +1,6 @@
 ﻿using NITASA.Areas.Admin.Helper;
 using NITASA.Data;
+using NITASA.Helpers;
 using NITASA.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -183,32 +184,18 @@ namespace NITASA.Controllers
         private bool SaveConfig(string dbName)
         {
             string connectionstring = "";
-            if (SaveConnectionStringToConfig(dbName,ref connectionstring ))
-            {
-                NTSDBContext context = new NTSDBContext("NITASAConnection");
-                context.Database.Connection.ConnectionString = connectionstring;
-                context.Database.CreateIfNotExists();
-                InitializeDatabase(context);
-                TempData["message"] = "Configuration file updated successfully. Please enter admin login credentials.";
-                return true;
-            }
-            else
-            {
-                ViewBag.invalidData = "Error occured while updating configuration file.";
-            }
-            return false;
-        }
-        private bool SaveConnectionStringToConfig(string dbname,ref string connectionstring)
-        {
-            var result = false;
             try
             {
                 var configuration = WebConfigurationManager.OpenWebConfiguration("~");
                 var section = (ConnectionStringsSection)configuration.GetSection("connectionStrings");
+                connectionstring = ConnectionString.Replace("master", dbName);
                 
-                connectionstring = ConnectionString.Replace("master", dbname);
-                section.ConnectionStrings["NITASAConnection"].ConnectionString = connectionstring;
+                NTSDBContext context = new NTSDBContext("NITASAConnection");
+                context.Database.Connection.ConnectionString = connectionstring;
+                context.Database.CreateIfNotExists();
+                InitializeDatabase(context);
 
+                section.ConnectionStrings["NITASAConnection"].ConnectionString = connectionstring;
                 string[] allKeys = configuration.AppSettings.Settings.AllKeys;
                 if (allKeys.Contains("Installed"))
                 {
@@ -219,19 +206,20 @@ namespace NITASA.Controllers
                     KeyValueConfigurationElement kv = new KeyValueConfigurationElement("Installed", "true");
                     configuration.AppSettings.Settings.Add(kv);
                 }
-             
-                configuration.Save();
-                result = true;
-            }
-            catch { return false; }
-            finally { }
-            return result;
-        }
 
+                configuration.Save();
+                TempData["message"] = "Configuration file updated successfully. Please enter admin login credentials.";
+                return true;
+            }
+            catch (Exception ex){
+                ViewBag.invalidData = "Error occured while updating configuration file."; 
+                return false;
+            }
+        }
         protected void InitializeDatabase(NTSDBContext context)
         {
             Role AdminRole = new Role();
-            AdminRole.GUID = Guid.NewGuid().ToString().Replace("-", "");
+            AdminRole.GUID = Common.GetRandomGUID();
             AdminRole.Name = "Administrator";
             AdminRole.AddedBy = 1;
             AdminRole.AddedOn = DateTime.UtcNow;
@@ -239,13 +227,14 @@ namespace NITASA.Controllers
             context.SaveChanges();
 
             User user = new User();
-            user.GUID = Guid.NewGuid().ToString().Replace("-", "");
-            user.FirstName = "Admin";
-            user.LastName = "DRC";
-            user.Email = "admin@drc.com";
-            user.Password = "jRXwvDYeMhgzKTpu9G673Q==";
+            user.GUID = Common.GetRandomGUID();
+            user.FirstName = "Super";
+            user.LastName = "Admin";
+            user.Email = ConfigurationManager.AppSettings["DefaultSuperAdminEmail"].ToString();
+            user.SaltKey = CryptoUtility.GetNewSalt();
+            string DefaultPassword = ConfigurationManager.AppSettings["DefaultSuperAdminPassword"].ToString();
+            user.Password = CryptoUtility.GetPasswordHash(DefaultPassword, user.SaltKey); 
             user.ProfilePicURL = "/Areas/Admin/assets/images/avatars/noprofile.jpg";
-            user.SaltKey = Convert.ToInt32(ConfigurationManager.AppSettings["EncKey"]);
             user.IsActive = true;
             user.IsDefault = true;
             user.AddedOn = DateTime.UtcNow;
@@ -255,9 +244,8 @@ namespace NITASA.Controllers
             context.SaveChanges();
             int userID = user.ID;
 
-            #region Assign Admin Access Rights
             List<AccessPermission> AllRightsList = UserRights.GetAllAccessPermission();
-
+            #region Assign Admin Access Rights
             /*List<RightsInRole> AdminRightsInRoleList = new List<RightsInRole>();
             AdminRightsInRoleList = (from rid in AllRightsList select new RightsInRole { RightsName = rid.Name, RoleID = AdminRole.RoleID }).ToList();
 
@@ -267,7 +255,7 @@ namespace NITASA.Controllers
 
             #region Add Editors Role and Assign Access Rights
             Role EditorsRole = new Role();
-            EditorsRole.GUID = Guid.NewGuid().ToString().Replace("-", "");
+            EditorsRole.GUID = Common.GetRandomGUID();
             EditorsRole.Name = "Editors";
             EditorsRole.AddedBy = userID;
             EditorsRole.AddedOn = DateTime.UtcNow;
@@ -315,7 +303,7 @@ namespace NITASA.Controllers
 
             //Add Default Content
             Content content = new Content();
-            content.GUID = Guid.NewGuid().ToString().Replace("-", "");
+            content.GUID = Common.GetRandomGUID();
             content.Type = "Post";
             content.Title = "Welcome to Nixon DotNet CMS ";
             content.URL = "Welcome-to-Nixon-DotNet-CMS";
@@ -335,7 +323,7 @@ namespace NITASA.Controllers
             // Add default category
             Category conCategory = new Category();
             conCategory.Name = "DotNet";
-            conCategory.GUID = Guid.NewGuid().ToString().Replace("-", "");
+            conCategory.GUID = Common.GetRandomGUID();
             conCategory.Slug = "dotnet";
             conCategory.ParentCategoryID = 0;
             conCategory.AddedBy = userID;
@@ -363,56 +351,56 @@ namespace NITASA.Controllers
 
             //Add Gadgets
             Widget gadget = new Widget();
-            gadget.WidgetName = "Recent Content";
-            gadget.WidgetTitle = "Recent Content";
-            gadget.WidgetGUID = Guid.NewGuid().ToString().Replace("-", "");
-            gadget.WidgetOption = "{ \"title\": \"Recent Content\",\"count\": 5,\"showthumb\": false }";
-            gadget.WidgetOrder = 1;
+            gadget.Name = "Recent Content";
+            gadget.Title = "Recent Content";
+            gadget.GUID = Common.GetRandomGUID();
+            gadget.Option = "{ \"title\": \"Recent Content\",\"count\": 5,\"showthumb\": false }";
+            gadget.DisplayOrder = 1;
             gadget.IsActive = true;
             context.Widget.Add(gadget);
 
             gadget = new Widget();
-            gadget.WidgetName = "Most Viewed Content";
-            gadget.WidgetTitle = "Most Viewed Content";
-            gadget.WidgetGUID = Guid.NewGuid().ToString().Replace("-", "");
-            gadget.WidgetOption = "{ \"title\": \"Most Viewed Content\",\"count\": 5,\"showthumb\": false }";
-            gadget.WidgetOrder = 2;
+            gadget.Name = "Most Viewed Content";
+            gadget.Title = "Most Viewed Content";
+            gadget.GUID = Common.GetRandomGUID();
+            gadget.Option = "{ \"title\": \"Most Viewed Content\",\"count\": 5,\"showthumb\": false }";
+            gadget.DisplayOrder = 2;
             gadget.IsActive = true;
             context.Widget.Add(gadget);
 
             gadget = new Widget();
-            gadget.WidgetName = " Related Content";
-            gadget.WidgetTitle = " Related Content";
-            gadget.WidgetGUID = Guid.NewGuid().ToString().Replace("-", "");
-            gadget.WidgetOption = "{ \"title\": \"Related Content\",\"count\": 3,\"showthumb\": false }";
-            gadget.WidgetOrder = 3;
+            gadget.Name = " Related Content";
+            gadget.Title = " Related Content";
+            gadget.GUID = Common.GetRandomGUID();
+            gadget.Option = "{ \"title\": \"Related Content\",\"count\": 3,\"showthumb\": false }";
+            gadget.DisplayOrder = 3;
             gadget.IsActive = false;
             context.Widget.Add(gadget);
 
             gadget = new Widget();
-            gadget.WidgetName = "Total Page View";
-            gadget.WidgetTitle = "Total Page View";
-            gadget.WidgetGUID = Guid.NewGuid().ToString().Replace("-", "");
-            gadget.WidgetOption = "{ \"title\": \"Total Page View\",\"count\": 0,\"showthumb\": false }";
-            gadget.WidgetOrder = 4;
+            gadget.Name = "Total Page View";
+            gadget.Title = "Total Page View";
+            gadget.GUID = Common.GetRandomGUID();
+            gadget.Option = "{ \"title\": \"Total Page View\",\"count\": 0,\"showthumb\": false }";
+            gadget.DisplayOrder = 4;
             gadget.IsActive = false;
             context.Widget.Add(gadget);
 
             gadget = new Widget();
-            gadget.WidgetName = "Category List";
-            gadget.WidgetTitle = "Category List";
-            gadget.WidgetGUID = Guid.NewGuid().ToString().Replace("-", "");
-            gadget.WidgetOption = "{ \"title\": \"Category List\",\"count\": 3,\"showthumb\": false }";
-            gadget.WidgetOrder = 5;
+            gadget.Name = "Category List";
+            gadget.Title = "Category List";
+            gadget.GUID = Common.GetRandomGUID();
+            gadget.Option = "{ \"title\": \"Category List\",\"count\": 3,\"showthumb\": false }";
+            gadget.DisplayOrder = 5;
             gadget.IsActive = true;
             context.Widget.Add(gadget);
 
             gadget = new Widget();
-            gadget.WidgetName = "Label List";
-            gadget.WidgetTitle = "Label List";
-            gadget.WidgetGUID = Guid.NewGuid().ToString().Replace("-", "");
-            gadget.WidgetOption = "{ \"title\": \"Label List\",\"count\": 3,\"showthumb\": false }";
-            gadget.WidgetOrder = 6;
+            gadget.Name = "Label List";
+            gadget.Title = "Label List";
+            gadget.GUID = Common.GetRandomGUID();
+            gadget.Option = "{ \"title\": \"Label List\",\"count\": 3,\"showthumb\": false }";
+            gadget.DisplayOrder = 6;
             gadget.IsActive = true;
             context.Widget.Add(gadget);
             context.SaveChanges();

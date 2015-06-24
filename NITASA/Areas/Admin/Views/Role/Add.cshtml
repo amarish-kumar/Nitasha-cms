@@ -1,7 +1,101 @@
-﻿
+﻿@model Role
+@using NITASA.Data
+@using NITASA.Helpers
+@using NITASA.Areas.Admin.Helper
 @{
-    ViewBag.Title = "Add";
+    ViewBag.Title = "Add Role";
+
+    List<AccessPermission> AllRightsList = UserRights.GetAllAccessPermission();
+    List<string> RightsType = AllRightsList.Select(m => m.Group).Distinct().ToList();
 }
+<div class="main-content">
+    <div class="container-fluid padded">
 
-<h2>Add</h2>
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-error">
+                <button class="close" data-dismiss="alert" type="button">×</button>
+                @TempData["ErrorMessage"]
+            </div>
+        }
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="box">
+                    <div class="box-header">
+                        <span class="title">Add New Role</span>
+                        <ul class="box-toolbar">
+                            <li>
+                                <a href="@Url.Action("List", "Role")" title="Back to Role list"><i class="icon-reply fontsize20" style="margin-top: 10px"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="box-content">
+                        <div class="padded">
+                            @using (Html.BeginForm("Add", "Role", FormMethod.Post))
+                            {
+                                <div class="box-content">
+                                    <div class="">
+                                        @*Padded*@
+                                    <div class="">
+                                        @*span12*@
+                                    <div class="span10">
+                                        <div class="span2">
+                                            @Html.LabelFor(m => m.Name)
+                                        </div>
+                                        @Html.TextBoxFor(m => m.Name)
+                                        @Html.ValidationMessageFor(m => m.Name, "", new { style = "color:red;" })
+                                    </div>
+                                    <div class="span2">
+                                        <input type="submit" value="Add Role" class="btn btn-blue" />
+                                    </div>
+                                </div>
+                                <div class="clear" style="font-size: 14px; padding-top: 10px; margin-bottom: 10px;">Assign Rights :</div>
+                                @if (AllRightsList.Count > 0)
+                                {
+                                    for (int i = 0; i < RightsType.Count; i++)
+                                    {
+                                        List<AccessPermission> RightsList = AllRightsList.Where(p => p.Group == RightsType[i]).ToList();
 
+                                        if (RightsList.Count > 0)
+                                        {
+                                            <div class="span12" style="margin-left: 0px;">
+                                                <div class="box">
+                                                    <div class="box-header">
+                                                        <span class="title">@RightsType[i]</span>
+                                                    </div>
+                                                    <div class="box-content">
+                                                        <div class="padded">
+                                                            <div class="span12" style="margin-left: 0;">
+                                                                @for (int j = 0; j < RightsList.Count; j++)
+                                                                {
+                                                                    <div style="width: 25% !important; float: left;">
+                                                                        <span style="width: 20px; float: left;">
+                                                                            @Html.CheckBox(RightsList[j].Name, RightsList[j].IsChecked, new { @id = RightsList[j].Name })
+                                                                        </span>
+                                                                        <span class="span3" style="width: 85%;">
+                                                                            @Html.Label(RightsList[j].Name, new { @for = RightsList[j].Name })
+                                                                        </span>
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                            <div class="clear">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                }
+
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

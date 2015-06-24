@@ -13,72 +13,6 @@ namespace NITASA.Helpers
 {
     public class Common
     {
-        public static string Encrypt(string toEncrypt, string key, bool useHashing)
-        {
-            byte[] keyArray;
-            byte[] toEncryptArray = UTF8Encoding.UTF8.GetBytes(toEncrypt);
-
-            if (useHashing)
-            {
-                MD5CryptoServiceProvider hashmd5 = new MD5CryptoServiceProvider();
-                keyArray = hashmd5.ComputeHash(UTF8Encoding.UTF8.GetBytes(key));
-            }
-            else
-                keyArray = UTF8Encoding.UTF8.GetBytes(key);
-
-            TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider();
-            tdes.Key = keyArray;
-            tdes.Mode = CipherMode.ECB;
-            tdes.Padding = PaddingMode.PKCS7;
-
-            ICryptoTransform cTransform = tdes.CreateEncryptor();
-            byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
-
-            return Convert.ToBase64String(resultArray, 0, resultArray.Length);
-        }
-
-        public static string Decrypt(string toDecrypt, string key, bool useHashing)
-        {
-            byte[] keyArray;
-
-            byte[] toEncryptArray = Convert.FromBase64String(toDecrypt);
-            string decryptValue = string.Empty;
-            try
-            {
-                if (useHashing)
-                {
-                    MD5CryptoServiceProvider hashmd5 = new MD5CryptoServiceProvider();
-                    keyArray = hashmd5.ComputeHash(UTF8Encoding.UTF8.GetBytes(key));
-                }
-                else
-                    keyArray = UTF8Encoding.UTF8.GetBytes(key);
-
-                TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider();
-                tdes.Key = keyArray;
-                tdes.Mode = CipherMode.ECB;
-                tdes.Padding = PaddingMode.PKCS7;
-
-                ICryptoTransform cTransform = tdes.CreateDecryptor();
-                byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
-
-                decryptValue = UTF8Encoding.UTF8.GetString(resultArray);
-            }
-            catch (Exception ex)
-            {
-                ex.Message.ToString();
-            }
-
-            return decryptValue;
-        }
-
-        public static int GetSaltKey()
-        {
-            Random ran = new Random();
-            int number = ran.Next(1000, 9999);
-            ran.Next();
-            return number;
-        }
-
         public static string GeneratePassword(byte Length)
         {
             char[] Chars = new char[] {
@@ -343,19 +277,20 @@ namespace NITASA.Helpers
 
             List<string> addontypes = AllAddons.Select(x => x.Type).Distinct().ToList();
 
-            List<Menu> itemList =new List<Menu>();
+            List<TMenu> itemList = new List<TMenu>();
             itemList = (from at in addontypes
                        select
-                            new Menu{
+                            new TMenu
+                            {
                                     text=at,
                                     SubMenu = (from ad in AllAddons
                                               where ad.Type == at
-                                              select new Menu {id = ad.ID.ToString(),text =ad.Title}).ToList()
+                                               select new TMenu { id = ad.ID.ToString(), text = ad.Title }).ToList()
                             }
                         ).ToList();
             Random r = new Random();
             itemList.ForEach(x=>
-                x.SubMenu.InsertRange(0, new List<Menu> { new Menu { id = string.Concat("tinyAll",r.Next()), text = "All" } })
+                x.SubMenu.InsertRange(0, new List<TMenu> { new TMenu { id = string.Concat("tinyAll", r.Next()), text = "All" } })
             );
             string json = JsonConvert.SerializeObject(itemList);
 
@@ -385,11 +320,11 @@ namespace NITASA.Helpers
         }
     }
 
-    public class Menu
+    public class TMenu
     {
         public string text { get; set; }
         public string id { get; set; }
         [JsonProperty(PropertyName = "menu")]
-        public List<Menu> SubMenu { get; set; }
+        public List<TMenu> SubMenu { get; set; }
     }
 }

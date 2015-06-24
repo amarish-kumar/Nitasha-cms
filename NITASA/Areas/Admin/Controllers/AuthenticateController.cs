@@ -14,7 +14,6 @@ namespace NITASA.Areas.Admin.Controllers
     public class AuthenticateController : Controller
     {
         string returnURL;
-        private string keyToDescript = ConfigurationManager.AppSettings["EncKey"];
         public NTSDBContext context;
 
         public AuthenticateController()
@@ -45,34 +44,34 @@ namespace NITASA.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Login(Login login)
+        public ActionResult Login(Login model)
         {
             if (ModelState.IsValid)
             {
-                string password = Common.Encrypt(login.Password, keyToDescript, true);
-                User User = context.User.Where(m => m.Email == login.EmailAddress && m.Password == password && m.IsDeleted == false).FirstOrDefault();
+                User User = context.User.Where(m => m.Email == model.EmailAddress && m.IsDeleted == false).FirstOrDefault();
                 if (User != null)
                 {
-                    HttpContext.Session["UserID"] = User.ID;
-                    HttpContext.Session["UserRole"] = context.Role.Where(model => model.ID == User.RoleID && model.IsDeleted == false).Select(m => m.Name).FirstOrDefault();
-                    UserRights.BindRights();
-
-                    if (Request.QueryString["retUrl"] != null)
-                        returnURL = Request.QueryString["retUrl"];
-
-                    if (returnURL == null || returnURL == string.Empty || returnURL.ToLower().Contains("/authenticate/login"))
+                    string passwordHash = CryptoUtility.GetPasswordHash(model.Password, User.SaltKey);
+                    if (string.Compare(User.Password, passwordHash, false) == 0)
                     {
-                        return RedirectToAction("Dashboard", "Home");
-                    }
-                    else
-                    {
-                        return Redirect(returnURL);
+                        HttpContext.Session["UserID"] = User.ID;
+                        HttpContext.Session["UserRole"] = context.Role.Where(m => m.ID == User.RoleID && m.IsDeleted == false).Select(m => m.Name).FirstOrDefault();
+                        UserRights.BindRights();
+
+                        if (Request.QueryString["retUrl"] != null)
+                            returnURL = Request.QueryString["retUrl"];
+
+                        if (returnURL == null || returnURL == string.Empty || returnURL.ToLower().Contains("/authenticate/login"))
+                        {
+                            return RedirectToAction("Dashboard", "Home");
+                        }
+                        else
+                        {
+                            return Redirect(returnURL);
+                        }
                     }
                 }
-                else
-                {
-                    TempData["Login_ErrorMsg"] = "Error: Incorrect Username or Password.";
-                }
+                TempData["Login_ErrorMsg"] = "Error: Incorrect Username or Password.";
             }
             return View();
         }

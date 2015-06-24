@@ -30,16 +30,16 @@ namespace NITASA.Areas.Admin.Helper
             int UserID = Common.CurrentUserID();
             string operation = getOperationType(logOp);
 
-            ActivityLog log = new ActivityLog();
-            log.ActionType = operation;
-            log.Title = title;
-            log.Description = description;
-            log.UserID = UserID;
-            log.AddedOn = DateTime.Now;
-            log.PageUrl = pageUrl;
-            log.RemoteAddress = HttpContext.Current.Request.UserHostAddress;
-            db.ActivityLog.Add(log);
-            db.SaveChanges();
+            //ActivityLog log = new ActivityLog();
+            //log.ActionType = operation;
+            //log.Title = title;
+            //log.Description = description;
+            //log.UserID = UserID;
+            //log.AddedOn = DateTime.Now;
+            //log.PageUrl = pageUrl;
+            //log.RemoteAddress = HttpContext.Current.Request.UserHostAddress;
+            //db.ActivityLog.Add(log);
+            //db.SaveChanges();
         }
 
         public static string getOperationType(LogOperation logOp)

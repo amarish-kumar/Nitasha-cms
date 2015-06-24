@@ -191,12 +191,12 @@
     <Compile Include="Areas\Admin\Controllers\SitemapController.cs" />
     <Compile Include="Areas\Admin\Controllers\SliderController.cs" />
     <Compile Include="Areas\Admin\Controllers\SlidesController.cs" />
-    <Compile Include="Areas\Admin\Controllers\TemplateController.cs" />
     <Compile Include="Areas\Admin\Controllers\ThemeController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserController.cs" />
     <Compile Include="Areas\Admin\Controllers\WidgetController.cs" />
     <Compile Include="Areas\Admin\Helper\ActivityOperation.cs" />
     <Compile Include="Areas\Admin\Helper\CheckLogin.cs" />
+    <Compile Include="Areas\Admin\Helper\CryptoUtility.cs" />
     <Compile Include="Areas\Admin\Helper\LogSector.cs" />
     <Compile Include="Areas\Admin\Helper\Sitemap\DropDownHelper.cs" />
     <Compile Include="Areas\Admin\Helper\Sitemap\ISitemapGenerator.cs" />
@@ -609,7 +609,6 @@
     <Content Include="Areas\Admin\Views\Post\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Media\GetMedia.cshtml" />
     <Content Include="Areas\Admin\Views\Addons\Edit.cshtml" />
-    <Content Include="Areas\Admin\Views\Template\Index.cshtml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\gridmvc.js" />
     <Content Include="Scripts\gridmvc.lang.ru.js" />
@@ -657,8 +656,6 @@
   <ItemGroup>
     <Folder Include="App_Code\" />
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Admin\ActivityLog\ActionLogs\" />
-    <Folder Include="Areas\Admin\ActivityLog\ErrorLogs\" />
     <Folder Include="Areas\Admin\assets\js\tinymce\examples\css\" />
     <Folder Include="Areas\Admin\assets\js\tinymce\examples\lists\" />
     <Folder Include="Areas\Admin\assets\js\tinymce\examples\media\" />

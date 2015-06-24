@@ -59,7 +59,7 @@ namespace NITASA.Areas.Admin.ViewModels
         public List<Content> RecentPublishedPostList { get; set; }
         public List<Content> RecentPages { get; set; }
         public List<Comment> UnModeratedComments { get; set; }
-        public List<ActivityLog> ActivityLogs { get; set; }
+        
 
         [Display(Name = "Description")]
         [Required(ErrorMessage = "Please Enter Description.")]

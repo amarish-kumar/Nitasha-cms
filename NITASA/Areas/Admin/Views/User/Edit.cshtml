@@ -1,7 +1,125 @@
-﻿
+﻿@model User
+@using NITASA.Data
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Edit User";
 }
 
-<h2>Edit</h2>
+<div class="main-content">
 
+    <div class="container-fluid padded">
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="padded">
+                <div class="alert alert-error">
+                    <button class="close" data-dismiss="alert" type="button">×</button>
+                    @TempData["ErrorMessage"]
+                </div>
+            </div>
+        }
+
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="box">
+                    <div class="box-header">
+                        <span class="title">Edit User</span>
+                        <ul class="box-toolbar">
+                            <li>
+                                <a href="@Url.Action("List", "User")" title="Back to User list"><i class="icon-reply fontsize20" style="margin-top: 10px"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="box-content">
+                        <div class="padded">
+                            @using (Html.BeginForm("Edit", "User", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+                            {
+                                @Html.HiddenFor(m => m.ID)
+                                @Html.HiddenFor(m => m.AddedBy)
+                                <div class="box-content">
+                                    <div class="padded">
+                                        <div class="form-horizontal fill-up">
+                                            <div class="control-group">
+                                                <label class="control-label" style="text-align: left;">User Email: </label>
+                                                <div class="controls">
+                                                    @Html.TextBoxFor(m => m.Email)
+                                                    <div style="color: red">
+                                                        @Html.ValidationMessageFor(m => m.Email)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="control-group">
+                                                <label class="control-label" style="text-align: left;">Password: </label>
+                                                <div class="controls">
+                                                    @Html.PasswordFor(m => m.Password)
+                                                    <div style="color: red">
+                                                        @Html.ValidationMessageFor(m => m.Password)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="control-group">
+                                                <label class="control-label" style="text-align: left;">First Name: </label>
+                                                <div class="controls">
+                                                    @Html.TextBoxFor(m => m.FirstName)
+                                                    <div style="color: red">
+                                                        @Html.ValidationMessageFor(m => m.FirstName)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="control-group">
+                                                <label class="control-label" style="text-align: left;">Last Name: </label>
+                                                <div class="controls">
+                                                    @Html.TextBoxFor(m => m.LastName)
+                                                    <div style="color: red">
+                                                        @Html.ValidationMessageFor(m => m.LastName)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="control-group">
+                                                <label class="control-label" style="text-align: left;">Profile Picture: </label>
+                                                <div class="controls">
+                                                    <input type="file" name="ProfilePic" id="FaviconIcon" />
+                                                    <div style="color: red">
+                                                        @Html.ValidationMessageFor(m => m.ProfilePicURL)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="control-group">
+                                                <label class="control-label" style="text-align: left;">Role: </label>
+                                                <div class="controls">
+                                                    @Html.DropDownListFor(model => model.RoleID, (IEnumerable<SelectListItem>)ViewBag.RoleList)
+                                                    <div style="color: red">
+                                                        @Html.ValidationMessageFor(model => model.RoleID)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="control-group">
+                                                <label class="control-label" style="text-align: left;">IsActive: </label>
+                                                <div class="controls">
+                                                    @Html.CheckBoxFor(m => m.IsActive)
+                                                    <div style="color: red">
+                                                        @Html.ValidationMessageFor(m => m.IsActive)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @*<div class="control-group">
+                                                    <label class="control-label" style="text-align: left;">IsDefault: </label>
+                                                    <div class="controls">
+                                                        @Html.CheckBoxFor(m => m.IsDefault)
+                                                        <div style="color: red">
+                                                            @Html.ValidationMessageFor(m => m.IsDefault)
+                                                        </div>
+                                                    </div>
+                                                </div>*@
+                                            <div class="control-group">
+                                                <input type="submit" value="Update User" class="btn btn-blue" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -226,7 +226,7 @@ namespace NITASA.Areas.Admin.Controllers
             dBoard.RecentPublishedPostList = context.Content.Where(content => content.Type.ToLower() == "post" && content.IsDeleted == false && content.isPublished == true).OrderByDescending(content => content.AddedOn).Take(5).ToList();
             dBoard.RecentPages = context.Content.Where(content => content.Type.ToLower() == "page" && content.IsDeleted == false && content.isPublished == true).OrderByDescending(content => content.AddedOn).Take(5).ToList();
             dBoard.UnModeratedComments = context.Comment.Where(comment => comment.IsModerated == false).OrderByDescending(x => x.AddedOn).Take(5).ToList();
-            dBoard.ActivityLogs = context.ActivityLog.OrderByDescending(log => log.AddedOn).Take(5).ToList();
+            //dBoard.ActivityLogs = context.ActivityLog.OrderByDescending(log => log.AddedOn).Take(5).ToList();
             var pageView = context.ContentView.OrderByDescending(m => m.ViewedOn).ToList();
             var pageView1 = from r in pageView
                             group r by Convert.ToDateTime(r.ViewedOn).ToString("MMM-dd") into g
