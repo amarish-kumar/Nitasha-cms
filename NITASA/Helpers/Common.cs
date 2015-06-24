@@ -37,6 +37,7 @@ namespace NITASA.Helpers
 
             return Convert.ToBase64String(resultArray, 0, resultArray.Length);
         }
+
         public static string Decrypt(string toDecrypt, string key, bool useHashing)
         {
             byte[] keyArray;
@@ -70,6 +71,7 @@ namespace NITASA.Helpers
 
             return decryptValue;
         }
+
         public static int GetSaltKey()
         {
             Random ran = new Random();
@@ -77,6 +79,7 @@ namespace NITASA.Helpers
             ran.Next();
             return number;
         }
+
         public static string GeneratePassword(byte Length)
         {
             char[] Chars = new char[] {
@@ -107,6 +110,7 @@ namespace NITASA.Helpers
             }
             return userID;
         }
+
         public static string CurrentUserRole()
         {
             string userRoll = string.Empty;
@@ -120,10 +124,12 @@ namespace NITASA.Helpers
             }
             return userRoll;
         }
+
         public static string GetRandomGUID()
         {
             return Guid.NewGuid().ToString().Replace("-", "");
         }
+
         public static string ToUrlSlug(string value, string type, int id)
         {
             //First to lower case
@@ -143,6 +149,7 @@ namespace NITASA.Helpers
             //return value;
             return Common.GetNewUrl(value, type, id);
         }
+
         public static string GetNewUrl(string url, string type, int id)
         {
             string newUrl = url.ToLower();
@@ -223,6 +230,7 @@ namespace NITASA.Helpers
             }
             return newUrl;
         }
+
         public static string RemoveHTMLTags(string sourceString)
         {
             sourceString = Regex.Replace(sourceString, @"<[^>]+>|&nbsp;|\n|\r", string.Empty);
@@ -246,6 +254,7 @@ namespace NITASA.Helpers
 
             return newFilePath;
         }
+
         public static bool IsValidImage(string FileName)
         {
             string[] extension = new string[] { ".jpg", ".bmp", ".jpeg", ".png", ".gif" };
@@ -255,6 +264,7 @@ namespace NITASA.Helpers
             else
                 return false;
         }
+
         public static bool IsValidVideo(string FileName)
         {
             string[] extension = new string[] { ".mp4" };
@@ -265,5 +275,16 @@ namespace NITASA.Helpers
                 return false;
         }
 
+        public static string CurrentTimeStamp()
+        {
+            StringBuilder sbTimeStamp = new StringBuilder();
+            sbTimeStamp.Append(DateTime.Now.Year.ToString());
+            sbTimeStamp.Append(DateTime.Now.Month.ToString());
+            sbTimeStamp.Append(DateTime.Now.Day.ToString());
+            sbTimeStamp.Append(DateTime.Now.Hour.ToString());
+            sbTimeStamp.Append(DateTime.Now.Minute.ToString());
+            sbTimeStamp.Append(DateTime.Now.Second.ToString());
+            return sbTimeStamp.ToString();
+        }
     }
 }

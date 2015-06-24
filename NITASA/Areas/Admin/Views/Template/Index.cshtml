@@ -1,0 +1,118 @@
+﻿    @using NITASA.Data
+    @using NITASA.Areas.Admin.Helper
+    @using NITASA.Helpers
+    @{
+        ViewBag.Title = "Template Editor";
+
+        WebGrid grid = new WebGrid(Model, rowsPerPage: 10, canSort: true);
+    }
+    @*@{
+           public static object GetCategories(dynamic c)
+           {
+                return "Hi";
+           }
+        }*@
+    <style>
+        tfoot td {
+            line-height: 3 !important;
+        }
+
+        .custom-pagination td {
+            padding-left: 10px !important;
+        }
+
+        .table-normal tbody td.col2 {
+            width: 50px;
+            text-align: center;
+        }
+
+        .table-normal tbody td.col3 {
+            width: 115px;
+            text-align: center;
+        }
+    </style>
+    <div class="main-content">
+    <div class="container-fluid padded">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                <button class="close" data-dismiss="alert" type="button">
+                    ×
+                </button>
+                @TempData["SuccessMessage"]
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-error">
+                <button class="close" data-dismiss="alert" type="button">
+                    ×
+                </button>
+                @TempData["ErrorMessage"]
+            </div>
+        }
+        <div class="row-fluid">
+            <div class="span3">
+                <div class="box">
+                    <div class="box-header">
+                        <span class="title">Select File Type</span>
+                    </div>
+                    <div class="box-content">
+                        <div class="padded">
+                            @using (Html.BeginForm("GetFiles", "Template", FormMethod.Get))
+                            {
+                                <table class="form-horizontal fill-up validatable width100per">
+                                    <tr>
+                                        <td class="width10per">Select File Type</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="width70per">
+                                            @Html.DropDownList("ddlFileType", (IEnumerable<SelectListItem>)ViewBag.typeList, "All")
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="width20per">
+                                            <input type="submit" class="btn btn-blue" value="Search" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <div class="box-header">
+                        <span class="title">Select File</span>
+                    </div>
+                    <div class="box-content">
+                        <div class="padded">
+                            @using (Html.BeginForm("GetFiles", "Template", FormMethod.Get))
+                            {
+                                <table class="form-horizontal fill-up validatable width100per">
+                                    <tr>
+                                        <td class="width10per">Select File Type</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="width70per">
+                                            @Html.DropDownList("ddlFile", (IEnumerable<SelectListItem>)ViewData["fileList"], "All")
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="width20per">
+                                            <input type="submit" class="btn btn-blue" value="Search" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="span9">
+
+
+            </div>
+        </div>
+    </div>
+</div>
