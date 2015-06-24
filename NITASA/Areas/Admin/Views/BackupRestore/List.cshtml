@@ -1,6 +1,6 @@
 ﻿@using NITASA.Data
 @{
-    ViewBag.Title = "Backup List";
+    ViewBag.Title = "Backups";
 
     List<string> BackupList = Directory.GetFiles(Server.MapPath(System.Configuration.ConfigurationManager.AppSettings["backupDir"]), "*.zip").ToList();
     

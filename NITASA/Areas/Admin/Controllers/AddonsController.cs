@@ -21,6 +21,9 @@ namespace NITASA.Areas.Admin.Controllers
 
         public ActionResult List()
         {
+            List<Content> ContentList = null;
+            //try
+            //{
             bool ViewAllAddonsRights = UserRights.HasRights(Rights.ViewAllAddons);
             bool ViewUnPublishedAddonsRights = UserRights.HasRights(Rights.ViewUnPublishedAddons);
 
@@ -32,22 +35,35 @@ namespace NITASA.Areas.Admin.Controllers
                 Content = Content.Where(m => m.Type.ToLower() != "post" && m.Type.ToLower() != "page" && m.IsDeleted == false);
             else if (ViewUnPublishedAddonsRights)
                 Content = Content.Where(m => m.Type.ToLower() != "post" && m.Type.ToLower() != "page" && m.IsDeleted == false && m.isPublished == false);
-            List<Content> ContentList = Content.OrderByDescending(m => m.PublishedOn).ToList();
-
+            ContentList = Content.OrderByDescending(m => m.PublishedOn).ToList();
+            //}
+            //catch (Exception es)
+            //{
+            //    LogSector.LogError(es);
+            //}
             return View(ContentList);
         }
 
         public ActionResult Add()
         {
+            //try
+            //{
             if (!UserRights.HasRights(Rights.CreateNewAddons))
                 return RedirectToAction("AccessDenied", "Home");
             ViewBag.Addonlist = new SelectList(context.Content.Where(m => m.Type.ToLower() != "post" && m.Type.ToLower() != "page").ToList(), "ID", "Name");
+            //}
+            //catch (Exception es)
+            //{
+            //    LogSector.LogError(es);
+            //}
             return View();
         }
 
         [HttpPost]
         public ActionResult Add(Content content)
         {
+            //try
+            //{
             if (!UserRights.HasRights(Rights.CreateNewAddons))
                 return RedirectToAction("AccessDenied", "Home");
 
@@ -62,11 +78,13 @@ namespace NITASA.Areas.Admin.Controllers
                         if (currOperation == "Post")
                         {
                             SaveAddonDetails(content, true);
+                            LogSector.LogAction(ActionType.Publish, Request.Url.ToString(), "Addon Name - " + content.Title, null);
                             TempData["SuccessMessage"] = "Addon published successfully.";
                         }
                         else
                         {
                             SaveAddonDetails(content, false);
+                            LogSector.LogAction(ActionType.Draft, Request.Url.ToString(), "Addon Name - " + content.Title, null);
                             TempData["SuccessMessage"] = "Addon saved to draft successfully.";
                         }
                         return RedirectToAction("List");
@@ -77,11 +95,18 @@ namespace NITASA.Areas.Admin.Controllers
                     TempData["ErrorMessage"] = "Please enter Addon content";
                 }
             }
+            //}
+            //catch (Exception es)
+            //{
+            //    LogSector.LogError(es);
+            //}
             return View(content);
         }
 
         public void SaveAddonDetails(Content Model, bool isPublished)
         {
+            //try
+            //{
             Content cont = new Content();
             cont.Type = Model.Type;
             cont.Title = Model.Title;
@@ -95,7 +120,7 @@ namespace NITASA.Areas.Admin.Controllers
 
             cont.Description = Model.Description;
             cont.GUID = Common.GetRandomGUID();
-            cont.URL = "";            
+            cont.URL = "";
             cont.IsSlugEdited = false;
             cont.IsFeatured = false;
             cont.ContentOrder = Model.ContentOrder;
@@ -115,6 +140,11 @@ namespace NITASA.Areas.Admin.Controllers
             }
             context.Content.Add(cont);
             context.SaveChanges();
+            //}
+            //catch (Exception es)
+            //{
+            //    LogSector.LogError(es);
+            //}
         }
 
         public ActionResult Edit(string GUID)
@@ -122,6 +152,8 @@ namespace NITASA.Areas.Admin.Controllers
             Content curCont = context.Content.Where(m => m.GUID == GUID).FirstOrDefault();
             if (curCont != null)    // if content not found
             {
+                //try
+                //{
                 if (Common.CurrentUserID() == curCont.AddedBy)
                 {
                     if (!UserRights.HasRights(Rights.EditOwnAddons))
@@ -134,7 +166,11 @@ namespace NITASA.Areas.Admin.Controllers
                 }
 
                 curCont.Description = curCont.Description.Replace("<img src=\"../../", "<img src=\"../../../");
-
+                //}
+                //catch (Exception es)
+                //{
+                //    LogSector.LogError(es);
+                //}
                 return View(curCont);
             }
             else
@@ -147,6 +183,8 @@ namespace NITASA.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Edit(Content Model, string GUID, string UpdateType)
         {
+            //try
+            //{
             Content content = context.Content.Where(m => m.GUID == GUID).FirstOrDefault();
             if (content != null)    // if content not found
             {
@@ -189,6 +227,18 @@ namespace NITASA.Areas.Admin.Controllers
                             content.PublishedOn = null;
                         }
                         context.SaveChanges();
+
+                        #region insert Update History
+                        //List<Field> field = new List<Field>();
+                        //if (content.Type != Model.Type)
+                        //    field.Add(new Field(content.ID.ToString(), "Addon Name", content.Type.Trim(), Model.Type.Trim()));
+                        //if (content.Title != Model.Title)
+                        //    field.Add(new Field(content.ID.ToString(), "Addon Title", content.Title.Trim(), Model.Title.Trim()));
+                        //if (content.Title != Model.Title)
+                        //    field.Add(new Field(content.ID.ToString(), "Addon Title", content.Title.Trim(), Model.Title.Trim()));
+                        //LogSector.LogAction(ActionType.Update, Request.Url.ToString(), "Addon", field);
+                        #endregion
+
                         TempData["SuccessMessage"] = "Addon updated successfully.";
                     }
                     else
@@ -206,12 +256,19 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 TempData["ErrorMessage"] = "Addon Not Found.";
             }
+            //}
+            //catch (Exception es)
+            //{
+            //    LogSector.LogError(es);
+            //}
             return RedirectToAction("List");
         }
 
         [HttpGet]
         public ActionResult Delete(string GUID)
         {
+            //try
+            //{
             Content curCon = context.Content.Where(m => m.GUID == GUID).FirstOrDefault();
             if (curCon != null)
             {
@@ -228,13 +285,18 @@ namespace NITASA.Areas.Admin.Controllers
 
                 curCon.IsDeleted = true;
                 context.SaveChanges();
-
+                //LogSector.LogAction(ActionType.Delete, Request.Url.ToString(), "Addon Name - " + curCon.Title, null);
                 TempData["SuccessMessage"] = "Addon deleted successfully.";
             }
             else
             {
                 TempData["ErrorMessage"] = "Addon Not Found.";
             }
+            //}
+            //catch (Exception es)
+            //{
+            //    LogSector.LogError(es);
+            //}
             return RedirectToAction("List");
         }
 

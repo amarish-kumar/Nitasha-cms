@@ -13,6 +13,6 @@ namespace NITASA.Areas.Admin.ViewModels
         public string WidgetID { get; set; }
         public int Count { get; set; }
         public bool ShowThumbnail { get; set; }
-        public int GadgetOrder { get; set; }
+        public int WidgetOrder { get; set; }
     }
 }

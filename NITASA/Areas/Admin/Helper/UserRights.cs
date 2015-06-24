@@ -63,9 +63,9 @@ namespace NITASA.Areas.Admin.Helper
         EditUserSelf,
         EditOtherUsers,
         DeleteUserSelf,
-        DeleteOtherUsers,
+        DeleteOtherUsers
 
-        ManageTemplates
+        //ManageTemplates
     };
 
     public static class UserRights

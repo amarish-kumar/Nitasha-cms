@@ -169,7 +169,7 @@
                 <li class="dark-nav ">
                     <span class="glow"></span>
                     <a class="accordion-toggle collapsed " data-toggle="collapse" href="#ancAddOnsLink">
-                        <i class="icon-hdd icon-1x"></i>
+                        <i class="icon-hdd icon-1x"></i>&nbsp;
                         <span>
                             Addons
                             <i class="icon-caret-down"></i>
@@ -181,7 +181,7 @@
                         {
                         <li class="">
                             <a href="@Url.Action("List", "Addons")">
-                                <i class="icon-folder-open-alt"></i>Browse Addons
+                                <i class="icon-folder-open-alt"></i>&nbsp;Browse Addons
                             </a>
                         </li>
                         }
@@ -189,7 +189,7 @@
                         {
                         <li class="">
                             <a href="@Url.Action("Add", "Addons")">
-                                <i class="icon-file"></i>New Addon
+                                <i class="icon-file"></i>&nbsp;New Addon
                             </a>
                         </li>
                         }
@@ -213,7 +213,7 @@
                     </li>
                     <li class="">
                         <a href="@Url.Action("List", "Widget")">
-                            <i class="icon-plus-sign-alt icon-1x"></i>&nbsp;Gadgets
+                            <i class="icon-plus-sign-alt icon-1x"></i>&nbsp;Widget
                         </a>
                     </li>
                     <li class="">
@@ -329,7 +329,7 @@
                     </a>
                 </li>
             }
-            @if (UserRights.HasRights(Rights.ManageTemplates))
+            @*@if (UserRights.HasRights(Rights.ManageTemplates))
             {
                 <li class="">
                     <span class="glow"></span>
@@ -338,7 +338,7 @@
                         <span>Template</span>
                     </a>
                 </li>
-            }
+            }*@
 
             <li class="dark-nav ">
                 <span class="glow"></span>

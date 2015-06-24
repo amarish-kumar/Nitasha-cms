@@ -1,7 +1,7 @@
 ﻿@model Label
 @using NITASA.Data
 @{
-    ViewBag.Title = "Label List";
+    ViewBag.Title = "Labels";
 
     List<Label> LabelList = ViewBag.LabelList;
     WebGrid grid = new WebGrid(LabelList, rowsPerPage: 10, canSort: true);

@@ -1,7 +1,7 @@
 ﻿@model Category
 @using NITASA.Data
 @{
-    ViewBag.Title = "Category List";
+    ViewBag.Title = "Categories";
     
     List<Category> CategoryList = ViewBag.CategoryList;
     WebGrid grid = new WebGrid(CategoryList, rowsPerPage: 10, canSort: true);

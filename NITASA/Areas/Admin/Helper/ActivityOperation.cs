@@ -17,6 +17,7 @@ namespace NITASA.Areas.Admin.Helper
         Active,
         InActive,
         Publish,
+        Draft,
         UnPublish
     }
 

@@ -197,6 +197,7 @@
     <Compile Include="Areas\Admin\Controllers\WidgetController.cs" />
     <Compile Include="Areas\Admin\Helper\ActivityOperation.cs" />
     <Compile Include="Areas\Admin\Helper\CheckLogin.cs" />
+    <Compile Include="Areas\Admin\Helper\LogSector.cs" />
     <Compile Include="Areas\Admin\Helper\Sitemap\DropDownHelper.cs" />
     <Compile Include="Areas\Admin\Helper\Sitemap\ISitemapGenerator.cs" />
     <Compile Include="Areas\Admin\Helper\Sitemap\ISitemapItem.cs" />
@@ -656,6 +657,8 @@
   <ItemGroup>
     <Folder Include="App_Code\" />
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Admin\ActivityLog\ActionLogs\" />
+    <Folder Include="Areas\Admin\ActivityLog\ErrorLogs\" />
     <Folder Include="Areas\Admin\assets\js\tinymce\examples\css\" />
     <Folder Include="Areas\Admin\assets\js\tinymce\examples\lists\" />
     <Folder Include="Areas\Admin\assets\js\tinymce\examples\media\" />
