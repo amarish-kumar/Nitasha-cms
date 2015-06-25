@@ -78,13 +78,13 @@ namespace NITASA.Areas.Admin.Controllers
                         if (currOperation == "Post")
                         {
                             SaveAddonDetails(content, true);
-                            LogSector.LogAction(ActionType.Publish, Request.Url.ToString(), "Addon Name - " + content.Title, null);
+                            //LogSector.LogAction(ActionType.Publish, Request.Url.ToString(), "Addon Name - " + content.Title, null);
                             TempData["SuccessMessage"] = "Addon published successfully.";
                         }
                         else
                         {
                             SaveAddonDetails(content, false);
-                            LogSector.LogAction(ActionType.Draft, Request.Url.ToString(), "Addon Name - " + content.Title, null);
+                            //LogSector.LogAction(ActionType.Draft, Request.Url.ToString(), "Addon Name - " + content.Title, null);
                             TempData["SuccessMessage"] = "Addon saved to draft successfully.";
                         }
                         return RedirectToAction("List");

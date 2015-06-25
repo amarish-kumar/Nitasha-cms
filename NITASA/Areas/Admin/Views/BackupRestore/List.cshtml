@@ -3,7 +3,7 @@
     ViewBag.Title = "Backups";
 
     List<string> BackupList = Directory.GetFiles(Server.MapPath(System.Configuration.ConfigurationManager.AppSettings["backupDir"]), "*.zip").ToList();
-    
+
     WebGrid grid = new WebGrid(BackupList, rowsPerPage: 10, canSort: true);
 }
 <style>
@@ -46,13 +46,13 @@
                         <div class="padded">
                             @using (Html.BeginForm("Add", "BackupRestore", FormMethod.Post))
                             {
-                                
+
                                 <div class="control-group">
                                     <label class="control-label" style="text-align: left;"></label>
                                     <div class="controls">
                                         <input type="submit" value="Backup Now" class="btn btn-blue" />
                                         @*<input type="button" value="Clear" class="btn btn-blue" />
-                                        <input type="hidden" value="" id="CGUID" name="CGUID" />*@
+                                            <input type="hidden" value="" id="CGUID" name="CGUID" />*@
                                     </div>
                                 </div>
                             }
@@ -61,11 +61,11 @@
                 </div>
             </div>
             <div class="span6" style="width:65%">
-               
+
                 <div class="box">
                     @*<div class="box-header">
-                        <span class="title">Browse Backup Set</span>
-                    </div>*@
+                            <span class="title">Browse Backup Set</span>
+                        </div>*@
                     <div class="box-content">
                         @if (BackupList.Count() > 0)
                         {
@@ -74,25 +74,25 @@
                                 mode: WebGridPagerModes.All, columns: grid.Columns(
                                              grid.Column(columnName: "Name", header: "Backup Name", style: "col0",
                                             format: @<text>
-                                                        @{ string fileName = new FileInfo(Convert.ToString(item)).Name; }
-                                                        <span class="catName">@fileName</span>
-                                                    </text>
+                                                @{ string fileName = new FileInfo(Convert.ToString(item)).Name; }
+                                                <span class="catName">@fileName</span>
+                                            </text>
                                         ),
                                         grid.Column( header: "Backup On", style: "col0",
                                             format: @<text>
-                                                <span class="catName"> @File.GetCreationTime(Convert.ToString(item))</span>
+                                            <span class="catName"> @File.GetCreationTime(Convert.ToString(item))</span>
                                             </text>
                                         ),
                                         grid.Column(header: "Action", style: "col1", format: @<text>
-                                             @{
+                                            @{
                                                 string fileName1 = new FileInfo(Convert.ToString(item)).Name;
-                                                }
-                                                <a href="~/backup/script/@fileName1" class="btn btn-small btn-red delete-cat">Download</a>
-                                                    @Html.ActionLink("Delete", "Delete", "BackupRestore", new { guid = fileName1.Replace(".zip","") }, new { @class = "btn btn-small btn-red delete-cat" })
+                                            }
+                                            <a href="~/backup/script/@fileName1" class="btn btn-small btn-red delete-cat">Download</a>
+                                            @Html.ActionLink("Delete", "Delete", "BackupRestore", new { guid = fileName1.Replace(".zip", "") }, new { @class = "btn btn-small btn-red delete-cat" })
                                         </text>
-                                                                                          )
-                                                                                  )
-                                                                              )
+                                                                                                                   )
+                                                                                                           )
+                                                                                                       )
                         }
                         else
                         {
@@ -129,7 +129,7 @@
 </div>
 
 <script type="text/javascript">
-   
+
 </script>
 
 

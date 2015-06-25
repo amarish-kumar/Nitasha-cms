@@ -95,7 +95,7 @@ namespace NITASA.Areas.Admin.Controllers
                 context.Comment.Remove(comment);
                 TempData["AbusiveAction"] = "Comment is deleted.";
             }
-            else if (unabusive == "Un-Abusive")
+            else if (unabusive == "Un-Abused")
             {
                 comment.IsAbused = false;
                 comment.AbusedBy = null;
