@@ -5,9 +5,8 @@ using System.Web;
 using System.Web.Mvc;
 using NITASA.Areas.Admin.Helper;
 using NITASA.Data;
-using NITASA.Areas.Admin.ViewModels;
-using NITASA.Helpers;
 using System.IO;
+using NITASA.Areas.Admin.ViewModels;
 
 namespace NITASA.Areas.Admin.Controllers
 {
@@ -56,7 +55,7 @@ namespace NITASA.Areas.Admin.Controllers
                 bool validImage = true;
                 if (logopath != null && logopath.ContentLength > 0)
                 {
-                    if (!Common.IsValidImage(logopath.FileName.ToLower()))
+                    if (!Functions.IsValidImage(logopath.FileName.ToLower()))
                     {
                         TempData["ErrorMessage"] = "Please upload valid logo.";
                         validImage = false;
@@ -72,7 +71,7 @@ namespace NITASA.Areas.Admin.Controllers
                 }
                 if (CoverImage != null && CoverImage.ContentLength > 0)
                 {
-                    if (!Common.IsValidImage(CoverImage.FileName.ToLower()))
+                    if (!Functions.IsValidImage(CoverImage.FileName.ToLower()))
                     {
                         TempData["ErrorMessage"] = "Please upload valid cover image.";
                         validImage = false;

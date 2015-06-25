@@ -1,6 +1,5 @@
 ﻿using NITASA.Areas.Admin.Helper;
 using NITASA.Data;
-using NITASA.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,11 +40,11 @@ namespace NITASA.Areas.Admin.Controllers
                         Slider slider = new Slider();
 
                         slider.Name = model.Name;
-                        slider.GUID = Common.GetRandomGUID();
+                        slider.GUID = Functions.GetRandomGUID();
                         
                         slider.Code = model.Code;
                         slider.AddedOn = DateTime.UtcNow;
-                        slider.AddedBy = Common.CurrentUserID();
+                        slider.AddedBy = Functions.CurrentUserID();
                         slider.IsDeleted = false;
 
                         context.Sliders.Add(slider);
@@ -59,7 +58,7 @@ namespace NITASA.Areas.Admin.Controllers
                         {
                             slider.Name = model.Name;
                             slider.Code = model.Code;
-                            slider.ModifiedBy = Common.CurrentUserID();
+                            slider.ModifiedBy = Functions.CurrentUserID();
                             slider.ModifiedOn = DateTime.UtcNow;
                             context.SaveChanges();
                             TempData["SuccessMessage"] = "Slider updated successfully.";

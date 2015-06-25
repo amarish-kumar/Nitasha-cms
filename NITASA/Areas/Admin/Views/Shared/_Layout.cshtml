@@ -44,9 +44,9 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <span>
 
-                                        <img class="menu-avatar" src="@Url.Content("~/" + @NITASA.Helpers.SharedHelper.GetUserProfilePhoto())" />
+                                        <img class="menu-avatar" src="@Url.Content("~/" + Functions.GetUserProfilePhoto())" />
                                         <span class="user-on-name">
-                                            @NITASA.Helpers.SharedHelper.GetUserName()
+                                            @Functions.GetUserName()
                                             <i class="icon-caret-down"></i>
                                         </span>
                                     </span>
@@ -54,10 +54,10 @@
                                 <ul class="dropdown-menu">
                                     <li class="with-image">
                                         <div class="avatar">
-                                            <img src="@Url.Content("~/" + @NITASA.Helpers.SharedHelper.GetUserProfilePhoto())" />
+                                            <img src="@Url.Content("~/" + Functions.GetUserProfilePhoto())" />
                                         </div>
                                         <span>
-                                            @NITASA.Helpers.SharedHelper.GetUserName()
+                                            @Functions.GetUserName()
                                         </span>
                                     </li>
                                     <li class="divider"></li>

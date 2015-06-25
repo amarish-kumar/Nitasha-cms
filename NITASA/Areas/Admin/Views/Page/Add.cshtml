@@ -1,6 +1,5 @@
 ﻿@model PageModel
 @using NITASA.Data
-@using NITASA.Helpers;
 @using NITASA.Areas.Admin.Helper
 @{
     if (Model == null)
@@ -11,7 +10,7 @@
     {
         ViewBag.Title = "Update Page";
     }
-    string Addons = Common.GetAddons();    
+    string Addons = Functions.GetAddons();    
 }
 @section PageLevelStyles{
     <style type="text/css">
@@ -62,46 +61,47 @@
     </style>
     <script type="text/javascript" src="@Url.Content("~/Areas/Admin/assets/js/tinymce/tinymce.min.js")"></script>
     <script type="text/javascript">
-        function myFileBrowser(field_name, url, type, win) {
-            var cmsURL = "/Admin/Post/GetMedia";
-            tinyMCE.activeEditor.windowManager.open({
-                file: cmsURL,
-                title: 'Select an Image',
-                width: 750,
-                height: 360,
-                resizable: "yes",
-                inline: "yes",
-                close_previous: "no"
-            }, {
-                window: win,
-                input: field_name
-            });
-            return false;
-        }
-        $ext = 'span[id|name|class|style]';
+        $ext = 'span[id|name|class|style],html,head,body';
+        var popuptype = "cover";
         tinyMCE.init({
             selector: ".edtr",
             theme: "modern",
+            //plugins: [
+            //    "advlist autolink lists link image charmap preview hr anchor",
+            //    "searchreplace wordcount visualblocks visualchars code fullscreen",
+            //    "insertdatetime nonbreaking save table contextmenu directionality",
+            //    "emoticons template paste textcolor colorpicker textpattern "
+            //],
+            //toolbar1: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | Addons",
+            //toolbar2: "preview | forecolor backcolor emoticons",
+            menubar: false,
             plugins: [
                 "advlist autolink lists link image charmap preview hr anchor",
                 "searchreplace wordcount visualblocks visualchars code fullscreen",
                 "insertdatetime nonbreaking save table contextmenu directionality",
                 "emoticons template paste textcolor colorpicker textpattern "
             ],
-            toolbar1: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | Addons",
-            toolbar2: "preview | forecolor backcolor emoticons",
+            toolbar1: "undo redo | styleselect | forecolor backcolor | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link | Variables | mediaimages | code | Addons",
             image_advtab: false,
             extended_valid_elements: $ext,
             force_br_newlines: false,
             force_p_newlines: false,
             forced_root_block: '',
-            file_browser_callback: myFileBrowser,
             setup: function (editor) {
                 editor.addButton('Addons', {
                     text: 'Addons',
                     type: 'menubutton',
                     icon: false,
                     menu: @Html.Raw(Addons)
+                });
+                editor.addButton('mediaimages', {
+                    text: '',
+                    title: 'Insert image',
+                    icon: 'mce-ico mce-i-image',
+                    onclick: function () {
+                        popuptype = "editor";
+                        $("#MediaPopup").modal('show');
+                    }
                 });
             }
         });
@@ -195,12 +195,12 @@
                                                 <input type="submit" id="btnPublish" class="btn btn-small btn-green 3" style="text-align: right"
                                                        value="Publish" />
                                             }
-                                            else if (@Model != null && Common.CurrentUserID() == @Model.content.AddedBy)
+                                            else if (@Model != null && Functions.CurrentUserID() == @Model.content.AddedBy)
                                             {
                                                 <input type="submit" id="btnPublish" class="btn btn-small btn-green 2" style="text-align: right"
                                                        value="Publish" />
                                             }
-                                            else if (@Model != null && Common.CurrentUserID() != @Model.content.AddedBy)
+                                            else if (@Model != null && Functions.CurrentUserID() != @Model.content.AddedBy)
                                             {
                                                 <input type="submit" id="btnPublish" class="btn btn-small btn-green 1" style="text-align: right"
                                                        value="Publish" />
@@ -210,16 +210,6 @@
                                             <input type="button" class="btn btn-small btn-red" style="text-align: right" value="Back"
                                                    onclick="window.location = '/Admin/Page/List';" />
                                         </div>
-                                        @*<div class="box">
-                                            <div class="box-header">
-                                                <span class="title">Template</span>
-                                            </div>
-                                            <div class="box-content">
-                                                <div class="padded">
-                                                    @Html.DropDownListFor(m => m.content.TemplateID, (IEnumerable<SelectListItem>)ViewBag.Templatelist)
-                                                </div>
-                                            </div>
-                                        </div>*@
                                         <div class="box">
                                             <div class="box-header">
                                                 <span class="title">Meta</span>
@@ -248,7 +238,14 @@
                                                     @Html.HiddenFor(m => m.content.FeaturedImage)
                                                     <input type="button" id="btnBImage" class="btn btn-small btn-blue" style="text-align: right" value="Select" />
                                                     <input type="button" id="btnBRemove" class="btn btn-small btn-red" style="text-align: right" value="Remove" />
-                                                    <img id="uploadedImage" style="height: 100px;max-width: 100px;margin-top:10px;" alt="" @(Model != null ? "src=" + Model.content.FeaturedImage : "")>
+                                                    @if(Model != null)
+                                                    { 
+                                                        <img id="uploadedImage" style="height: 100px;max-width: 100px;margin-top:10px;" src="@Model.content.FeaturedImage" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <img id="uploadedImage" style="height: 100px;max-width: 100px;margin-top:10px;"/>                                                       
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -263,7 +260,9 @@
         </div>
     </div>
 </div>
-@{Html.RenderAction("GetMedia", "Media");}
+
+@{Html.RenderAction("GetMedia", "Media", new { isEditor = true });}
+
 @section BottomScript{
     <script type="text/javascript">
         $(document).ready(function () {
@@ -330,17 +329,27 @@
                 tinyMCE.triggerSave();
             });
             $('#btnBRemove').click(function () {
-                $('#content_ContentBannerImage').val("");
+                $('#content_FeaturedImage').val("");                
                 $('#uploadedImage').attr("src", "");
             });
+            
             $('#btnBImage').click(function (e) {
                 e.preventDefault();
+                popuptype = "cover";
                 $('#MediaPopup').modal("show");
             });
-            $(".wizard-input-section .media-thumb .imgSelect").click(function () {
+            $("body").delegate(".wizard-input-section .media-thumb .imgSelect", "click", function () {
                 var imgPath = $(this).attr('src');
-                $('#content_FeaturedImage').val(imgPath);
-                $('#uploadedImage').attr("src", imgPath);
+                if(popuptype=="cover")
+                {
+                    $('#content_FeaturedImage').val(imgPath);
+                    $('#uploadedImage').attr("src", imgPath);
+                }
+                else{   //editor
+                    var url = imgPath;
+                    var img = "<img src=\"" + url + "\"/>";                    
+                    tinyMCE.activeEditor.execCommand('mceInsertContent', false, img);                    
+                }
                 $("#MediaPopup").modal("hide");
             });
 

@@ -1,5 +1,4 @@
 ﻿using NITASA.Data;
-using NITASA.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -152,7 +151,7 @@ namespace NITASA.Areas.Admin.Helper
 
         public static bool HasRights(Rights value)
         {
-            if (Common.CurrentUserRole() == "Administrator")
+            if (Functions.CurrentUserRole() == "Administrator")
                 return true;
 
             string rightsName = value.ToString("G");
@@ -168,7 +167,7 @@ namespace NITASA.Areas.Admin.Helper
             //CMSDBContext db = (CMSDBContext)DependencyResolver.Current.GetService(typeof(CMSDBContext));
             NTSDBContext db = new NTSDBContext();
 
-            int UserID = Common.CurrentUserID();
+            int UserID = Functions.CurrentUserID();
             RightsList = new List<string>();
             RightsList = (from rir in db.RightsInRole
                           join usr in db.User on rir.RoleID equals usr.RoleID

@@ -1,5 +1,5 @@
 ﻿@using Newtonsoft.Json;
-@using NITASA.Helpers;
+@using NITASA.Areas.Admin.Helper;
 @model NITASA.Areas.Admin.ViewModels.CustomizedDashboard
 @{
     ViewBag.Title = "Administrator";
@@ -304,13 +304,13 @@
                                             <div class="news-content" style="margin-left: 0px; margin-right: 10px;">
                                                 <div class="news-title" style="font-size: 14px;">@Html.ActionLink(postTitle, "Edit/" + redirectUrl, "Post")</div>
                                                 <div class="news-text">
-                                                    @if (Common.RemoveHTMLTags(Convert.ToString(description)).Length > 110)
+                                                    @if (Functions.RemoveHTMLTags(Convert.ToString(description)).Length > 110)
                                                     {
-                                                        @Common.RemoveHTMLTags(description.Substring(0, 110)); <text>...</text>
+                                                        @Functions.RemoveHTMLTags(description.Substring(0, 110)); <text>...</text>
                                                     }
                                                     else
                                                     {
-                                                        @Common.RemoveHTMLTags(description.ToString());
+                                                        @Functions.RemoveHTMLTags(description.ToString());
                                                     }
                                                 </div>
                                             </div>

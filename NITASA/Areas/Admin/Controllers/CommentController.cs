@@ -1,6 +1,5 @@
 ﻿using NITASA.Areas.Admin.Helper;
 using NITASA.Data;
-using NITASA.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -81,7 +80,7 @@ namespace NITASA.Areas.Admin.Controllers
         {
             var comment = context.Comment.Find(id);
             comment.IsModerated = status;
-            comment.ModeratedBy = Common.CurrentUserID();
+            comment.ModeratedBy = Functions.CurrentUserID();
             comment.ModeratedOn = DateTime.Now;
             context.SaveChanges();
             return Json(comment.IsModerated, JsonRequestBehavior.AllowGet);

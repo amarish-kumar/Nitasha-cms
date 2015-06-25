@@ -1,6 +1,5 @@
 ﻿using NITASA.Areas.Admin.Helper;
 using NITASA.Data;
-using NITASA.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +48,7 @@ namespace NITASA.Areas.Admin.Controllers
                 if (slider != null)
                 {
                     Slide slide = new Slide();
-                    slide.GUID = Common.GetRandomGUID();
+                    slide.GUID = Functions.GetRandomGUID();
                     slide.SliderId = slider.Id;
                     slide.Image = model.Image;
                     slide.Title = model.Title;
@@ -63,7 +62,7 @@ namespace NITASA.Areas.Admin.Controllers
 
                     slide.AddedOn = DateTime.UtcNow;
                     slide.DisplayOrder = slidecount;
-                    slide.AddedBy = Common.CurrentUserID();
+                    slide.AddedBy = Functions.CurrentUserID();
                     context.Slides.Add(slide);
                     context.SaveChanges();
 

@@ -1,0 +1,25 @@
+﻿@model List<Media>
+@using NITASA.Data
+
+    @foreach (var item in Model)
+    {
+        <div class="media-thumb pageModal" style="text-align: center;">
+            <img class="imgSelect" did="@item.ID" style="height: 100px;cursor:pointer;" alt="" src="@item.FileName" />
+            <div>
+                <span>@GetLeft(item.FileName,30)</span>
+            </div>
+        </div>
+    }
+    
+@helper GetLeft(string fullString, int length = 0)
+{
+    string retValue = System.IO.Path.GetFileNameWithoutExtension(fullString);
+    if (!string.IsNullOrWhiteSpace(retValue))
+    {
+        if (retValue.Length > length)
+        {
+            retValue = retValue.Substring(0, length) + "...";
+        }
+    }
+    @retValue
+}

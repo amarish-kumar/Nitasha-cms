@@ -2,7 +2,6 @@
 using NITASA.Areas.Admin.Helper;
 using NITASA.Areas.Admin.ViewModels;
 using NITASA.Data;
-using NITASA.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -268,8 +267,8 @@ namespace NITASA.Areas.Admin.Controllers
             cont.Title = dboard.PostTitle;
             var sanitizer = new Ganss.XSS.HtmlSanitizer();
             cont.Description = sanitizer.Sanitize(dboard.PostDescription);
-            cont.GUID = Common.GetRandomGUID();
-            cont.URL = Common.ToUrlSlug(dboard.PostTitle, "post", 0);
+            cont.GUID = Functions.GetRandomGUID();
+            cont.URL = Functions.ToUrlSlug(dboard.PostTitle, "post", 0);
 
             //cont.EnableComment = Convert.ToBoolean(Request.Form["ckhCommentEnabled"]);
             //int commentEnabledDays = Convert.ToInt32(Request.Form["ddlEnableTill"]);
@@ -277,7 +276,7 @@ namespace NITASA.Areas.Admin.Controllers
 
             cont.EnableComment = false;
             cont.CommentEnabledTill = 0;
-            cont.AddedBy = Common.CurrentUserID();
+            cont.AddedBy = Functions.CurrentUserID();
             cont.AddedOn = DateTime.Now;
             cont.isPublished = false;
             cont.IsDeleted = false;

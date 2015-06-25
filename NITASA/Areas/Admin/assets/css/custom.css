@@ -1310,4 +1310,20 @@ table thead tr th a.desc {
 .Join_Letters {
     white-space: nowrap;
 }
-.media-thumb{width:100px;height:100;}
+.media-thumb{
+    border:2px solid #CDCDCD;
+  float: left;
+  padding: 5px;
+  margin: 15px;
+}
+.padleft5 {
+  padding-left: 5px;
+}
+.mediadesc {
+  background-color: #3E93BD;
+  display: block;
+  float: left;
+  width: 190px;
+  padding: 5px;
+  min-height: 40px;
+}

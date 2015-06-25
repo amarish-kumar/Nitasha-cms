@@ -26,7 +26,7 @@ namespace NITASA.Areas.Admin.Controllers
             if (Request.QueryString["retUrl"] != null)
                 returnURL = Request.QueryString["retUrl"];
 
-            if (Common.CurrentUserID() > 0)
+            if (Functions.CurrentUserID() > 0)
             {
                 if (returnURL == null || returnURL == "" || returnURL.ToLower().Contains("/authenticate/login"))
                 {

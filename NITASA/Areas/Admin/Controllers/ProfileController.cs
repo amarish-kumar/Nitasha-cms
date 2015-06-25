@@ -1,7 +1,6 @@
 ﻿using NITASA.Areas.Admin.Helper;
 using NITASA.Areas.Admin.ViewModels;
 using NITASA.Data;
-using NITASA.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -23,7 +22,7 @@ namespace NITASA.Areas.Admin.Controllers
 
         public ActionResult Details()
         {
-            int userID = Common.CurrentUserID();
+            int userID = Functions.CurrentUserID();
             User usr = new User();
             usr = context.User.Find(userID);
             if (usr == null)
@@ -35,7 +34,7 @@ namespace NITASA.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Details(User usr, HttpPostedFileBase ProfilePicURL)
         {
-            int userID = Common.CurrentUserID();
+            int userID = Functions.CurrentUserID();
             User userEdit = context.User.Find(userID);
 
             if (usr != null)
@@ -86,7 +85,7 @@ namespace NITASA.Areas.Admin.Controllers
                 }
                 else
                 {
-                    int currentUserID = Common.CurrentUserID();
+                    int currentUserID = Functions.CurrentUserID();
                     User userToChange = context.User.Where(m => m.ID == currentUserID).Single();
                     if (userToChange == null)
                     {
@@ -95,13 +94,11 @@ namespace NITASA.Areas.Admin.Controllers
                     }
                     else
                     {
-                        //string password = Common.Decrypt(userToChange.Password, keyToDescript, true);
                         string passwordHash = CryptoUtility.GetPasswordHash(cpassword.currentpassword, userToChange.SaltKey);
                         if (string.Compare(userToChange.Password, passwordHash, false) == 0)
                         {
                             userToChange.SaltKey = CryptoUtility.GetNewSalt();
                             userToChange.Password = CryptoUtility.GetPasswordHash(cpassword.newpassword, userToChange.SaltKey);
-                            //userToChange.Password = Common.Encrypt(cpassword.newpassword, keyToDescript, true);
                             context.SaveChanges();
                             TempData["Message"] = "Password changed successfully";
                         }

@@ -1,6 +1,5 @@
 ﻿using NITASA.Areas.Admin.Helper;
 using NITASA.Data;
-using NITASA.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,9 +41,9 @@ namespace NITASA.Areas.Admin.Controllers
                         Label label = new Label();
 
                         label.Name  = model.Name ;
-                        label.GUID = Common.GetRandomGUID();
+                        label.GUID = Functions.GetRandomGUID();
                         string LabelSlug = string.IsNullOrEmpty(model.Slug) ? model.Name : model.Slug;
-                        label.Slug = Common.ToUrlSlug(LabelSlug, "label", 0);
+                        label.Slug = Functions.ToUrlSlug(LabelSlug, "label", 0);
                         label.Description = model.Description;
                         label.AddedOn = DateTime.UtcNow;
                         label.AddedBy = Convert.ToInt32(Session["UserID"]);
@@ -61,7 +60,7 @@ namespace NITASA.Areas.Admin.Controllers
                         {
                             label.Name= model.Name;
                             string LabelSlug = string.IsNullOrEmpty(model.Slug) ? model.Name : model.Slug;
-                            label.Slug = Common.ToUrlSlug(LabelSlug, "label", label.ID);
+                            label.Slug = Functions.ToUrlSlug(LabelSlug, "label", label.ID);
                             label.Description = model.Description;
                             label.ModifiedBy = Convert.ToInt32(Session["UserID"]);
                             label.ModifiedOn = DateTime.UtcNow;

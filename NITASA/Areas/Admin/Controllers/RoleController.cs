@@ -1,6 +1,5 @@
 ﻿using NITASA.Areas.Admin.Helper;
 using NITASA.Data;
-using NITASA.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,10 +54,10 @@ namespace NITASA.Areas.Admin.Controllers
                 if (duplicateRole == 0)
                 {
                     Role dbRole = new Role();
-                    dbRole.GUID = Common.GetRandomGUID();
+                    dbRole.GUID = Functions.GetRandomGUID();
                     dbRole.Name = role.Name;
                     dbRole.AddedOn = DateTime.UtcNow;
-                    dbRole.AddedBy = Common.CurrentUserID();
+                    dbRole.AddedBy = Functions.CurrentUserID();
                     dbRole.IsDeleted = false;
                     context.Role.Add(dbRole);
                     context.SaveChanges();
@@ -95,7 +94,7 @@ namespace NITASA.Areas.Admin.Controllers
             Role role = context.Role.Where(m => m.GUID == GUID && m.IsDeleted == false).FirstOrDefault();
             if (role != null)
             {
-                if (Common.CurrentUserID() == role.AddedBy)
+                if (Functions.CurrentUserID() == role.AddedBy)
                 {
                     if (!UserRights.HasRights(Rights.EditOwnRoles))
                         return RedirectToAction("AccessDenied", "Home");
@@ -125,7 +124,7 @@ namespace NITASA.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Edit(Role role, FormCollection f)
         {
-            if (Common.CurrentUserID() == role.AddedBy)
+            if (Functions.CurrentUserID() == role.AddedBy)
             {
                 if (!UserRights.HasRights(Rights.EditOwnRoles))
                     return RedirectToAction("AccessDenied", "Home");
@@ -146,7 +145,7 @@ namespace NITASA.Areas.Admin.Controllers
                     {
                         dbRole.Name = role.Name;
                         dbRole.ModifiedOn = DateTime.UtcNow;
-                        dbRole.ModifiedBy = Common.CurrentUserID();
+                        dbRole.ModifiedBy = Functions.CurrentUserID();
                         context.SaveChanges();
 
                         List<RightsInRole> RightsInRoleList = context.RightsInRole.Where(m => m.RoleID == role.ID).ToList();

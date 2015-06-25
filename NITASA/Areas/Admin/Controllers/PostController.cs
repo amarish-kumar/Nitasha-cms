@@ -1,7 +1,6 @@
 ﻿using CsQuery;
 using NITASA.Areas.Admin.Helper;
 using NITASA.Data;
-using NITASA.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,17 +104,25 @@ namespace NITASA.Areas.Admin.Controllers
             Model.Description = doc.Render();
 
             cont.Description = Model.Description;
-            cont.GUID = Common.GetRandomGUID();
-            cont.URL = Common.ToUrlSlug(Model.URL, "post", 0);
+            cont.GUID = Functions.GetRandomGUID();
+            cont.URL = Functions.ToUrlSlug(Model.URL, "post", 0);
             cont.IsSlugEdited = Model.IsSlugEdited;
             cont.IsFeatured = Model.IsFeatured;
             cont.ContentOrder = Model.ContentOrder;
 
             cont.EnableComment = Model.EnableComment;
             cont.CommentEnabledTill = Model.CommentEnabledTill;
-
+            cont.CoverContent = Model.CoverContent;
+            if (!string.IsNullOrEmpty(Model.FeaturedImage))
+            {
+                cont.FeaturedImage = Model.FeaturedImage;
+            }
+            else
+            {
+                cont.FeaturedImage = null;
+            }
             cont.AddedOn = DateTime.Now;
-            cont.AddedBy = Common.CurrentUserID();
+            cont.AddedBy = Functions.CurrentUserID();
             if (isPublished)
             {
                 cont.isPublished = true;
@@ -137,7 +144,7 @@ namespace NITASA.Areas.Admin.Controllers
                     contLabel.ContentID = cont.ID;
                     contLabel.LabelID = Convert.ToInt32(currLblID);
                     contLabel.AddedOn = DateTime.Now;
-                    contLabel.AddedBy = Common.CurrentUserID();
+                    contLabel.AddedBy = Functions.CurrentUserID();
                     context.ContentLabel.Add(contLabel);
                     context.SaveChanges();
                 }
@@ -151,7 +158,7 @@ namespace NITASA.Areas.Admin.Controllers
                     contentCategory.ContentID = cont.ID;
                     contentCategory.CategoryID = Convert.ToInt32(currCatID);
                     contentCategory.AddedOn = DateTime.Now;
-                    contentCategory.AddedBy = Common.CurrentUserID();
+                    contentCategory.AddedBy = Functions.CurrentUserID();
                     context.ContentCategory.Add(contentCategory);
                     context.SaveChanges();
                 }
@@ -176,7 +183,7 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 Label lbl = new Label();
                 lbl.Name = labelName;
-                lbl.Slug = Common.ToUrlSlug(labelName, "label", 0);
+                lbl.Slug = Functions.ToUrlSlug(labelName, "label", 0);
                 lbl.Description = "";
                 lbl.AddedOn = DateTime.UtcNow;
                 lbl.AddedBy = Convert.ToInt32(Session["UserID"]);
@@ -199,7 +206,7 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 Category cat = new Category();
                 cat.Name = CategoryName;
-                cat.Slug = Common.ToUrlSlug(CategoryName, "category", 0);
+                cat.Slug = Functions.ToUrlSlug(CategoryName, "category", 0);
                 cat.ParentCategoryID = 0;
                 cat.AddedOn = DateTime.UtcNow;
                 cat.AddedBy = Convert.ToInt32(Session["UserID"]);
@@ -225,7 +232,7 @@ namespace NITASA.Areas.Admin.Controllers
             Content curCon = context.Content.Where(m => m.GUID == GUID).FirstOrDefault();
             if (curCon != null)
             {
-                if (Common.CurrentUserID() == curCon.AddedBy)
+                if (Functions.CurrentUserID() == curCon.AddedBy)
                 {
                     if (!UserRights.HasRights(Rights.DeleteOwnPosts))
                         return RedirectToAction("AccessDenied", "Home");
@@ -253,7 +260,7 @@ namespace NITASA.Areas.Admin.Controllers
             Content curCont = context.Content.Where(m => m.GUID == GUID).FirstOrDefault();
             if (curCont != null)    // if content not found
             {
-                if (Common.CurrentUserID() == curCont.AddedBy)
+                if (Functions.CurrentUserID() == curCont.AddedBy)
                 {
                     if (!UserRights.HasRights(Rights.EditOwnPosts))
                         return RedirectToAction("AccessDenied", "Home");
@@ -316,7 +323,7 @@ namespace NITASA.Areas.Admin.Controllers
             Content content = context.Content.Where(m => m.GUID == GUID).FirstOrDefault();
             if (content != null)    // if content not found
             {
-                if (Common.CurrentUserID() == content.AddedBy)
+                if (Functions.CurrentUserID() == content.AddedBy)
                 {
                     if (!UserRights.HasRights(Rights.EditOwnPosts))
                         return RedirectToAction("AccessDenied", "Home");
@@ -341,16 +348,24 @@ namespace NITASA.Areas.Admin.Controllers
                         content.Title = Model.Title;
                         content.Description= Model.Description.Replace("<img src=\"../../../", "<img src=\"../../");
                         if (content.URL.ToLower() != Model.URL.ToLower())
-                            content.URL = Common.ToUrlSlug(Model.URL, "post", content.ID);
+                            content.URL = Functions.ToUrlSlug(Model.URL, "post", content.ID);
                         content.IsSlugEdited = Model.IsSlugEdited;
                         content.IsFeatured = Model.IsFeatured;
                         content.ContentOrder = Model.ContentOrder;
                         content.ModifiedOn = DateTime.Now;
-                        content.ModifiedBy = Common.CurrentUserID();
+                        content.ModifiedBy = Functions.CurrentUserID();
 
                         content.EnableComment = Model.EnableComment;
                         content.CommentEnabledTill = Model.CommentEnabledTill;
-
+                        content.CoverContent = Model.CoverContent;
+                        if (!string.IsNullOrEmpty(Model.FeaturedImage))
+                        {
+                            content.FeaturedImage = Model.FeaturedImage;
+                        }
+                        else
+                        {
+                            content.FeaturedImage = null;
+                        }
                         if (UpdateType == "Publish")
                         {
                             content.isPublished = true;
@@ -376,7 +391,7 @@ namespace NITASA.Areas.Admin.Controllers
                                 contLabel.ContentID = content.ID;
                                 contLabel.LabelID = Convert.ToInt32(currLblID);
                                 contLabel.AddedOn = DateTime.Now;
-                                contLabel.AddedBy = Common.CurrentUserID();
+                                contLabel.AddedBy = Functions.CurrentUserID();
                                 context.ContentLabel.Add(contLabel);
                                 context.SaveChanges();
                             }
@@ -395,7 +410,7 @@ namespace NITASA.Areas.Admin.Controllers
                                 contentCategory.ContentID = content.ID;
                                 contentCategory.CategoryID = Convert.ToInt32(currCatID);
                                 contentCategory.AddedOn = DateTime.Now;
-                                contentCategory.AddedBy = Common.CurrentUserID();
+                                contentCategory.AddedBy = Functions.CurrentUserID();
                                 context.ContentCategory.Add(contentCategory);
                                 context.SaveChanges();
                             }

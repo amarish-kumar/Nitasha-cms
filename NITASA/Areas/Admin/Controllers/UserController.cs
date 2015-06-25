@@ -1,6 +1,5 @@
 ﻿using NITASA.Areas.Admin.Helper;
 using NITASA.Data;
-using NITASA.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -53,7 +52,7 @@ namespace NITASA.Areas.Admin.Controllers
                 int duplicateUser = context.User.Where(m => m.Email == user.Email && m.IsDeleted == false).Count();
                 if (duplicateUser == 0)
                 {
-                    user.GUID = Common.GetRandomGUID();                    
+                    user.GUID = Functions.GetRandomGUID();                    
                     user.SaltKey = CryptoUtility.GetNewSalt();
                     user.Password = CryptoUtility.GetPasswordHash(user.Password, user.SaltKey); 
 
@@ -65,7 +64,7 @@ namespace NITASA.Areas.Admin.Controllers
                         user.ProfilePicURL = relativePath;
                     }
                     user.AddedOn = DateTime.UtcNow;
-                    user.AddedBy = Common.CurrentUserID();
+                    user.AddedBy = Functions.CurrentUserID();
                     user.IsDefault = false;
                     user.IsDeleted = false;
                     context.User.Add(user);
@@ -88,7 +87,7 @@ namespace NITASA.Areas.Admin.Controllers
             User user = context.User.Where(m => m.GUID == GUID && m.IsDeleted == false).FirstOrDefault();
             if (user != null)
             {
-                if (Common.CurrentUserID() == user.ID)
+                if (Functions.CurrentUserID() == user.ID)
                 {
                     if (!UserRights.HasRights(Rights.EditUserSelf))
                         return RedirectToAction("AccessDenied", "Home");
@@ -113,7 +112,7 @@ namespace NITASA.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Edit(User user, HttpPostedFileBase ProfilePic)
         {
-            if (Common.CurrentUserID() == user.ID)
+            if (Functions.CurrentUserID() == user.ID)
             {
                 if (!UserRights.HasRights(Rights.EditUserSelf))
                     return RedirectToAction("AccessDenied", "Home");
@@ -146,7 +145,7 @@ namespace NITASA.Areas.Admin.Controllers
                     }
                     userUpdate.RoleID = user.RoleID;
                     user.ModifiedOn = DateTime.UtcNow;
-                    user.ModifiedBy = Common.CurrentUserID();
+                    user.ModifiedBy = Functions.CurrentUserID();
                     userUpdate.IsActive = user.IsActive;
                     userUpdate.IsDefault = user.IsDefault;
                     context.SaveChanges();
@@ -167,7 +166,7 @@ namespace NITASA.Areas.Admin.Controllers
             User user = context.User.Where(m => m.GUID == GUID && m.IsDeleted == false).FirstOrDefault();
             if (user != null)
             {
-                if (Common.CurrentUserID() == user.ID)
+                if (Functions.CurrentUserID() == user.ID)
                 {
                     if (!UserRights.HasRights(Rights.DeleteUserSelf))
                         return RedirectToAction("AccessDenied", "Home");
@@ -181,7 +180,7 @@ namespace NITASA.Areas.Admin.Controllers
                 user.IsDeleted = true;
                 context.SaveChanges();
 
-                if (Common.CurrentUserID() == user.ID)
+                if (Functions.CurrentUserID() == user.ID)
                 {
                     Session.RemoveAll();
                     TempData["loginmessage"] = "Your account deleted successfully";
@@ -202,7 +201,7 @@ namespace NITASA.Areas.Admin.Controllers
             User user = context.User.Where(m => m.GUID == GUID && m.IsDeleted == false).FirstOrDefault();
             if (user != null)
             {
-                if (Common.CurrentUserID() == user.ID)
+                if (Functions.CurrentUserID() == user.ID)
                 {
                     if (!UserRights.HasRights(Rights.EditUserSelf))
                         return RedirectToAction("AccessDenied", "Home");

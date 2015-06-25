@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using NITASA.Areas.Admin.Helper;
 using NITASA.Data;
-using NITASA.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -169,7 +168,7 @@ namespace NITASA.Areas.Admin.Controllers
             context.SaveChanges();
 
             int autoid = 1;
-            string GUID = Common.GetRandomGUID();
+            string GUID = Functions.GetRandomGUID();
             DateTime CreatedOn = DateTime.UtcNow;
 
             var root1 = JArray.Parse(jMenu);     // Level 1

@@ -1,6 +1,5 @@
 ﻿using Microsoft.SqlServer.Management.Sdk.Sfc;
 using Microsoft.SqlServer.Management.Smo;
-using NITASA.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -12,6 +11,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.IO;
 using System.IO.Compression;
+using NITASA.Areas.Admin.Helper;
 
 namespace NITASA.Areas.Admin.Controllers
 {
@@ -45,7 +45,7 @@ namespace NITASA.Areas.Admin.Controllers
                 if (myServer.ConnectionContext.IsOpen)
                     myServer.ConnectionContext.Disconnect();
 
-                string currentTimeStamp = Common.CurrentTimeStamp();
+                string currentTimeStamp = Functions.CurrentTimeStamp();
                 string backupPath = Server.MapPath(ConfigurationManager.AppSettings["backupDir"]);
                 string sqlScriptFile = backupPath + "temp/" + currentTimeStamp + ".sql";
                 using (System.IO.File.Create(sqlScriptFile)) { }

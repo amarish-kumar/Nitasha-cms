@@ -1,7 +1,6 @@
 ﻿using CsQuery;
 using NITASA.Areas.Admin.Helper;
 using NITASA.Data;
-using NITASA.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,7 +53,7 @@ namespace NITASA.Areas.Admin.Controllers
                 Content cont = dbContext.Content.Where(m => m.Type == "page" && m.GUID == guid).FirstOrDefault();
                 if (cont != null)
                 {
-                    if (cont.AddedBy == Common.CurrentUserID())
+                    if (cont.AddedBy == Functions.CurrentUserID())
                     {
                         if (!UserRights.HasRights(Rights.EditOwnPages))
                             return RedirectToAction("AccessDenied", "Home");
@@ -125,13 +124,13 @@ namespace NITASA.Areas.Admin.Controllers
             if (operationType == 'A')
             {
                 Content contentNew = new Content();
-                contentNew.GUID = Common.GetRandomGUID();
+                contentNew.GUID = Functions.GetRandomGUID();
                 //var sanitizer = new Html.HtmlSanitizer();
                 //contentNew.ContentText = sanitizer.Sanitize(contentPage.content.ContentText);
                 contentNew.Description= contentPage.content.Description;
                 contentNew.Title = contentPage.content.Title;
                 contentNew.Type = "page";
-                contentNew.URL = Common.ToUrlSlug(contentPage.content.URL, "page", 0);
+                contentNew.URL = Functions.ToUrlSlug(contentPage.content.URL, "page", 0);
                 contentNew.CoverContent = contentPage.content.CoverContent;
                 if (!string.IsNullOrEmpty(contentPage.content.FeaturedImage))
                 {
@@ -141,7 +140,7 @@ namespace NITASA.Areas.Admin.Controllers
                 {
                     contentNew.FeaturedImage = null;
                 }
-                contentNew.AddedBy = Common.CurrentUserID();
+                contentNew.AddedBy = Functions.CurrentUserID();
                 contentNew.AddedOn = DateTime.Now;
                 contentNew.isPublished = contentPage.content.isPublished;
                 if (contentPage.content.isPublished)
@@ -169,7 +168,7 @@ namespace NITASA.Areas.Admin.Controllers
                 contentUpdate.Description= contentPage.content.Description.Replace("<img src=\"../../../", "<img src=\"../../");
                 contentUpdate.Title = contentPage.content.Title;
                 if (contentUpdate.URL.ToLower() != contentPage.content.URL.ToLower())
-                    contentUpdate.URL = Common.ToUrlSlug(contentPage.content.URL, "Page", contentUpdate.ID);
+                    contentUpdate.URL = Functions.ToUrlSlug(contentPage.content.URL, "Page", contentUpdate.ID);
                 contentUpdate.CoverContent = contentPage.content.CoverContent;
                 if (!string.IsNullOrEmpty(contentPage.content.FeaturedImage))
                 {
@@ -179,7 +178,7 @@ namespace NITASA.Areas.Admin.Controllers
                 {
                     contentUpdate.FeaturedImage = null;
                 }
-                contentUpdate.ModifiedBy = Common.CurrentUserID();
+                contentUpdate.ModifiedBy = Functions.CurrentUserID();
                 contentUpdate.ModifiedOn = DateTime.Now;
                 contentUpdate.isPublished = contentPage.content.isPublished;
                 if (contentPage.content.isPublished)
@@ -217,7 +216,7 @@ namespace NITASA.Areas.Admin.Controllers
             Content contentToDelete = dbContext.Content.Where(m => m.Type == "page" && m.GUID == guid).Single();
             if (contentToDelete != null)
             {
-                if (contentToDelete.AddedBy == Common.CurrentUserID())
+                if (contentToDelete.AddedBy == Functions.CurrentUserID())
                 {
                     if (!UserRights.HasRights(Rights.DeleteOwnPages))
                         return RedirectToAction("AccessDenied", "Home");

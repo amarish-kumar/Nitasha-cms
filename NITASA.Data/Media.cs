@@ -40,4 +40,10 @@ namespace NITASA.Data
         [DefaultValue(0)]
         public bool IsDeleted { get; set; }
     }
+    public class MediaPopUp
+    {
+        public List<Media> Medias { get; set; }
+        public int TotalPages { get; set; }
+        public string TabName { get; set; }
+    }
 }

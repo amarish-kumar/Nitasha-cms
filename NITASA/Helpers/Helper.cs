@@ -5,7 +5,7 @@ using System.Web;
 
 namespace NITASA.Helpers
 {
-    public static class function
+    public static class Helper
     {
     }
 }

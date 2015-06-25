@@ -1,5 +1,4 @@
 ﻿using NITASA.Data;
-using NITASA.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +26,7 @@ namespace NITASA.Areas.Admin.Helper
         public static void InsertLog(LogOperation logOp, string title, string description, string pageUrl)
         {
             NTSDBContext db = new NTSDBContext();
-            int UserID = Common.CurrentUserID();
+            int UserID = Functions.CurrentUserID();
             string operation = getOperationType(logOp);
 
             //ActivityLog log = new ActivityLog();

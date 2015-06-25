@@ -16380,7 +16380,7 @@ a.editable-click.editable-disabled {
 }	
 
 #page { position:relative;}
-.media-thumb{width:100px;height:100px;border:2px solid #CDCDCD;float:left;padding:5px;margin:15px;}
+/*.media-thumb{width:100px;height:100px;border:2px solid #CDCDCD;float:left;padding:5px;margin:15px;}*/
 .clear{clear:both;}
 .rem-media{font-weight: bolder; margin-left: 90px;margin-top: 0px; position: absolute}
 .rem-media a{color: #ff0000;}

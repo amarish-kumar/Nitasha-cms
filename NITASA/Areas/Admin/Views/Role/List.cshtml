@@ -1,6 +1,5 @@
 ﻿@model  List<Tuple<Role, int>>
 @using NITASA.Data
-@using NITASA.Helpers
 @using NITASA.Areas.Admin.Helper
 @{
     ViewBag.Title = "Role List";
@@ -109,7 +108,7 @@
                                         grid.Column(header: "Action", style: "col3", format: @<text>
                                             @if (item.item1.Name != "Administrator")
                                             {
-                                                if (Common.CurrentUserID() == item.item1.AddedBy)
+                                                if (Functions.CurrentUserID() == item.item1.AddedBy)
                                                 {
                                                     if (UserRights.HasRights(Rights.EditOwnRoles))
                                                     {

@@ -1,5 +1,4 @@
 ﻿using NITASA.Data;
-using NITASA.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -196,7 +195,7 @@ namespace NITASA.Areas.Admin.Helper
             NTSDBContext context = new NTSDBContext();
             string currentTime = DateTime.Now.ToString();
 
-            string userName = context.User.Where(m => m.ID == Common.CurrentUserID()).Select(m => m.FullName).FirstOrDefault();
+            string userName = context.User.Where(m => m.ID == Functions.CurrentUserID()).Select(m => m.FullName).FirstOrDefault();
 
             if (actionType == ActionType.Add)  //Insert Log for Add action here
             {

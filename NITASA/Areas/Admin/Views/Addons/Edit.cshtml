@@ -1,68 +1,46 @@
 ﻿@model Content
 @using NITASA.Data
 @using NITASA.Areas.Admin.Helper
-@using NITASA.Helpers
 @{
     ViewBag.Title = "Update Addon";
     Meta meta = ViewBag.meta;
-    //List<AddonType> AddonTypeList = Common.GetAddonTypes();
 }
     <script src="@Url.Content("~/Areas/Admin/assets/js/tinymce/tinymce.min.js")"></script>
     <script type="text/javascript">
-        function myFileBrowser(field_name, url, type, win) {
-
-            var cmsURL = "/Admin/Post/GetMedia";
-
-            tinyMCE.activeEditor.windowManager.open({
-                file: cmsURL,
-                title: 'Select an Image',
-                width: 750,
-                height: 360,
-                resizable: "yes",
-                inline: "yes",
-                close_previous: "no"
-            }, {
-                window: win,
-                input: field_name
-            });
-            return false;
-        }
+       
         $ext = 'span[id|name|class|style]';
         tinyMCE.init({
-            selector: "textarea",
+            selector: ".edtr",
             theme: "modern",
+            //plugins: [
+            //    "advlist autolink lists link image charmap preview hr anchor",
+            //    "searchreplace wordcount visualblocks visualchars code fullscreen",
+            //    "insertdatetime nonbreaking save table contextmenu directionality",
+            //    "emoticons template paste textcolor colorpicker textpattern "
+            //],
+            //toolbar1: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | Addons",
+            //toolbar2: "preview | forecolor backcolor emoticons",
+            menubar: false,
             plugins: [
                 "advlist autolink lists link image charmap preview hr anchor",
                 "searchreplace wordcount visualblocks visualchars code fullscreen",
                 "insertdatetime nonbreaking save table contextmenu directionality",
                 "emoticons template paste textcolor colorpicker textpattern "
             ],
-            toolbar1: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | Addons",
-            toolbar2: "preview | forecolor backcolor emoticons",
+            toolbar1: "undo redo | styleselect | forecolor backcolor | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link | Variables | mediaimages | code | Addons",
             image_advtab: false,
             extended_valid_elements: $ext,
             force_br_newlines: false,
             force_p_newlines: false,
             forced_root_block: '',
-            file_browser_callback: myFileBrowser,
             setup: function (editor) {
-                editor.addButton('Addons', {
-                    text: 'Addons',
-                    type: 'menubutton',
-                    icon: false,
-                    menu: [
-                        @*@foreach(AddonType item in AddonTypeList)
-                        {
-                        <text>
-                            {
-                                text: '@item.Name',
-                                onclick: function () {
-                                    editor.insertContent('&lt;Addon&gt;@item.Code&lt;/Addon&gt;');
-                                }
-                            },
-                        </text>
-                        }*@
-                    ]
+                editor.addButton('mediaimages', {
+                    text: '',
+                    title: 'Insert image',
+                    icon: 'mce-ico mce-i-image',
+                    onclick: function () {
+                        $("#MediaPopup").modal('show');
+                    }
                 });
             }
         });
@@ -114,7 +92,7 @@
                                                     <b>Content: </b>
                                                 </label>
                                                 <div>
-                                                    @Html.TextAreaFor(m => m.Description, new { style = "width: 100%; max-width: 98%; height:500px; margin: 0px; overflow: hidden; word-wrap: break-word;resize:vertical;" })
+                                                    @Html.TextAreaFor(m => m.Description, new { @class = "edtr", style = "width: 100%; max-width: 98%; height:500px; margin: 0px; overflow: hidden; word-wrap: break-word;resize:vertical;" })
                                                     @*@class = "textarea-html5", *@
                                                     <div style="color: red">
                                                         @Html.ValidationMessageFor(m => m.Description)
@@ -125,7 +103,7 @@
                                     </div>
                                     <div class="span3">
                                         <div class="padded" style="padding-top: 0px; padding-left: 0px;">
-                                            @if (Common.CurrentUserID() == Model.AddedBy)
+                                            @if (Functions.CurrentUserID() == Model.AddedBy)
                                             {
                                                 if (UserRights.HasRights(Rights.PublishOwnAddons))
                                                 {
@@ -170,6 +148,10 @@
         </div>
     </div>
 </div>
+
+@{Html.RenderAction("GetMedia", "Media", new { isEditor = true });}
+
+
 @section BottomScript{
     <script type="text/javascript">
         $(document).ready(function () {            
@@ -189,6 +171,13 @@
                     $('#frm1').submit();
                 }
             }
+            $("body").delegate(".wizard-input-section .media-thumb .imgSelect", "click", function () {
+                var imgPath = $(this).attr('src');
+                var url = imgPath;
+                var img = "<img src=\"" + url + "\"/>";
+                tinyMCE.activeEditor.execCommand('mceInsertContent', false, img);
+                $("#MediaPopup").modal("hide");
+            });
         });
         $(function () {
             $("#txtAddonName").autocomplete({

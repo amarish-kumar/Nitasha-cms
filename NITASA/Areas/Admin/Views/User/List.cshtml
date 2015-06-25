@@ -1,6 +1,5 @@
 ﻿@model List<Tuple<User, string>>
 @using NITASA.Data
-@using NITASA.Helpers
 @using NITASA.Areas.Admin.Helper
 @{
     ViewBag.Title = "User List";
@@ -106,7 +105,7 @@
                                         grid.Column(header: "Change Status", style: "col3", format: @<text>
                                             @if (item.item2 != "Administrator")
                                             {
-                                                if (Common.CurrentUserID() == item.item1.ID)
+                                                if (Functions.CurrentUserID() == item.item1.ID)
                                                 {
                                                     if (UserRights.HasRights(Rights.EditUserSelf))
                                                     {
@@ -125,7 +124,7 @@
                                         grid.Column(header: "Action", style: "col3", format: @<text>
                                             @if (item.item2 != "Administrator")
                                             {
-                                                if (Common.CurrentUserID() == item.item1.ID)
+                                                if (Functions.CurrentUserID() == item.item1.ID)
                                                 {
                                                     if (UserRights.HasRights(Rights.EditUserSelf))
                                                     {
@@ -139,7 +138,7 @@
                                                         @Html.ActionLink("Edit", "Edit", new { GUID = item.item1.GUID }, new { @class = "btn btn-small btn-blue" })
                                                     }
                                                 }
-                                                if (Common.CurrentUserID() == item.item1.ID)
+                                                if (Functions.CurrentUserID() == item.item1.ID)
                                                 {
                                                     if (UserRights.HasRights(Rights.DeleteUserSelf))
                                                     {

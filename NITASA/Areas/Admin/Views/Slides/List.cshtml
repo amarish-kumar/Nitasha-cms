@@ -199,8 +199,8 @@
                 e.preventDefault();
                 $("#MediaPopup").modal("show");
             });
-            $(".wizard-input-section .media-thumb .imgSelect").click(function () {
-                var imgPath = $(this).attr("src");                
+            $("body").delegate(".wizard-input-section .media-thumb .imgSelect", "click", function () {
+                var imgPath = $(this).attr("src");
                 $("#uploadedImage").attr("src", imgPath);
                 var img = imgPath.replace('/content/media/', '');
                 $("#Image").val(img);

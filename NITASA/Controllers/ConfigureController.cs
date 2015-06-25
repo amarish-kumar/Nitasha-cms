@@ -1,6 +1,5 @@
 ﻿using NITASA.Areas.Admin.Helper;
 using NITASA.Data;
-using NITASA.Helpers;
 using NITASA.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -219,7 +218,7 @@ namespace NITASA.Controllers
         protected void InitializeDatabase(NTSDBContext context)
         {
             Role AdminRole = new Role();
-            AdminRole.GUID = Common.GetRandomGUID();
+            AdminRole.GUID = Functions.GetRandomGUID();
             AdminRole.Name = "Administrator";
             AdminRole.AddedBy = 1;
             AdminRole.AddedOn = DateTime.UtcNow;
@@ -227,7 +226,7 @@ namespace NITASA.Controllers
             context.SaveChanges();
 
             User user = new User();
-            user.GUID = Common.GetRandomGUID();
+            user.GUID = Functions.GetRandomGUID();
             user.FirstName = "Super";
             user.LastName = "Admin";
             user.Email = ConfigurationManager.AppSettings["DefaultSuperAdminEmail"].ToString();
@@ -255,7 +254,7 @@ namespace NITASA.Controllers
 
             #region Add Editors Role and Assign Access Rights
             Role EditorsRole = new Role();
-            EditorsRole.GUID = Common.GetRandomGUID();
+            EditorsRole.GUID = Functions.GetRandomGUID();
             EditorsRole.Name = "Editors";
             EditorsRole.AddedBy = userID;
             EditorsRole.AddedOn = DateTime.UtcNow;
@@ -303,7 +302,7 @@ namespace NITASA.Controllers
 
             //Add Default Content
             Content content = new Content();
-            content.GUID = Common.GetRandomGUID();
+            content.GUID = Functions.GetRandomGUID();
             content.Type = "Post";
             content.Title = "Welcome to Nixon DotNet CMS ";
             content.URL = "Welcome-to-Nixon-DotNet-CMS";
@@ -323,7 +322,7 @@ namespace NITASA.Controllers
             // Add default category
             Category conCategory = new Category();
             conCategory.Name = "DotNet";
-            conCategory.GUID = Common.GetRandomGUID();
+            conCategory.GUID = Functions.GetRandomGUID();
             conCategory.Slug = "dotnet";
             conCategory.ParentCategoryID = 0;
             conCategory.AddedBy = userID;
@@ -353,7 +352,7 @@ namespace NITASA.Controllers
             Widget gadget = new Widget();
             gadget.Name = "Recent Content";
             gadget.Title = "Recent Content";
-            gadget.GUID = Common.GetRandomGUID();
+            gadget.GUID = Functions.GetRandomGUID();
             gadget.Option = "{ \"title\": \"Recent Content\",\"count\": 5,\"showthumb\": false }";
             gadget.DisplayOrder = 1;
             gadget.IsActive = true;
@@ -362,7 +361,7 @@ namespace NITASA.Controllers
             gadget = new Widget();
             gadget.Name = "Most Viewed Content";
             gadget.Title = "Most Viewed Content";
-            gadget.GUID = Common.GetRandomGUID();
+            gadget.GUID = Functions.GetRandomGUID();
             gadget.Option = "{ \"title\": \"Most Viewed Content\",\"count\": 5,\"showthumb\": false }";
             gadget.DisplayOrder = 2;
             gadget.IsActive = true;
@@ -371,7 +370,7 @@ namespace NITASA.Controllers
             gadget = new Widget();
             gadget.Name = " Related Content";
             gadget.Title = " Related Content";
-            gadget.GUID = Common.GetRandomGUID();
+            gadget.GUID = Functions.GetRandomGUID();
             gadget.Option = "{ \"title\": \"Related Content\",\"count\": 3,\"showthumb\": false }";
             gadget.DisplayOrder = 3;
             gadget.IsActive = false;
@@ -380,7 +379,7 @@ namespace NITASA.Controllers
             gadget = new Widget();
             gadget.Name = "Total Page View";
             gadget.Title = "Total Page View";
-            gadget.GUID = Common.GetRandomGUID();
+            gadget.GUID = Functions.GetRandomGUID();
             gadget.Option = "{ \"title\": \"Total Page View\",\"count\": 0,\"showthumb\": false }";
             gadget.DisplayOrder = 4;
             gadget.IsActive = false;
@@ -389,7 +388,7 @@ namespace NITASA.Controllers
             gadget = new Widget();
             gadget.Name = "Category List";
             gadget.Title = "Category List";
-            gadget.GUID = Common.GetRandomGUID();
+            gadget.GUID = Functions.GetRandomGUID();
             gadget.Option = "{ \"title\": \"Category List\",\"count\": 3,\"showthumb\": false }";
             gadget.DisplayOrder = 5;
             gadget.IsActive = true;
@@ -398,7 +397,7 @@ namespace NITASA.Controllers
             gadget = new Widget();
             gadget.Name = "Label List";
             gadget.Title = "Label List";
-            gadget.GUID = Common.GetRandomGUID();
+            gadget.GUID = Functions.GetRandomGUID();
             gadget.Option = "{ \"title\": \"Label List\",\"count\": 3,\"showthumb\": false }";
             gadget.DisplayOrder = 6;
             gadget.IsActive = true;

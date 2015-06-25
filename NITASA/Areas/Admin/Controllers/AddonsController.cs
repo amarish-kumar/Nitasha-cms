@@ -6,8 +6,6 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CsQuery;
-using NITASA.Helpers;
-
 namespace NITASA.Areas.Admin.Controllers
 {
     [CheckLogin]
@@ -78,13 +76,13 @@ namespace NITASA.Areas.Admin.Controllers
                         if (currOperation == "Post")
                         {
                             SaveAddonDetails(content, true);
-                            LogSector.LogAction(ActionType.Publish, Request.Url.ToString(), "Addon Name - " + content.Title, null);
+                            //LogSector.LogAction(ActionType.Publish, Request.Url.ToString(), "Addon Name - " + content.Title, null);
                             TempData["SuccessMessage"] = "Addon published successfully.";
                         }
                         else
                         {
                             SaveAddonDetails(content, false);
-                            LogSector.LogAction(ActionType.Draft, Request.Url.ToString(), "Addon Name - " + content.Title, null);
+                            //LogSector.LogAction(ActionType.Draft, Request.Url.ToString(), "Addon Name - " + content.Title, null);
                             TempData["SuccessMessage"] = "Addon saved to draft successfully.";
                         }
                         return RedirectToAction("List");
@@ -119,7 +117,7 @@ namespace NITASA.Areas.Admin.Controllers
             Model.Description = doc.Render();
 
             cont.Description = Model.Description;
-            cont.GUID = Common.GetRandomGUID();
+            cont.GUID = Functions.GetRandomGUID();
             cont.URL = "";
             cont.IsSlugEdited = false;
             cont.IsFeatured = false;
@@ -128,7 +126,7 @@ namespace NITASA.Areas.Admin.Controllers
             cont.CommentEnabledTill = 1;
 
             cont.AddedOn = DateTime.Now;
-            cont.AddedBy = Common.CurrentUserID();
+            cont.AddedBy = Functions.CurrentUserID();
             if (isPublished)
             {
                 cont.isPublished = true;
@@ -154,7 +152,7 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 //try
                 //{
-                if (Common.CurrentUserID() == curCont.AddedBy)
+                if (Functions.CurrentUserID() == curCont.AddedBy)
                 {
                     if (!UserRights.HasRights(Rights.EditOwnAddons))
                         return RedirectToAction("AccessDenied", "Home");
@@ -188,7 +186,7 @@ namespace NITASA.Areas.Admin.Controllers
             Content content = context.Content.Where(m => m.GUID == GUID).FirstOrDefault();
             if (content != null)    // if content not found
             {
-                if (Common.CurrentUserID() == content.AddedBy)
+                if (Functions.CurrentUserID() == content.AddedBy)
                 {
                     if (!UserRights.HasRights(Rights.EditOwnAddons))
                         return RedirectToAction("AccessDenied", "Home");
@@ -215,7 +213,7 @@ namespace NITASA.Areas.Admin.Controllers
                         content.Description = Model.Description.Replace("<img src=\"../../../", "<img src=\"../../");
                         content.ContentOrder = Model.ContentOrder;
                         content.ModifiedOn = DateTime.Now;
-                        content.ModifiedBy = Common.CurrentUserID();
+                        content.ModifiedBy = Functions.CurrentUserID();
                         if (UpdateType == "Publish")
                         {
                             content.isPublished = true;
@@ -272,7 +270,7 @@ namespace NITASA.Areas.Admin.Controllers
             Content curCon = context.Content.Where(m => m.GUID == GUID).FirstOrDefault();
             if (curCon != null)
             {
-                if (Common.CurrentUserID() == curCon.AddedBy)
+                if (Functions.CurrentUserID() == curCon.AddedBy)
                 {
                     if (!UserRights.HasRights(Rights.DeleteOwnAddons))
                         return RedirectToAction("AccessDenied", "Home");

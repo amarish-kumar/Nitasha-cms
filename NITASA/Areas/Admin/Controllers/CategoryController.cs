@@ -1,6 +1,5 @@
 ﻿using NITASA.Areas.Admin.Helper;
 using NITASA.Data;
-using NITASA.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,9 +46,9 @@ namespace NITASA.Areas.Admin.Controllers
                         Category cat = new Category();
 
                         cat.Name = cmv.Name;
-                        cat.GUID = Common.GetRandomGUID();
+                        cat.GUID = Functions.GetRandomGUID();
                         string catSlug = string.IsNullOrEmpty(cmv.Slug) ? cmv.Name : cmv.Slug;
-                        cat.Slug = Common.ToUrlSlug(catSlug, "category", 0);
+                        cat.Slug = Functions.ToUrlSlug(catSlug, "category", 0);
                         cat.Description = cmv.Description;
                         cat.ParentCategoryID = 0;
                         cat.AddedOn= DateTime.UtcNow;
@@ -67,7 +66,7 @@ namespace NITASA.Areas.Admin.Controllers
                         {
                             cat.Name = cmv.Name;
                             string catSlug = string.IsNullOrEmpty(cmv.Slug) ? cmv.Name : cmv.Slug;
-                            cat.Slug = Common.ToUrlSlug(catSlug, "category", cat.ID);
+                            cat.Slug = Functions.ToUrlSlug(catSlug, "category", cat.ID);
                             cat.Description = cmv.Description;
                             cat.ModifiedBy = Convert.ToInt32(Session["UserID"]);
                             cat.ModifiedOn = DateTime.UtcNow;

@@ -1,7 +1,6 @@
 ﻿@model List<Content>
 @using NITASA.Data
 @using NITASA.Areas.Admin.Helper
-@using NITASA.Helpers
 @{
     ViewBag.Title = "Post List";
 
@@ -123,7 +122,7 @@
                                        format: (item) => item.isPublished == true ? "Published" : "Draft"
                                        ),
                                         grid.Column(header: "Action", style: "col3", format: @<text>
-                                        @if (Common.CurrentUserID() == item.AddedBy)
+                                        @if (Functions.CurrentUserID() == item.AddedBy)
                                         {
                                             if (UserRights.HasRights(Rights.EditOwnPosts))
                                             {
@@ -137,7 +136,7 @@
                                                 @Html.ActionLink("Edit", "Edit", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
                                             }
                                         }
-                                        @if (Common.CurrentUserID() == item.AddedBy)
+                                        @if (Functions.CurrentUserID() == item.AddedBy)
                                         {
                                             if (UserRights.HasRights(Rights.DeleteOwnPosts))
                                             {
