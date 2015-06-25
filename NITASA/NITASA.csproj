@@ -191,6 +191,7 @@
     <Compile Include="Areas\Admin\Controllers\SitemapController.cs" />
     <Compile Include="Areas\Admin\Controllers\SliderController.cs" />
     <Compile Include="Areas\Admin\Controllers\SlidesController.cs" />
+    <Compile Include="Areas\Admin\Controllers\TemplateController.cs" />
     <Compile Include="Areas\Admin\Controllers\ThemeController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserController.cs" />
     <Compile Include="Areas\Admin\Controllers\WidgetController.cs" />
@@ -609,6 +610,7 @@
     <Content Include="Areas\Admin\Views\Post\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Media\GetMedia.cshtml" />
     <Content Include="Areas\Admin\Views\Addons\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Template\Index.cshtml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\gridmvc.js" />
     <Content Include="Scripts\gridmvc.lang.ru.js" />
