@@ -58,7 +58,7 @@
                                                             grid.Column(columnName: "Content.Title", header: "Post/Page", style: "col0"),
                                                           grid.Column(columnName: "AddedOn", header: "Commented On", style: "col1", format: (item) => item.AddedOn.ToString("MMM d, h:mm tt")),
                                                   grid.Column(columnName: "IsModerated", header: "Display", style: "col2",
-                                                       format: (item) => new MvcHtmlString("<input type=\"checkbox\" class =\"iButton-icons\" data-id=\"" + item.CommentID + "\" " + (item.IsModerated == true ? "checked=checked" : "") + " />"))
+                                                       format: (item) => new MvcHtmlString("<input type=\"checkbox\" class =\"iButton-icons\" data-id=\"" + item.ID + "\" " + (item.IsModerated == true ? "checked=checked" : "") + " />"))
                                         )
                                     )
                                                     </div>

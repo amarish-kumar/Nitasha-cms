@@ -17,9 +17,9 @@ namespace NITASA.Areas.Admin.Controllers
             this.context = new NTSDBContext();
         }
         
-        public ActionResult List(string SearchCategory = "")
+        public ActionResult List()
         {
-            List<Category> CategoryList = context.Category.Where(m => m.Name.Contains(SearchCategory) && m.IsDeleted == false).ToList().OrderByDescending(m => m.ID).ToList();
+            List<Category> CategoryList = context.Category.Where(m => m.IsDeleted == false).ToList().OrderByDescending(m => m.ID).ToList();
             ViewBag.CategoryList = CategoryList;
             return View();
         }
@@ -113,6 +113,12 @@ namespace NITASA.Areas.Admin.Controllers
                 TempData["ErrorMessage"] = "Category Not Found.";
             }
             return RedirectToAction("List");
+        }
+
+        public JsonResult GetCategoryDetails(string GUID)
+        {
+            Category cat = context.Category.Where(m => m.GUID == GUID).FirstOrDefault();
+            return Json(cat, JsonRequestBehavior.AllowGet);
         }
     }
 }
