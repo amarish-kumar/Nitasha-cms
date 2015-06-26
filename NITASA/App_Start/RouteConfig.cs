@@ -29,7 +29,7 @@ namespace NITASA
 
             routes.MapRoute(
                 "_Single",
-                "Single/Details/{contentURL}",
+                "Content/Details/{contentURL}",
                 new { controller = "Content", action = "Details", contentURL = UrlParameter.Optional },
                 new[] { "NITASA.Controllers" }
             );

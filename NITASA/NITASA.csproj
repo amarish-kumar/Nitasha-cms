@@ -212,6 +212,7 @@
     <Compile Include="Areas\Admin\ViewModels\Sitemap.cs" />
     <Compile Include="Areas\Admin\ViewModels\SiteSettings.cs" />
     <Compile Include="Areas\Admin\ViewModels\WidgetOption.cs" />
+    <Compile Include="Controllers\AppController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\ConfigureController.cs" />
     <Compile Include="Controllers\ContentController.cs" />
@@ -875,6 +876,7 @@
     <Folder Include="backup\script\temp\" />
     <Folder Include="Content\media\" />
     <Folder Include="Models\" />
+    <Folder Include="Views\App\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

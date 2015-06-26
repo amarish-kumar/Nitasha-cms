@@ -22,8 +22,8 @@ dl.tabs dd.active { border-bottom: 3px solid #55a2a6;}
 ul.accordion > li.active {border-top: 3px solid #55a2a6;}
 div.alert-box.default { background-color: #55a2a6;}
 .slide {	margin: 0;	padding: 0;	border-top: solid 4px #55a2a6;}
-.btn-slide {	background:#55a2a6 url(../../images/plus.png) no-repeat;}
-.btn-slide.active { background: #55a2a6 url(../../images/minus.png) no-repeat;}
+.btn-slide {	background:#55a2a6 url(/views/default/images/plus.png) no-repeat;}
+.btn-slide.active { background: #55a2a6 url(/views/default/images/minus.png) no-repeat;}
 #footer {border-top:#55a2a6 4px solid;}
 .back-top a:hover{background-color: #55a2a6;}
 .sf-shadow ul {border-top:2px solid #55a2a6;}

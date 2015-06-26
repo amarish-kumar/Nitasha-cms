@@ -9,17 +9,11 @@ using System.Web.Mvc;
 namespace NITASA.Controllers
 {
     [AllAction]
-    public class HomeController : Controller
+    public class HomeController : AppController
     {
-        string currentThemePath;
-        public HomeController()
-        {
-            //this.currentThemePath = "/Views/" + Request.RequestContext.HttpContext.Application["CurrentTheme"].ToString() + "/";
-        }
         public ActionResult Index()
         {
-            currentThemePath = "/Views/" + Request.RequestContext.HttpContext.Application["CurrentTheme"].ToString() + "/";
-            return View(currentThemePath + "index.cshtml");
+            return View(activeTheme + "index.cshtml");
         }
         public ActionResult NotFound()
         {

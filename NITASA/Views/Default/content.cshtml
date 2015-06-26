@@ -1,3 +1,6 @@
+@{
+    Layout = "~/Views/Default/master.cshtml";
+}
 <div class="eight columns">
 			<div class="sectiontitle">
 				<h4>The Dower Farm</h4>
@@ -46,6 +49,6 @@
 					Jane is a professional photographer working for SLC. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum. <a href="#">Browse more articles</a> by this author.<br/>
 				</p>
 			</div>			
-			@Html.Partial("commentlist")
-			@Html.Partial("commentform")
+    @Html.Partial("~/Views/Default/commentslist.cshtml")
+    @Html.Partial("~/Views/Default/commentform.cshtml")
 		</div>

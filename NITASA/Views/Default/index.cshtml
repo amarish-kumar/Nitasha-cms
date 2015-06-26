@@ -1,13 +1,14 @@
 @{
     Layout = "~/Views/Default/master.cshtml";
 }
+
 <div class="eight columns noleftmargin">
 			<div class="circledate">
 				<div class="textcircle">
 					- 04 -<br/>October<br/>2013
 				</div>
 			</div>
-			<h4>The Dower Farm <span class="comments">3 comments</span></h4>
+			<h4><a href="/content/details"> the dower farm</a><span class="comments">3 comments</span></h4>
 			<div class="dots blogdots">
 			</div>
 			<p>
@@ -23,7 +24,7 @@
 					- 05 -<br/>August<br/>2013
 				</div>
 			</div>
-			<h4>Ellin Delorane <span class="comments">2 comments</span></h4>
+			<h4><a href="/content/details">Ellin Delorane </a><span class="comments">2 comments</span></h4>
 			<div class="dots blogdots">
 			</div>
 			<p>
@@ -39,5 +40,5 @@
 				His courtesy was so inbred that he kept looking the company over as if he wished they'd all go home and let him go to bed. His sleek head would drop forward sleepily from time to time but always bob up like the balloon it possibly perhaps was maybe ... <a href="#" class="saymore">Read more</a>
 			</p>
 			<br/>
-			@*@Html.Partial("pager")*@
+			@Html.Partial("~/Views/Default/pager.cshtml")
 		</div>
