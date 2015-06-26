@@ -45,7 +45,7 @@
                                     <div class="span6">
                                         <div class="control-group">
                                             <div style="display: inline;">
-                                                <label class="control-label width110px" style="text-align: left; display: inline; float: left;">Slider Image </label>
+                                                <label class="control-label width110px" style="text-align: left; display: inline; float: left;">Slider Image</label>
                                                 <input type="button" id="showImgPopup" class="btn btn-small btn-blue" value="Select" style="float: left; text-align: left;" />
                                                 <label class="width110px" id="imagename" style="float: left; text-align: left; padding-left: 10px;"></label>
                                                 <div style="color: red; display: inline">@Html.ValidationMessageFor(m => m.Image) </div>
@@ -172,7 +172,7 @@
                                 }
                             </tbody>
                         </table>
-                        @using (Html.BeginForm("UpdateDisplayOrder", "Slider", FormMethod.Post, new { id = "frmorder" }))
+                        @using (Html.BeginForm("UpdateDisplayOrder", "Slides", FormMethod.Post, new { id = "frmorder" }))
                         {
                             @Html.Hidden("slideidlist")
                             @Html.Hidden("MID", (int)ViewBag.MID)

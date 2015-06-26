@@ -1,11 +1,9 @@
 ﻿@model List<Content>
     @using NITASA.Data
     @using NITASA.Areas.Admin.Helper
-    @using NITASA.Helpers
     @using GridMvc.Html
     @{
         ViewBag.Title = "Addons";
-    //WebGrid grid = new WebGrid(Model, rowsPerPage: 10, canSort: true);
     }
     <style>
         tfoot td {
@@ -48,33 +46,28 @@
             }
             <div class="row-fluid">
                 <div class="span12">
-                        <div class="box">
-                            <div class="box-header">
+                    <div class="box">
+                        <div class="box-header">
                             <span class="title">Browse Addons</span>
-                                    <ul class="box-toolbar">
-                                        <li>
-                                            <a href="@Url.Action("Add")" title="New Addon">
-                                                <i class="icon-plus-sign" style="margin-top: 10px">
-                                                </i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                            </div>
-                            <div class="box-content">
+                            @if (UserRights.HasRights(Rights.CreateNewAddons))
+                            {
+                                <ul class="box-toolbar">
+                                    <li><a href="@Url.Action("Add")" title="Add New Addon"><i class="icon-plus-sign" style="margin-top: 10px"></i></a></li>
+                                </ul>
+                            }
+                        </div>
+                        <div class="box-content">
                             @if (Model != null && Model.Count() > 0)
                             {
                                 @Html.Grid(Model).Columns(columns =>
                                             {
-                   columns.Add(x => x.Title).Titled("Addon Title").Sortable(true).Filterable(true);
-                   columns.Add(x => x.Type).Titled("Addon Name").Sortable(true).Filterable(true);
-                   columns.Add(x => x.ContentView).Titled("Views").Sortable(true).Filterable(true);
-                   columns.Add(x => x.user.FullName).Titled("Author").Sortable(true).Filterable(true);
-                   columns.Add(c => c.isPublished).Sortable(true).Filterable(true).RenderValueAs(x => x.isPublished ? "Published" : "Draft").Titled("Type");
-                   columns.Add().RenderValueAs(x =>
-                        Html.ActionLink("Edit", "Edit", new { GUID = x.GUID }, new { @class = "btn btn-small btn-blue" }) + " " +
-                        Html.ActionLink("Delete", "Delete", new { GUID = x.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Adodn ?');" })
-                       ).Sanitized(false).Encoded(false).Titled("");
-               }).WithPaging(25).WithMultipleFilters()
+                                                columns.Add(x => x.Title).Titled("Addon Title").Sortable(true).Filterable(true);
+                                                columns.Add(x => x.Type).Titled("Addon Name").Sortable(true).Filterable(true);
+                                                columns.Add(x => x.ContentView).Titled("Views").Sortable(true).Filterable(true);
+                                                columns.Add(x => x.user.FullName).Titled("Author").Sortable(true).Filterable(true);
+                                                columns.Add(c => c.isPublished).Sortable(true).Filterable(true).RenderValueAs(x => x.isPublished ? "Published" : "Draft").Titled("Type");
+                                                columns.Add().SetWidth(110).RenderValueAs(x => RenderButtons(x)).Sanitized(false).Encoded(false).Titled("");                                                
+                                            }).WithPaging(25).WithMultipleFilters()
                             }
                             else
                             { <div class="padded">No Addons Found.</div>}
@@ -84,3 +77,34 @@
             </div>
         </div>
     </div>
+    @helper RenderButtons(Content item)
+{
+    if (Functions.CurrentUserID() == item.AddedBy)
+    {
+        if (UserRights.HasRights(Rights.EditOwnAddons))
+        {
+            @Html.ActionLink("Edit", "Edit", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
+        }
+    }
+    else
+    {
+        if (UserRights.HasRights(Rights.EditOtherUsersAddons))
+        {
+            @Html.ActionLink("Edit", "Edit", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
+        }
+    }
+    if (Functions.CurrentUserID() == item.AddedBy)
+    {
+        if (UserRights.HasRights(Rights.DeleteOwnAddons))
+        {
+            @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Page ?');" })
+        }
+    }
+    else
+    {
+        if (UserRights.HasRights(Rights.DeleteOtherUsersAddons))
+        {
+            @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Page ?');" })
+        }
+    }
+}

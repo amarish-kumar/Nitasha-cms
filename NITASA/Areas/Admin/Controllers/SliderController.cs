@@ -93,5 +93,11 @@ namespace NITASA.Areas.Admin.Controllers
             }
             return RedirectToAction("List");
         }
+
+        public JsonResult GetSliderDetails(string GUID)
+        {
+            Slider slider = context.Sliders.Where(m => m.GUID == GUID).FirstOrDefault();
+            return Json(slider, JsonRequestBehavior.AllowGet);
+        }
 	}
 }

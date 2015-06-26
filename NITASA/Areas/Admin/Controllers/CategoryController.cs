@@ -16,24 +16,20 @@ namespace NITASA.Areas.Admin.Controllers
         {
             this.context = new NTSDBContext();
         }
-        
+
         public ActionResult List()
         {
             List<Category> CategoryList = context.Category.Where(m => m.IsDeleted == false).ToList().OrderByDescending(m => m.ID).ToList();
             ViewBag.CategoryList = CategoryList;
             return View();
         }
-        [HttpGet]
-        public ActionResult Add()
-        {
-            return RedirectToAction("List");
-        }
+
         [HttpPost]
         public ActionResult Add(Category cmv, string CGUID)
         {
             if (ModelState.IsValid)
             {
-                int duplicateCategory =0;
+                int duplicateCategory = 0;
                 if (string.IsNullOrEmpty(CGUID))
                     duplicateCategory = context.Category.Where(m => m.Name == cmv.Name && m.IsDeleted == false).Count();
                 else
@@ -51,8 +47,8 @@ namespace NITASA.Areas.Admin.Controllers
                         cat.Slug = Functions.ToUrlSlug(catSlug, "category", 0);
                         cat.Description = cmv.Description;
                         cat.ParentCategoryID = 0;
-                        cat.AddedOn= DateTime.UtcNow;
-                        cat.AddedBy= Convert.ToInt32(Session["UserID"]);
+                        cat.AddedOn = DateTime.UtcNow;
+                        cat.AddedBy = Convert.ToInt32(Session["UserID"]);
                         cat.IsDeleted = false;
 
                         context.Category.Add(cat);
