@@ -1,10 +1,9 @@
 ﻿@model Label
 @using NITASA.Data
+@using GridMvc.Html
 @{
     ViewBag.Title = "Labels";
-
     List<Label> LabelList = ViewBag.LabelList;
-    WebGrid grid = new WebGrid(LabelList, rowsPerPage: 10, canSort: true);
 }
 <style>
     tfoot td {
@@ -37,113 +36,28 @@
             </div>
         }
         <div class="row-fluid">
-            <div class="span4">
-                <div class="box">
-                    <div class="box-header">
-                        <span class="title" id="lblTitle">Add New Label</span>
-                    </div>
-                    <div class="box-content">
-                        <div class="padded">
-                            @using (Html.BeginForm("Add", "Label", FormMethod.Post))
-                            {
-                                <div class="control-group">
-                                    <label class="control-label" style="text-align: left;">
-                                        Label Title
-                                    </label>
-                                    <div class="controls">
-                                        @Html.TextBoxFor(m => m.Name, new { style = "width:90%" })
-                                        <div style="color: red">
-                                            @Html.ValidationMessageFor(m => m.Name)
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label" style="text-align: left;">
-                                        Label Slug
-                                    </label>
-                                    <div class="controls">
-                                        @Html.TextBoxFor(m => m.Slug, new { style = "width:90%" })
-                                        <div style="color: red">
-                                            @Html.ValidationMessageFor(m => m.Slug)
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label" style="text-align: left;">
-                                        Label Description
-                                    </label>
-                                    <div class="controls">
-                                        @Html.TextAreaFor(m => m.Description, new { style = "width:90%" })
-                                        <div style="color: red">
-                                            @Html.ValidationMessageFor(m => m.Description)
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label" style="text-align: left;"></label>
-                                    <div class="controls">
-                                        <input type="submit" value="Save" id="addCat" class="btn btn-blue" />
-                                        <input type="button" value="Clear" id="ClearLabel" class="btn btn-blue" />
-                                        <input type="hidden" value="" id="LGUID" name="LGUID" />
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="span6" style="width:65%">
-                @using (Html.BeginForm("List", "Label", FormMethod.Get))
-                {
-                    <div class="box">
-                        <div class="box-header">
-                            <span class="title">Search Label</span>
-                        </div>
-                        <div class="box-content">
-                            <div class="padded">
-                                <table class="form-horizontal fill-up validatable width100per">
-                                    <tr>
-                                        <td class="width10per">Label</td>
-                                        <td class="width70per">
-                                            <input type="text" id="SearchLabel" name="SearchLabel" class="width100per" placeholder="Label Title" />
-                                        </td>
-                                        <td class="width20per">
-                                            <input type="submit" class="btn btn-blue" value="Search" />
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                }
+            <div class="span12">
                 <div class="box">
                     <div class="box-header">
                         <span class="title">Browse Label</span>
+                        <ul class="box-toolbar">
+                            <li><a data-toggle="modal" id="AddLabel" href="#modal-Label"><i class="icon-plus-sign" style="margin-top: 10px"></i></a></li>
+                        </ul>
                     </div>
                     <div class="box-content">
                         @if (LabelList.Count() > 0)
                         {
-                            @grid.GetHtml(tableStyle: "table table-normal", headerStyle: "head", alternatingRowStyle: "alt",
-                                firstText: "First", nextText: "Next", previousText: "Prev", lastText: "Last", footerStyle: "custom-pagination",
-                                mode: WebGridPagerModes.All, columns: grid.Columns(
-                                             grid.Column(columnName: "Name", header: "Label Name", style: "col0",
-                                                format: @<text>
-                                            <span class="lblName">@item.Name</span>
-                                            <input type="hidden" class="lblSlug" value="@item.Slug" />
-                                            <input type="hidden" class="lblDesc" value="@item.Description" />
-                                                </text>
-                                        ),
-                                        grid.Column(header: "Action", style: "col1", format: @<text>
-                                            @Html.ActionLink("Edit", null, null, new { id = @item.GUID, @class = "btn btn-small btn-blue edit-lbl" })
-                                            @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Label ?');" })
-                                        </text>
-                                                                 )
-                                                         )
-                                                     )
+                            @Html.Grid(LabelList).Columns(columns =>
+                            {
+                                columns.Add(x => x.Name).Titled("Label Name").Sortable(true).Filterable(true);
+                                columns.Add().RenderValueAs(x =>
+                                    @customcolumn(x)
+                                ).Sanitized(false).Encoded(false).Titled("Actions").SetWidth(80);
+                            }).WithPaging(25).WithMultipleFilters()
                         }
                         else
                         {
-                            <div class="padded">No Label Found.</div>
+                            <div class="padded">No Labels Found.</div>
                         }
                     </div>
                 </div>
@@ -151,26 +65,96 @@
         </div>
     </div>
 </div>
+@helper customcolumn(Label item)
+{
+    @Html.ActionLink("Edit", null, null, new { @class = "btn btn-small btn-blue edit-lbl" })
+    @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Label ?');" })
+    <input type="hidden" class="lblGUID" value="@item.GUID" />
+}
 
+<div id="modal-Label" class="modal hide fade" style="width: 500px;">
+    <div class="modal-header">
+        <a class="close modal_Delete_icon_link" data-dismiss="modal" href="">
+            <i class="icon-remove-sign modal_close_icon_fontsize"></i>
+        </a>
+        <h6 id="lblLabelModalName">Add New Label</h6>
+    </div>
+    <div class="modal-body">
+        @using (Html.BeginForm("Add", "Label", FormMethod.Post))
+        {
+            <div class="control-group">
+                <label class="control-label" style="text-align: left;">
+                    Label Title
+                </label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.Name, new { style = "width:90%" })
+                    <div style="color: red">
+                        @Html.ValidationMessageFor(m => m.Name)
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" style="text-align: left;">
+                    Label Slug
+                </label>
+                <div class="controls">
+                    @Html.TextBoxFor(m => m.Slug, new { style = "width:90%" })
+                    <div style="color: red">
+                        @Html.ValidationMessageFor(m => m.Slug)
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" style="text-align: left;">
+                    Label Description
+                </label>
+                <div class="controls">
+                    @Html.TextAreaFor(m => m.Description, new { style = "width:90%" })
+                    <div style="color: red">
+                        @Html.ValidationMessageFor(m => m.Description)
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" style="text-align: left;"></label>
+                <div class="controls">
+                    <input type="submit" value="Save" id="btnAddLabel" class="btn btn-blue" />
+                    <input type="hidden" value="" id="LGUID" name="LGUID" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
 <script type="text/javascript">
-    $("#ClearLabel").click(function () {
-        //$("#SaveType").val('add');
+    $("#AddLabel").click(function () {
         $("#LGUID").val("");
-        $("#lblTitle").html('Add New Label');
+        $("#lblLabelModalName").html('Add New Label');
         $("#Name").val("");
         $("#Slug").val("");
         $("#Description").val("");
+        $("#btnAddLabel").val("Save");
     });
     $(".edit-lbl").click(function () {
-        var lblName = $(this).parent().parent().find(".lblName").html();
-        var lblSlug = $(this).parent().parent().find(".lblSlug").val();
-        var lblDesc = $(this).parent().parent().find(".lblDesc").val();
-        $("#Name").val(lblName);
-        $("#Slug").val(lblSlug);
-        $("#Description").val(lblDesc);
-        //$("#SaveType").val('update');
-        $("#LGUID").val($(this).attr("id"));
-        $("#lblTitle").html('Update Label');
+        var guid = $(this).parent().find(".lblGUID").val();
+        $.ajax({
+            type: "Get",
+            url: "/Admin/Label/GetLabelDetails",
+            data: { GUID: guid },
+            success: function (data) {
+                if (data) {
+                    $("#Name").val(data.Name);
+                    $("#Slug").val(data.Slug);
+                    $("#Description").val(data.Description);
+                    $("#LGUID").val(guid);
+                    $("#lblLabelModalName").html('Update Label');
+                    $("#btnAddLabel").val("Update");
+                    $("#modal-Label").modal('show');
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
         return false;
     });
 </script>

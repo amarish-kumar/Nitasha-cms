@@ -1,10 +1,9 @@
 ﻿@model Slider
 @using NITASA.Data
+@using GridMvc.Html
 @{
-    ViewBag.Title = "Slider Master List";
-
+    ViewBag.Title = "Sliders";
     List<Slider> Sliders= ViewBag.Sliders;
-    WebGrid grid = new WebGrid(Sliders, rowsPerPage: 10, canSort: true);
 }
 <style>
     tfoot td {
@@ -37,67 +36,26 @@
             </div>
         }
         <div class="row-fluid">
-            <div class="span4">
+            <div class="span12">
                 <div class="box">
                     <div class="box-header">
-                        <span class="title" id="lblTitle">Add New Slider</span>
-                    </div>
-                    <div class="box-content">
-                        <div class="padded">
-                            @using (Html.BeginForm("Add", "Slider", FormMethod.Post))
-                            {
-                                <div class="control-group">
-                                    <label class="control-label" style="text-align: left;">
-                                        Slider Name
-                                    </label>
-                                    <div class="controls">
-                                        @Html.TextBoxFor(m => m.Name, new { style = "width:90%" })
-                                        <div style="color: red">
-                                            @Html.ValidationMessageFor(m => m.Name)
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label" style="text-align: left;"></label>
-                                    <div class="controls">
-                                        <input type="submit" value="Save" class="btn btn-blue" />
-                                        <input type="button" value="Clear" id="ClearSlider" class="btn btn-blue" />
-                                        <input type="hidden" value="" id="SMGUID" name="SMGUID" />
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="span6" style="width:65%">
-                <div class="box">
-                    <div class="box-header">
-                        <span class="title">Browse Slider</span>
+                        <span class="title">Browse Sliders</span>
+                        <ul class="box-toolbar">
+                            <li><a data-toggle="modal" id="AddSlider" href="#modal-Slider" title="Add New Slider"><i class="icon-plus-sign" style="margin-top: 10px"></i></a></li>
+                        </ul>
                     </div>
                     <div class="box-content">
                         @if (Sliders.Count() > 0)
                         {
-                            @grid.GetHtml(tableStyle: "table table-normal", headerStyle: "head", alternatingRowStyle: "alt",
-                                firstText: "First", nextText: "Next", previousText: "Prev", lastText: "Last", footerStyle: "custom-pagination",
-                                mode: WebGridPagerModes.All, columns: grid.Columns(
-                                        grid.Column(columnName: "Name", header: "Slider Name", style: "col0",
-                                                format: @<text>
-                                            <span class="sldrName">@item.Name</span>
-                                                </text>
-                                        ),
-                                        grid.Column(header: "Action", style: "col1", format: @<text>
-                                            @Html.ActionLink("Manage", "List","Slides", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
-                                            @Html.ActionLink("Edit", null, null, new { id = @item.GUID, @class = "btn btn-small btn-blue edit-sldr" })
-                                            @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Slider ?');" })
-                                        </text>
-                                                                 )
-                                                         )
-                                                     )
+                            @Html.Grid(Sliders).Columns(columns =>
+                            {
+                                columns.Add(x => x.Name).Titled("Slider Name").Sortable(true).Filterable(true);
+                                columns.Add().RenderValueAs(x =>@customcolumn(x)).Sanitized(false).Encoded(false).SetWidth(80);
+                            }).WithPaging(25).WithMultipleFilters()
                         }
                         else
                         {
-                            <div class="padded">No Slider Found.</div>
+                            <div class="padded">No Sliders Found.</div>
                         }
                     </div>
                 </div>
@@ -105,18 +63,71 @@
         </div>
     </div>
 </div>
+@helper customcolumn(Slider item)
+{
+    @Html.ActionLink("Manage", "List","Slides", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
+    @Html.ActionLink("Edit", null, null, new { @class = "btn btn-small btn-blue edit-slider" })
+    @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Slider ?');" })
+    <input type="hidden" class="SlideGUID" value="@item.GUID" />
+}
+<div id="modal-Slider" class="modal hide fade" style="width: 500px;">
+    <div class="modal-header">
+        <a class="close modal_Delete_icon_link" data-dismiss="modal" href="">
+            <i class="icon-remove-sign modal_close_icon_fontsize"></i>
+        </a>
+        <h6 id="lblModalName">Add New Slider</h6>
+    </div>
+    <div class="modal-body">
+        @using (Html.BeginForm("Add", "Slider", FormMethod.Post))
+{
+    <div class="control-group">
+        <label class="control-label" style="text-align: left;">
+            Slider Name
+        </label>
+        <div class="controls">
+            @Html.TextBoxFor(m => m.Name, new { style = "width:90%" })
+            <div style="color: red">
+                @Html.ValidationMessageFor(m => m.Name)
+            </div>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" style="text-align: left;"></label>
+        <div class="controls">
+            <input type="submit" value="Save" id="btnAddSlider" class="btn btn-blue" />
+            <input type="hidden" value="" id="SMGUID" name="SMGUID" />
+        </div>
+    </div>
+}
+    </div>
+</div>
 
 <script type="text/javascript">
-    $("#ClearSlider").click(function () {
+
+    $("#AddSlider").click(function () {
         $("#SMGUID").val("");
-        $("#lblTitle").html('Add New Slider');
-        $("#Name").val("");
+        $("#lblModalName").html('Add New Slider');        
+        $("#btnAddSlider").val("Save");
     });
-    $(".edit-sldr").click(function () {
-        var sldrName = $(this).parent().parent().find(".sldrName").html();
-        $("#Name").val(sldrName);
-        $("#SMGUID").val($(this).attr("id"));
-        $("#lblTitle").html('Update Slider');
+    $(".edit-slider").click(function () {
+        var guid = $(this).parent().find(".SlideGUID").val();
+        $.ajax({
+            type: "Get",
+            url: "/Admin/Slider/GetSliderDetails",
+            data: { GUID: guid },
+            success: function (data) {
+                if (data) {
+                    $("#Name").val(data.Name);
+                    $("#SMGUID").val(guid);
+                    $("#lblModalName").html('Update Slider Name');
+                    $("#btnAddSlider").val("Update");
+                    $("#modal-Slider").modal('show');
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
         return false;
     });
 </script>

@@ -1,10 +1,8 @@
 ﻿@model List<Comment>
     @using NITASA.Data
+    @using GridMvc.Html
     @{
         ViewBag.Title = "Comments";
-
-        WebGrid grid = new WebGrid(rowsPerPage: 20, canSort: true);
-        grid.Bind(Model, autoSortAndPage: false, rowCount: ViewBag.TotalRows);
     }
     <style>
         tfoot td {
@@ -50,17 +48,15 @@
                                             {
                                                 <div class="box">
                                                     <div class="box-content">
-                                                        @grid.GetHtml(tableStyle: "table table-normal", headerStyle: "head", alternatingRowStyle: "alt",
-                                firstText: "First", nextText: "Next", previousText: "Prev", lastText: "Last", footerStyle: "custom-pagination",
-                                mode: WebGridPagerModes.All, columns: grid.Columns(
-                                             grid.Column(columnName: "UserName", header: "Name", style: "col0"),
-                                             grid.Column(columnName: "Description", canSort: false, header: "Comment", style: "col0"),
-                                                            grid.Column(columnName: "Content.Title", header: "Post/Page", style: "col0"),
-                                                          grid.Column(columnName: "AddedOn", header: "Commented On", style: "col1", format: (item) => item.AddedOn.ToString("MMM d, h:mm tt")),
-                                                  grid.Column(columnName: "IsModerated", header: "Display", style: "col2",
-                                                       format: (item) => new MvcHtmlString("<input type=\"checkbox\" class =\"iButton-icons\" data-id=\"" + item.ID + "\" " + (item.IsModerated == true ? "checked=checked" : "") + " />"))
-                                        )
-                                    )
+                                                        @Html.Grid(Model).Columns(columns =>
+                                                       {
+                                                           columns.Add(x => x.UserName).Titled("Name").Sortable(true).Filterable(true).SetWidth(100);
+                                                           columns.Add(x => x.Description).Titled("Comment").Sortable(true).Filterable(true).SetWidth(500);
+                                                           columns.Add(x => x.Content.Title).Titled("Posts/Page").Sortable(true).Filterable(true);
+                                                           columns.Add(x => x.AddedOn).Titled("Commented On").Format("{0:MMM d, h:mm tt}").Sortable(true).Filterable(true).SetWidth(40);
+                                                           columns.Add(x => x.IsModerated).Encoded(false).Sanitized(false).Titled("Display").RenderValueAs(x =>
+                                                               @Html.Raw("<input type=\"checkbox\" class =\"iButton-icons\" data-id=\"" + x.ID + "\" " + (x.IsModerated == true ? "checked=checked" : "") + " />")).SetWidth(50);
+                                                       }).WithPaging(25).WithMultipleFilters()
                                                     </div>
                                                 </div>
                                             }

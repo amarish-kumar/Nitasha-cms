@@ -16,23 +16,24 @@ namespace NITASA.Areas.Admin.Controllers
         {
             this.context = new NTSDBContext();
         }
-        
-        public ActionResult List(string SearchLabel = "")
+
+        public ActionResult List()
         {
-            List<Label> LabelList = context.Label.Where(m => m.Name.Contains(SearchLabel) && m.IsDeleted == false).ToList().OrderByDescending(m => m.ID).ToList();
+            List<Label> LabelList = context.Label.Where(m => m.IsDeleted == false).ToList().OrderByDescending(m => m.ID).ToList();
             ViewBag.LabelList = LabelList;
             return View();
         }
-         [HttpPost]
+
+        [HttpPost]
         public ActionResult Add(Label model, string LGUID)
         {
             if (ModelState.IsValid)
             {
-                int duplicateLabel =0;
+                int duplicateLabel = 0;
                 if (string.IsNullOrEmpty(LGUID))
                     duplicateLabel = context.Label.Where(m => m.Name == model.Name && m.IsDeleted == false).Count();
                 else
-                    duplicateLabel = context.Label.Where(m => m.Name  == model.Name  && m.GUID != LGUID && m.IsDeleted == false).Count();
+                    duplicateLabel = context.Label.Where(m => m.Name == model.Name && m.GUID != LGUID && m.IsDeleted == false).Count();
 
                 if (duplicateLabel == 0)
                 {
@@ -40,7 +41,7 @@ namespace NITASA.Areas.Admin.Controllers
                     {
                         Label label = new Label();
 
-                        label.Name  = model.Name ;
+                        label.Name = model.Name;
                         label.GUID = Functions.GetRandomGUID();
                         string LabelSlug = string.IsNullOrEmpty(model.Slug) ? model.Name : model.Slug;
                         label.Slug = Functions.ToUrlSlug(LabelSlug, "label", 0);
@@ -58,7 +59,7 @@ namespace NITASA.Areas.Admin.Controllers
                         Label label = context.Label.Where(m => m.GUID == LGUID).FirstOrDefault();
                         if (label != null)
                         {
-                            label.Name= model.Name;
+                            label.Name = model.Name;
                             string LabelSlug = string.IsNullOrEmpty(model.Slug) ? model.Name : model.Slug;
                             label.Slug = Functions.ToUrlSlug(LabelSlug, "label", label.ID);
                             label.Description = model.Description;
@@ -76,6 +77,7 @@ namespace NITASA.Areas.Admin.Controllers
             }
             return RedirectToAction("List");
         }
+
         [HttpGet]
         public ActionResult Delete(string GUID)
         {
@@ -96,6 +98,12 @@ namespace NITASA.Areas.Admin.Controllers
                 TempData["ErrorMessage"] = "Label Not Found.";
             }
             return RedirectToAction("List");
-        }  
+        }
+
+        public JsonResult GetLabelDetails(string GUID)
+        {
+            Label lbl = context.Label.Where(m => m.GUID == GUID).FirstOrDefault();
+            return Json(lbl, JsonRequestBehavior.AllowGet);
+        }
     }
 }

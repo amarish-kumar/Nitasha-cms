@@ -1,17 +1,10 @@
 ﻿@model List<Content>
-@using NITASA.Data
-@using NITASA.Areas.Admin.Helper
-@{
-    ViewBag.Title = "Post List";
-
-    WebGrid grid = new WebGrid(Model, rowsPerPage: 10, canSort: true);
-}
-    @*@{
-           public static object GetCategories(dynamic c)
-           {
-                return "Hi";
-           }
-        }*@
+    @using NITASA.Data
+    @using NITASA.Areas.Admin.Helper
+    @using GridMvc.Html
+    @{
+        ViewBag.Title = "Posts";
+    }
     <style>
         tfoot td {
             line-height: 3 !important;
@@ -53,111 +46,34 @@
             }
             <div class="row-fluid">
                 <div class="span12">
-                    @using (Html.BeginForm("List", "Post", FormMethod.Get))
-                    {
-                        <div class="box">
-                            <div class="box-header">
-                                <span class="title">Search Post</span>
-                                @if (UserRights.HasRights(Rights.CreateNewPosts))
-                                {
-                                    <ul class="box-toolbar">
-                                        <li>
-                                            <a href="@Url.Action("Add")" title="Add Post">
-                                                <i class="icon-plus-sign" style="margin-top: 10px">
-                                                </i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                }
-                            </div>
-                            <div class="box-content">
-                                <div class="padded">
-                                    <table class="form-horizontal fill-up validatable width100per">
-                                        <tr>
-                                            <td class="width10per">Category</td>
-                                            <td class="width70per">
-                                                @Html.DropDownList("cid", (IEnumerable<SelectListItem>)ViewBag.categoryList, "All")
-                                            </td>
-                                            <td class="width20per">
-                                                <input type="submit" class="btn btn-blue" value="Search" />
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    }
                     <div class="box">
                         <div class="box-header">
-                            <span class="title">Browse Post</span>
+                            <span class="title">Browse Posts</span>
+                            @if (UserRights.HasRights(Rights.CreateNewPosts))
+                            {
+                            <ul class="box-toolbar">
+                                <li><a href="@Url.Action("Add")" title="Add New Post"><i class="icon-plus-sign" style="margin-top: 10px"></i></a></li>
+                            </ul>
+                            }
                         </div>
                         <div class="box-content">
                             @if (Model.Count() > 0)
                             {
-                                @grid.GetHtml(tableStyle: "table table-normal", headerStyle: "head", alternatingRowStyle: "alt", firstText: "First", nextText: "Next", previousText: "Prev", lastText: "Last", footerStyle: "custom-pagination",
-                                mode: WebGridPagerModes.All,
-                                columns: grid.Columns(
-                                       grid.Column(columnName: "Title", header: "Post Title", style: "col1"),
-                                       grid.Column("contentCategory", "Categories", format: (subitem) =>
-                                       {
-                                           string temp2 = string.Empty;
-                                           foreach (var member in subitem.contentCategory)
-                                           {
-                                               temp2 += member.Category.Name + ", ";
-                                           }
-                                           return new HtmlString(temp2);
-                                       }),
-                                       grid.Column("contentLabel", "Labels", format: (subitem) =>
-                                       {
-                                           string temp2 = string.Empty;
-                                           foreach (var member in subitem.contentLabel)
-                                           {
-                                               temp2 += member.Label.Name + ", ";
-                                           }
-                                           return new HtmlString(temp2);
-                                       }),
-                                       grid.Column(columnName: "ContentView", header: "Views", style: "col2"),
-                                       grid.Column(columnName: "User.FullName", header: "Author", style: "col2"),
-                                       grid.Column(columnName: "isPublished", header: "Type", style: "col2",
-                                       format: (item) => item.isPublished == true ? "Published" : "Draft"
-                                       ),
-                                        grid.Column(header: "Action", style: "col3", format: @<text>
-                                        @if (Functions.CurrentUserID() == item.AddedBy)
-                                        {
-                                            if (UserRights.HasRights(Rights.EditOwnPosts))
+                                @Html.Grid(Model).Columns(columns =>
                                             {
-                                                @Html.ActionLink("Edit", "Edit", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (UserRights.HasRights(Rights.EditOtherUsersPosts))
-                                            {
-                                                @Html.ActionLink("Edit", "Edit", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
-                                            }
-                                        }
-                                        @if (Functions.CurrentUserID() == item.AddedBy)
-                                        {
-                                            if (UserRights.HasRights(Rights.DeleteOwnPosts))
-                                            {
-                                                @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Post ?');" })
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (UserRights.HasRights(Rights.DeleteOtherUsersPosts))
-                                            {
-                                                @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Post ?');" })
-                                            }
-                                        }</text>
-                                                             )
-                                                     )
-                                                 )
+                                                columns.Add(x => x.Title).Titled("Post Title").Sortable(true).Filterable(true);
+                                                columns.Add(x => x.contentCategory).Titled("Categories").Sortable(true).Filterable(true).RenderValueAs(x => GetCategories(x));
+                                                columns.Add(x => x.contentLabel).Titled("Labels").Sortable(true).Filterable(true).RenderValueAs(x => GetLabels(x));
+                                                columns.Add(x => x.ContentView).Titled("Views").Sortable(true).Filterable(true);
+                                                columns.Add(x => x.user.FullName).Titled("Author").Sortable(true).Filterable(true);
+                                                columns.Add(c => c.isPublished).Sortable(true).Filterable(true).RenderValueAs(x => x.isPublished ? "Published" : "Draft").Titled("Type");
+                                                columns.Add().SetWidth(110).RenderValueAs(x => RenderButtons(x)).Sanitized(false).Encoded(false).Titled("");
+                                            }).WithPaging(25).WithMultipleFilters()
                             }
                             else
                             {
                                 <div class="padded">
-                                    No Post Found.
+                                    No Posts Found.
                                 </div>
                             }
                         </div>
@@ -166,3 +82,53 @@
             </div>
         </div>
     </div>
+@helper GetCategories(Content item)
+{
+    string cats = "";
+    foreach (var member in item.contentCategory)
+    {
+        cats += member.Category.Name + ", ";
+    }
+    @Html.Raw(cats)
+}
+@helper GetLabels(Content item)
+{
+    string cats = "";
+    foreach (var member in item.contentLabel)
+    {
+        cats += member.Label.Name + ", ";
+    }
+    @Html.Raw(cats)
+}
+
+@helper RenderButtons(Content item)
+{
+    if (Functions.CurrentUserID() == item.AddedBy)
+    {
+        if (UserRights.HasRights(Rights.EditOwnPosts))
+        {
+            @Html.ActionLink("Edit", "Edit", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
+        }
+    }
+    else
+    {
+        if (UserRights.HasRights(Rights.EditOtherUsersPosts))
+        {
+            @Html.ActionLink("Edit", "Edit", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
+        }
+    }
+    if (Functions.CurrentUserID() == item.AddedBy)
+    {
+        if (UserRights.HasRights(Rights.DeleteOwnPosts))
+        {
+            @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Post ?');" })
+        }
+    }
+    else
+    {
+        if (UserRights.HasRights(Rights.DeleteOtherUsersPosts))
+        {
+            @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Post ?');" })
+        }
+    }
+}

@@ -1,10 +1,8 @@
 ﻿@model Category
 @using NITASA.Data
 @using GridMvc.Html
-
 @{
     ViewBag.Title = "Categories";
-
     List<Category> CategoryList = ViewBag.CategoryList;
 }
 <style>
@@ -38,61 +36,6 @@
             </div>
         }
         <div class="row-fluid">
-            @*<div class="span4">
-                    <div class="box">
-                        <div class="box-header">
-                            <span class="title" id="catTitle">Add New Category</span>
-                        </div>
-                        <div class="box-content">
-                            <div class="padded">
-                                @using (Html.BeginForm("Add", "Category", FormMethod.Post))
-                                {
-                                    <div class="control-group">
-                                        <label class="control-label" style="text-align: left;">
-                                            Category Name
-                                        </label>
-                                        <div class="controls">
-                                            @Html.TextBoxFor(m => m.Name, new { style = "width:90%" })
-                                            <div style="color: red">
-                                                @Html.ValidationMessageFor(m => m.Name)
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="control-group">
-                                        <label class="control-label" style="text-align: left;">
-                                            Category Slug
-                                        </label>
-                                        <div class="controls">
-                                            @Html.TextBoxFor(m => m.Slug, new { style = "width:90%" })
-                                            <div style="color: red">
-                                                @Html.ValidationMessageFor(m => m.Slug)
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="control-group">
-                                        <label class="control-label" style="text-align: left;">
-                                            Category Description
-                                        </label>
-                                        <div class="controls">
-                                            @Html.TextAreaFor(m => m.Description, new { style = "width:90%;max-width:90%;" })
-                                            <div style="color: red">
-                                                @Html.ValidationMessageFor(m => m.Description)
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="control-group">
-                                        <label class="control-label" style="text-align: left;"></label>
-                                        <div class="controls">
-                                            <input type="submit" value="Save" id="addCat" class="btn btn-blue" />
-                                            <input type="button" value="Clear" id="ClearCat" class="btn btn-blue" />
-                                            <input type="hidden" value="" id="CGUID" name="CGUID" />
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>*@
             <div class="span12">
                 <div class="box">
                     <div class="box-header">
@@ -109,7 +52,7 @@
                    columns.Add(x => x.Name).Titled("Category Name").Sortable(true).Filterable(true);
                    columns.Add().RenderValueAs(x =>
                         @customcolumn(x)
-                       ).Sanitized(false).Encoded(false).Titled("Actions");
+                       ).Sanitized(false).Encoded(false).Titled("Actions").SetWidth(80);
                }).WithPaging(25).WithMultipleFilters()
                         }
                         else
@@ -123,7 +66,7 @@
     </div>
 </div>
 @helper customcolumn(Category item)
-{
+{    
     @Html.ActionLink("Edit", null, null, new { @class = "btn btn-small btn-blue edit-cat" })
     @Html.ActionLink("Delete", null, null, new { @class = "btn btn-small btn-red delete-cat" })
     <input type="hidden" class="catGUID" value="@item.GUID" />
@@ -226,7 +169,6 @@
             data: { GUID: guid },
             success: function (data) {
                 if (data) {
-                    debugger;
                     $("#Name").val(data.Name);
                     $("#Slug").val(data.Slug);
                     $("#Description").val(data.Description);

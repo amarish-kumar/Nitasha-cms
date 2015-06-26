@@ -105,8 +105,8 @@ namespace NITASA.Areas.Admin.Controllers
                 int displayorder = 0;
                 foreach (int sliderID in slideIdList)
                 {
-                    Slide slide = slider.Slides.Where(m => m.SliderId == sliderID).FirstOrDefault();
-                    if (slider != null)
+                    Slide slide = slider.Slides.Where(m => m.ID == sliderID).FirstOrDefault();
+                    if (slide != null)
                     {
                         slide.DisplayOrder = displayorder++;
                         context.SaveChanges();

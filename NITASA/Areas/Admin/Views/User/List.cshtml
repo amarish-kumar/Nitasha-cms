@@ -1,38 +1,37 @@
 ﻿@model List<Tuple<User, string>>
-@using NITASA.Data
-@using NITASA.Areas.Admin.Helper
-@{
-    ViewBag.Title = "User List";
-
-    WebGrid grid = new WebGrid(Model, rowsPerPage: 10, canSort: true);
-}
-@section PageLevelStyles
+        @using NITASA.Data
+        @using NITASA.Areas.Admin.Helper
+        @using GridMvc.Html
+        @{
+            ViewBag.Title = "Users";
+        }
+        @section PageLevelStyles
 {
-    <style>
-        tfoot td {
-            line-height: 3 !important;
-        }
+            <style>
+                tfoot td {
+                    line-height: 3 !important;
+                }
 
-        .custom-pagination td {
-            padding-left: 10px !important;
-        }
+                .custom-pagination td {
+                    padding-left: 10px !important;
+                }
 
-        .table-normal tbody td.col1 {
-            width: 100px;
-            text-align: center;
-        }
+                .table-normal tbody td.col1 {
+                    width: 100px;
+                    text-align: center;
+                }
 
-        .table-normal tbody td.col2 {
-            width: 100px;
-            text-align: center;
-        }
+                .table-normal tbody td.col2 {
+                    width: 100px;
+                    text-align: center;
+                }
 
-        .table-normal tbody td.col3 {
-            width: 115px;
-            text-align: center;
+                .table-normal tbody td.col3 {
+                    width: 115px;
+                    text-align: center;
+                }
+            </style>
         }
-    </style>
-}
         <div class="main-content">
             <div class="container-fluid padded">
                 @if (TempData["SuccessMessage"] != null)
@@ -55,107 +54,28 @@
                 }
                 <div class="row-fluid">
                     <div class="span12">
-                        @using (Html.BeginForm("List", "User", FormMethod.Get))
-                        {
-                            <div class="box">
-                                <div class="box-header">
-                                    <span class="title">Search User</span>
-                                    @if (UserRights.HasRights(Rights.CreateNewUsers))
-                                    {
-                                        <ul class="box-toolbar">
-                                            <li><a href="@Url.Action("Add")" title="Add User"><i class="icon-plus-sign" style="margin-top: 10px"></i></a></li>
-                                        </ul>
-                                    }
-                                </div>
-                                <div class="box-content">
-                                    <div class="padded">
-                                        <table class="form-horizontal fill-up validatable width100per">
-                                            <tr>
-                                                <td class="width10per">User</td>
-                                                <td class="width70per">
-                                                    <input type="text" id="txtSearchUser" name="userName" class="width100per" placeholder="Enter First Name, Last Name" />
-                                                </td>
-                                                <td class="width20per">
-                                                    <input type="submit" class="btn btn-blue" value="Search" />
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        }
                         <div class="box">
                             <div class="box-header">
                                 <span class="title">Browse Users</span>
+                                @if (UserRights.HasRights(Rights.CreateNewUsers))
+                                {
+                                    <ul class="box-toolbar">
+                                        <li><a href="@Url.Action("Add")" title="Add New User"><i class="icon-plus-sign" style="margin-top: 10px"></i></a></li>
+                                    </ul>
+                                }
                             </div>
                             <div class="box-content">
                                 @if (Model.Count() > 0)
                                 {
-                                    @grid.GetHtml(tableStyle: "table table-normal", headerStyle: "head", alternatingRowStyle: "alt",
-                                firstText: "First", nextText: "Next", previousText: "Prev", lastText: "Last", footerStyle: "custom-pagination",
-                                mode: WebGridPagerModes.All, columns: grid.Columns(
-                                        grid.Column(columnName: "item1.FullName", header: "Name", style: "col0"),
-                                        grid.Column(columnName: "item1.Email", header: "Email", style: "col0"),
-                                        grid.Column(columnName: "item2", header: "Roles", style: "col1"),
-                                        grid.Column(columnName: "item1.IsActive", header: "Status", style: "col2",
-                                        format: @<text>
-                                            @(item.item1.IsActive == true ? "Active" : "In Active")
-                                        </text>
-                                        ),
-                                        grid.Column(header: "Change Status", style: "col3", format: @<text>
-                                            @if (item.item2 != "Administrator")
+                                    @Html.Grid(Model).Columns(columns =>
                                             {
-                                                if (Functions.CurrentUserID() == item.item1.ID)
-                                                {
-                                                    if (UserRights.HasRights(Rights.EditUserSelf))
-                                                    {
-                                                        <input class="iButton-icons" type="checkbox" onchange="changestatus(this,'@item.item1.GUID');" @(item.item1.IsActive == true ? "checked='checked'" : "") />
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    if (UserRights.HasRights(Rights.EditOtherUsers))
-                                                    {
-                                                        <input class="iButton-icons" type="checkbox" onchange="changestatus(this,'@item.item1.GUID');" @(item.item1.IsActive == true ? "checked='checked'" : "") />
-                                                    }
-                                                }
-                                            }</text>
-                                        ),
-                                        grid.Column(header: "Action", style: "col3", format: @<text>
-                                            @if (item.item2 != "Administrator")
-                                            {
-                                                if (Functions.CurrentUserID() == item.item1.ID)
-                                                {
-                                                    if (UserRights.HasRights(Rights.EditUserSelf))
-                                                    {
-                                                        @Html.ActionLink("Edit", "Edit", new { GUID = item.item1.GUID }, new { @class = "btn btn-small btn-blue" })
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    if (UserRights.HasRights(Rights.EditOtherUsers))
-                                                    {
-                                                        @Html.ActionLink("Edit", "Edit", new { GUID = item.item1.GUID }, new { @class = "btn btn-small btn-blue" })
-                                                    }
-                                                }
-                                                if (Functions.CurrentUserID() == item.item1.ID)
-                                                {
-                                                    if (UserRights.HasRights(Rights.DeleteUserSelf))
-                                                    {
-                                                        @Html.ActionLink("Delete", "Delete", new { GUID = item.item1.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this User ?');" })
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    if (UserRights.HasRights(Rights.DeleteOtherUsers))
-                                                    {
-                                                        @Html.ActionLink("Delete", "Delete", new { GUID = item.item1.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this User ?');" })
-                                                    }
-                                                }
-                                            }</text>
-                                                                 )
-                                                             )
-                                                     )
+                                                columns.Add(x => x.Item1.FullName).Titled("Name").Sortable(true).Filterable(true);
+                                                columns.Add(x => x.Item1.Email).Titled("Email").Sortable(true).Filterable(true);
+                                                columns.Add(x => x.Item2).Titled("Roles").Sortable(true).Filterable(true);
+                                                columns.Add(x => x.Item1.IsActive).Titled("Status").RenderValueAs(x => x.Item1.IsActive ? "Active" : "In Active").Sortable(true).Filterable(true);
+                                                columns.Add().SetWidth(110).Titled("Change Status").RenderValueAs(x => RenderStatusButton(x)).Sanitized(false).Encoded(false);
+                                                columns.Add().SetWidth(110).Titled("").RenderValueAs(x => RenderActions(x)).Sanitized(false).Encoded(false);
+                                            }).WithPaging(25).WithMultipleFilters()
                                 }
                                 else
                                 {
@@ -182,3 +102,58 @@
                 $("#frmCS").submit();
             };
         </script>
+
+@helper RenderStatusButton(Tuple<User, string> usr)
+{
+    if (usr.Item2 != "Administrator")
+    {
+        if (Functions.CurrentUserID() == usr.Item1.ID)
+        {
+            if (UserRights.HasRights(Rights.EditUserSelf))
+            {
+                <input class="iButton-icons" type="checkbox" onchange="changestatus(this,'@usr.Item1.GUID');" @(usr.Item1.IsActive == true ? "checked='checked'" : "") />
+            }
+        }
+        else
+        {
+            if (UserRights.HasRights(Rights.EditOtherUsers))
+            {
+                <input class="iButton-icons" type="checkbox" onchange="changestatus(this,'@usr.Item1.GUID');" @(usr.Item1.IsActive == true ? "checked='checked'" : "") />
+            }
+        }
+    }
+}
+@helper RenderActions(Tuple<User, string> usr)
+{
+    if (usr.Item2 != "Administrator")
+    {
+        if (Functions.CurrentUserID() == usr.Item1.ID)
+        {
+            if (UserRights.HasRights(Rights.EditUserSelf))
+            {
+                @Html.ActionLink("Edit", "Edit", new { GUID = usr.Item1.GUID }, new { @class = "btn btn-small btn-blue" })
+            }
+        }
+        else
+        {
+            if (UserRights.HasRights(Rights.EditOtherUsers))
+            {
+                @Html.ActionLink("Edit", "Edit", new { GUID = usr.Item1.GUID }, new { @class = "btn btn-small btn-blue" })
+            }
+        }
+        if (Functions.CurrentUserID() == usr.Item1.ID)
+        {
+            if (UserRights.HasRights(Rights.DeleteUserSelf))
+            {
+                @Html.ActionLink("Delete", "Delete", new { GUID = usr.Item1.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this User ?');" })
+            }
+        }
+        else
+        {
+            if (UserRights.HasRights(Rights.DeleteOtherUsers))
+            {
+                @Html.ActionLink("Delete", "Delete", new { GUID = usr.Item1.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this User ?');" })
+            }
+        }
+    }
+}
