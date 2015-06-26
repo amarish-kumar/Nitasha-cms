@@ -108,6 +108,12 @@
                                     </div>
                                     <div class="span6">
                                         <div class="control-group">
+                                            <label class="control-label" style="text-align: left;">@Html.LabelFor(x => x.CurrentTheme)</label>
+                                            <div class="controls">
+                                                @Html.DropDownListFor(x => x.CurrentTheme, (IEnumerable<SelectListItem>)ViewBag.Themes)
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
                                             <label class="control-label" style="text-align: left;">
                                                 @Html.LabelFor(x => x.TwitterURL)
                                             </label>

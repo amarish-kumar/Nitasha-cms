@@ -11,9 +11,15 @@ namespace NITASA.Controllers
     [AllAction]
     public class HomeController : Controller
     {
+        string currentThemePath;
+        public HomeController()
+        {
+            //this.currentThemePath = "/Views/" + Request.RequestContext.HttpContext.Application["CurrentTheme"].ToString() + "/";
+        }
         public ActionResult Index()
         {
-            return View();
+            currentThemePath = "/Views/" + Request.RequestContext.HttpContext.Application["CurrentTheme"].ToString() + "/";
+            return View(currentThemePath + "index.cshtml");
         }
         public ActionResult NotFound()
         {
