@@ -82,8 +82,11 @@ namespace NITASA.Controllers
                         else
                         {
                             ViewBag.confirmRequired = false;
-                            if(SaveConfig(dbName))
-                                return RedirectToAction("Users", "Register");                           
+                            if (SaveConfig(dbName))
+                            {
+                                Request.RequestContext.HttpContext.Application["CurrentTheme"] = "Default";
+                                return RedirectToAction("Users", "Register");
+                            }
                         }
                     }
                 }
@@ -284,22 +287,6 @@ namespace NITASA.Controllers
             context.Config.Add(config);
             context.SaveChanges();*/
 
-            /*List<ContentTemplate> contentTemplate = new List<ContentTemplate>() 
-            {
-                new ContentTemplate(){TemplateName="Default",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow},
-                new ContentTemplate(){TemplateName="Page",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow},
-                new ContentTemplate(){TemplateName="Testimonial",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow},
-                new ContentTemplate(){TemplateName="Services",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow},
-                new ContentTemplate(){TemplateName="Product",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow},
-                new ContentTemplate(){TemplateName="Project",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow},
-                new ContentTemplate(){TemplateName="Client",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow},
-                new ContentTemplate(){TemplateName="PortFolio",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow},
-                new ContentTemplate(){TemplateName="News",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow},
-                new ContentTemplate(){TemplateName="FAQ",TemplateGUID=Guid.NewGuid().ToString().Replace("-", ""),CreatedBy=userID,CreatedOn=DateTime.UtcNow}
-            };
-            context.ContentTemplate.AddRange(contentTemplate);
-            context.SaveChanges();*/
-
             //Add Default Content
             Content content = new Content();
             content.GUID = Functions.GetRandomGUID();
@@ -311,7 +298,6 @@ namespace NITASA.Controllers
             content.AddedOn = DateTime.UtcNow;
             content.isPublished = true;
             content.PublishedOn = DateTime.UtcNow;
-            //content.TemplateID = context.ContentTemplate.Where(m => m.TemplateName == "Default").FirstOrDefault().TemplateID;
             content.IsSlugEdited = true;
             content.IsFeatured = false;
             content.EnableComment = true;
@@ -348,7 +334,7 @@ namespace NITASA.Controllers
             context.Meta.Add(meta);
             context.SaveChanges();
 
-            //Add Gadgets
+            //Add Widget
             Widget gadget = new Widget();
             gadget.Name = "Recent Content";
             gadget.Title = "Recent Content";

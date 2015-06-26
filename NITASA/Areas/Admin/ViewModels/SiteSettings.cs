@@ -68,5 +68,8 @@ namespace NITASA.Areas.Admin.ViewModels
         [AllowHtml]
         [Display(Name = "Google Analytics ")]
         public string GoogleAnalytics { get; set; }
+
+        [Display(Name = "Current Theme")]
+        public string CurrentTheme { get; set; }
     }
 }

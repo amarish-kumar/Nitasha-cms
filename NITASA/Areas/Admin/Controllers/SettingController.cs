@@ -40,7 +40,12 @@ namespace NITASA.Areas.Admin.Controllers
             siteSettings.CustomJavaScript = context.Settings.Where(m => m.Name == "CustomJavaScript").Select(m => m.Value).FirstOrDefault();
             siteSettings.CustomCSS = context.Settings.Where(m => m.Name == "CustomCSS").Select(m => m.Value).FirstOrDefault();
             siteSettings.GoogleAnalytics = context.Settings.Where(m => m.Name == "GoogleAnalytics").Select(m => m.Value).FirstOrDefault();
+            siteSettings.CurrentTheme = context.Settings.Where(m => m.Name == "CurrentTheme").Select(m => m.Value).FirstOrDefault();
 
+            List<string> NotListedDirectory = new List<string> { "configure", "register", "shared"};
+            List<string> ThemeList = new DirectoryInfo(Server.MapPath("/Views/")).GetDirectories().Where(x => !NotListedDirectory.Contains(x.Name.ToLower()))
+                                    .Select(m => Path.GetFileNameWithoutExtension(m.FullName)).ToList();
+            ViewBag.Themes = new SelectList(ThemeList);
             return View(siteSettings);
         }
 
@@ -212,6 +217,15 @@ namespace NITASA.Areas.Admin.Controllers
                             context.Settings.Add(GoogleAnalytics);
                         }
                         else GoogleAnalytics.Value = con.GoogleAnalytics;
+
+                        Setting CurrentTheme = context.Settings.FirstOrDefault(m => m.Name == "CurrentTheme");
+                        if (CurrentTheme == null)
+                        {
+                            CurrentTheme = new Setting() { Name = "CurrentTheme", Value = con.CurrentTheme };
+                            context.Settings.Add(CurrentTheme);
+                        }
+                        else CurrentTheme.Value = con.CurrentTheme;
+                        Request.RequestContext.HttpContext.Application["CurrentTheme"] = con.CurrentTheme;
                         context.SaveChanges();
                         TempData["SuccessMessage"] = "Settings updated successfully.";
                         //function.ReBindConfig();
