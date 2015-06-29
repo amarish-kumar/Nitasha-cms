@@ -151,7 +151,7 @@
                                         <tr class="grid-row" id="@Slides[i].ID" style="cursor:pointer;">
                                             <td>
                                                 <a href="#">
-                                                    <img src='/content/media/@Slides[i].Image' style="height:35px;width:35px;border-radius:50%" alt="" />
+                                                    <img src='@Slides[i].Image' style="height:35px;width:35px;border-radius:50%" alt="" />
                                                 </a>
                                             </td>
                                             <td style="text-align: center">
@@ -203,7 +203,7 @@
                 var imgPath = $(this).attr("src");
                 $("#uploadedImage").attr("src", imgPath);
                 var img = imgPath.replace('/content/media/', '');
-                $("#Image").val(img);
+                $("#Image").val(imgPath);
                 $('#imagename').text(img);
                 $("#MediaPopup").modal("hide");
             });

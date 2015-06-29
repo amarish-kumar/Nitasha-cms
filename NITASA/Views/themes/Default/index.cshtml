@@ -1,4 +1,12 @@
+@*@model String*@
 @{
+    string currentThemeName = Convert.ToString(ViewBag.ActiveTheme);
+    Layout = currentThemeName + "/master.cshtml";
+}
+
+@Html.Raw((string)ViewBag.HTMLContent)
+
+@*@{
     string currentThemeName = Convert.ToString(ViewBag.ActiveTheme);
     Layout = currentThemeName + "/master.cshtml";
 }
@@ -42,4 +50,4 @@
     </p>
     <br />
     @Html.Partial("~" + currentThemeName + "/pager.cshtml")
-</div>
+</div>*@

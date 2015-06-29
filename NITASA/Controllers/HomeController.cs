@@ -33,43 +33,58 @@ namespace NITASA.Controllers
             doc.LoadHtml(str);
 
             var Sliders = doc.DocumentNode.SelectNodes("//slider");
-            foreach (var item in Sliders)
+            if (Sliders != null)
             {
-                var HTMLSlider = "";
-                int sliderid = 0;
-                if (Int32.TryParse(item.InnerText, out sliderid))
+                foreach (var item in Sliders)
                 {
-                    List<CL_Slide> slides = context.Slides.Where(x => x.SliderId == sliderid).Select(x =>
-                        new CL_Slide { Image = x.Image, Link = x.Link, Text = x.Text, Title = x.Title, DisplayOrder = x.DisplayOrder }
-                        ).ToList();
-                    HTMLSlider = RenderRazorViewToString(this.ControllerContext, activeTheme + "slider.cshtml", slides);
-                }
-                var newNode = HtmlAgilityPack.HtmlNode.CreateNode(HTMLSlider);
-                item.ParentNode.ReplaceChild(newNode, item);
-            }
-
-            var Addons = doc.DocumentNode.SelectNodes("//addons");
-            foreach (var item in Addons)
-            {
-                var HTMLAddon = "";
-                int addonid = 0;
-                if (Int32.TryParse(item.InnerText, out addonid))
-                {
-                    Content addon = context.Content.Where(x => x.ID == addonid).FirstOrDefault();
-                    if (addon != null)
+                    var HTMLSlider = "";
+                    int sliderid = 0;
+                    if (Int32.TryParse(item.InnerText, out sliderid))
                     {
-                        string MasterLayout = addon.AddonMasterLayout;
-                        string SubLayout = addon.AddonSubLayout;
-                     //   HTMLAddon = 
+                        List<CL_Slide> slides = context.Slides.Where(x => x.SliderId == sliderid).Select(x =>
+                            new CL_Slide { Image = x.Image, Link = x.Link, Text = x.Text, Title = x.Title, DisplayOrder = x.DisplayOrder }
+                            ).ToList();
+                        HTMLSlider = RenderRazorViewToString(this.ControllerContext, activeTheme + "slider.cshtml", slides);
                     }
+                    //HtmlAgilityPack.HtmlNode newNode = HtmlAgilityPack.HtmlNode.CreateNode(HTMLSlider);
+                    //item.ParentNode.ReplaceChild(newNode, item);
+
+                    HtmlAgilityPack.HtmlNode newNode = doc.CreateElement("div");
+                    newNode.Attributes.Add("class", "divNTS");
+                    newNode.InnerHtml = HTMLSlider;
+                    item.ParentNode.ReplaceChild(newNode, item);
+                    //string temp = doc.DocumentNode.OuterHtml;
                 }
-                var newNode = HtmlAgilityPack.HtmlNode.CreateNode(HTMLAddon);
-                item.ParentNode.ReplaceChild(newNode, item);
             }
             string HTMLContent = doc.DocumentNode.OuterHtml;
-
-            return View(activeTheme + "index.cshtml", HTMLContent);
-
+            var Addons = doc.DocumentNode.SelectNodes("//addon");
+            if (Addons != null)
+            {
+                foreach (var item in Addons)
+                {
+                    var HTMLAddon = "";
+                    int addonid = 0;
+                    if (Int32.TryParse(item.InnerText, out addonid))
+                    {
+                        Content addon = context.Content.Where(x => x.ID == addonid).FirstOrDefault();
+                        if (addon != null)
+                        {
+                            //string MasterLayout = addon.AddonMasterLayout;
+                            HTMLAddon = addon.AddonSubLayout;
+                            HTMLAddon = HTMLAddon.Replace("{{Title}}", addon.Title);
+                            HTMLAddon = HTMLAddon.Replace("{{URL}}", addon.URL);
+                            HTMLAddon = HTMLAddon.Replace("{{Description}}", addon.Description);
+                        }
+                    }
+                    var newNode = HtmlAgilityPack.HtmlNode.CreateNode(HTMLAddon);
+                    item.ParentNode.ReplaceChild(newNode, item);
+                }
+            }
+            HTMLContent = doc.DocumentNode.OuterHtml;
+            HTMLContent = HTMLContent.Replace("<div class=\"divNTS\">", "");
+            HTMLContent =HTMLContent.Substring(0,HTMLContent.LastIndexOf("</div>"));
+            ViewBag.HTMLContent = HTMLContent;
+            return View(activeTheme + "index.cshtml");
         }
         public static String RenderRazorViewToString(ControllerContext controllerContext, String viewName, Object model)
         {

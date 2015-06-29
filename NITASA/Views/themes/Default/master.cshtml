@@ -43,7 +43,7 @@
     @Html.Partial("~" + currentTheme + "/header.cshtml")
     <!-- SUBHEADER
     ================================================== -->
-    <div id="subheader">
+    @*<div id="subheader">
         <div class="row">
             <div class="eight columns">
                 <p class="bread leftalign">
@@ -56,18 +56,15 @@
         </div>
     </div>
     <div class="hr">
-    </div>
+    </div>*@
     <!-- CONTENT
     ================================================== -->
-    <div class="row">
-        <div class="twelve columns noleftmargin">
+  
             <!-- MAIN CONTENT -->
             @RenderBody()
-            @Html.Partial("~" + currentTheme + "/sidebar.cshtml")
-        </div>
-    </div>
-    <div class="hr">
-    </div>
+            @*@Html.Partial("~" + currentTheme + "/sidebar.cshtml")*@
+    @*<div class="hr">
+    </div>*@
 
     <!-- FOOOTER
     ================================================== -->
