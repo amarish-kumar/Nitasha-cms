@@ -176,7 +176,6 @@
     <Compile Include="Areas\Admin\Controllers\AuthenticateController.cs" />
     <Compile Include="Areas\Admin\Controllers\BackupRestoreController.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoryController.cs" />
-    <Compile Include="Areas\Admin\Controllers\CHeckLogin.cs" />
     <Compile Include="Areas\Admin\Controllers\CommentController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\LabelController.cs" />

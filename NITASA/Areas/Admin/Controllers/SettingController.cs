@@ -42,9 +42,7 @@ namespace NITASA.Areas.Admin.Controllers
             siteSettings.GoogleAnalytics = context.Settings.Where(m => m.Name == "GoogleAnalytics").Select(m => m.Value).FirstOrDefault();
             siteSettings.CurrentTheme = context.Settings.Where(m => m.Name == "CurrentTheme").Select(m => m.Value).FirstOrDefault();
 
-            List<string> NotListedDirectory = new List<string> { "configure", "register", "shared"};
-            List<string> ThemeList = new DirectoryInfo(Server.MapPath("/Views/")).GetDirectories().Where(x => !NotListedDirectory.Contains(x.Name.ToLower()))
-                                    .Select(m => Path.GetFileNameWithoutExtension(m.FullName)).ToList();
+            List<string> ThemeList = new DirectoryInfo(Server.MapPath("/Views/themes/")).GetDirectories().Select(m => Path.GetFileNameWithoutExtension(m.FullName)).ToList();
             ViewBag.Themes = new SelectList(ThemeList);
             return View(siteSettings);
         }
