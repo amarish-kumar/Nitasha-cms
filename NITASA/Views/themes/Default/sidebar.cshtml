@@ -1,11 +1,12 @@
+@{string currentThemeName = Convert.ToString(ViewBag.ActiveTheme); }
 <!-- SIDEBAR -->
-		<div class="four columns">
-			@Html.Partial("~/Views/Default/sb_recentcomments.cshtml")
-            @Html.Partial("~/Views/Default/sb_labels.cshtml")
-            @Html.Partial("~/Views/Default/sb_categories.cshtml")
-            @Html.Partial("~/Views/Default/sb_mostpopular.cshtml")
-            @Html.Partial("~/Views/Default/sb_recentview.cshtml")
-            @Html.Partial("~/Views/Default/sb_related.cshtml")
-            @Html.Partial("~/Views/Default/sb_pageview.cshtml")
-            @Html.Partial("~/Views/Default/sb_pagelist.cshtml")
-		</div>
+<div class="four columns">
+    @Html.Partial("~" + currentThemeName + "/sb_recentcomments.cshtml")
+    @Html.Partial("~" + currentThemeName + "/sb_labels.cshtml")
+    @Html.Partial("~" + currentThemeName + "/sb_categories.cshtml")
+    @Html.Partial("~" + currentThemeName + "/sb_mostpopular.cshtml")
+    @Html.Partial("~" + currentThemeName + "/sb_recentview.cshtml")
+    @Html.Partial("~" + currentThemeName + "/sb_related.cshtml")
+    @Html.Partial("~" + currentThemeName + "/sb_pageview.cshtml")
+    @Html.Partial("~" + currentThemeName + "/sb_pagelist.cshtml")
+</div>

@@ -34,4 +34,15 @@ namespace NITASA.Data
         [DefaultValue(false)]
         public bool IsDeleted { get; set; }
     }
+
+    public class ClientSideMenu
+    {
+        public int MenuID { get; set; }
+        public int ParentMenuID { get; set; }
+        [AllowHtml]
+        public string MenuTitle { get; set; }
+        public string MenuType { get; set; }
+        public string MenuSlug { get; set; }
+        public int DisplayOrder { get; set; }
+    }
 }

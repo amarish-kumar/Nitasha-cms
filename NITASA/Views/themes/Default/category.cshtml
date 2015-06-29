@@ -1,3 +1,4 @@
+@{string currentThemeName = Convert.ToString(ViewBag.ActiveTheme); }
 <div class="eight columns noleftmargin">
 			<div class="circledate">
 				<div class="textcircle">
@@ -36,5 +37,5 @@
 				His courtesy was so inbred that he kept looking the company over as if he wished they'd all go home and let him go to bed. His sleek head would drop forward sleepily from time to time but always bob up like the balloon it possibly perhaps was maybe ... <a href="#" class="saymore">Read more</a>
 			</p>
 			<br/>
-			@Html.Partial("~/Views/Default/pager.cshtml")
+			@Html.Partial("~" + currentThemeName + "/pager.cshtml")
 		</div>

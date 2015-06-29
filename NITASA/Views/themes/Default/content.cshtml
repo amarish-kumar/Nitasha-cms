@@ -1,54 +1,55 @@
 @{
-    Layout = "~/Views/Default/master.cshtml";
+    string currentThemeName = Convert.ToString(ViewBag.ActiveTheme);
+    Layout = currentThemeName + "master.cshtml";
 }
 <div class="eight columns">
-			<div class="sectiontitle">
-				<h4>The Dower Farm</h4>
-			</div>
-			<p>
-				<img src="images/temp/post.jpg" class="blogimage grayscale" alt="">
-			</p>
-			<p>
-				 Mrs. Delorane had died of decline: people would say to one another, in confidence, they hoped Ellin might escape it. The largest and <b>best farm</b> in the neighbourhood of Timberdale, larger than even that of the Ashtons, was called the Dower Farm.
-			</p>
-			<p>
-				Out-of-doors he was the keen, active, thorough farmer; indoors he lived as a gentleman. He had four children: three boys and one girl. Nothing must prevent her journey upon the desert!
-			</p>
-			<p>
-				From her window she looked out toward it, so wonderful, so superb, so exquisite, weird and beautiful. Exactly, she told herself, like a big, black smudge.
-			</p>
-			<p>
-				But she cuddled in bed with one knee up to her neck in cute boyish fashion, laughing softly at the remembrance of another time when she had popped a cigarette stump into the eye of a London bobby from the top of a bus.
-			</p>
-			<p>
-				And such a merry fight as she had put up when he had yanked her down! She was wearing her usual boy's clothes and when she had given her real name at the station, the policeman wouldn't believe it of her and the matron had resigned rather than carry the investigation further.
-			</p><br/>			
-			<div class="panel">
-				<div class="avatar">
-					<img src="images/temp/author1.png" alt="">
-				</div>
-				<h5 class="left">AUTHOR: Jane Sanders </h5>
-			<div class="right">			
-		<div class="social facebook">
-			<a href="#"></a>
-		</div>
-		<div class="social twitter">
-			<a href="#"></a>
-		</div>
-		<div class="social deviantart">
-			<a href="#"></a>
-		</div>
-		<div class="social flickr">
-			<a href="#"></a>
-		</div>
-		<div class="social dribbble">
-			<a href="#"></a>
-		</div>
-		</div>
-		<p class="clear authortext">
-					Jane is a professional photographer working for SLC. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum. <a href="#">Browse more articles</a> by this author.<br/>
-				</p>
-			</div>			
-    @Html.Partial("~/Views/Default/commentslist.cshtml")
-    @Html.Partial("~/Views/Default/commentform.cshtml")
-		</div>
+    <div class="sectiontitle">
+        <h4>The Dower Farm</h4>
+    </div>
+    <p>
+        <img src="images/temp/post.jpg" class="blogimage grayscale" alt="">
+    </p>
+    <p>
+        Mrs. Delorane had died of decline: people would say to one another, in confidence, they hoped Ellin might escape it. The largest and <b>best farm</b> in the neighbourhood of Timberdale, larger than even that of the Ashtons, was called the Dower Farm.
+    </p>
+    <p>
+        Out-of-doors he was the keen, active, thorough farmer; indoors he lived as a gentleman. He had four children: three boys and one girl. Nothing must prevent her journey upon the desert!
+    </p>
+    <p>
+        From her window she looked out toward it, so wonderful, so superb, so exquisite, weird and beautiful. Exactly, she told herself, like a big, black smudge.
+    </p>
+    <p>
+        But she cuddled in bed with one knee up to her neck in cute boyish fashion, laughing softly at the remembrance of another time when she had popped a cigarette stump into the eye of a London bobby from the top of a bus.
+    </p>
+    <p>
+        And such a merry fight as she had put up when he had yanked her down! She was wearing her usual boy's clothes and when she had given her real name at the station, the policeman wouldn't believe it of her and the matron had resigned rather than carry the investigation further.
+    </p><br />
+    <div class="panel">
+        <div class="avatar">
+            <img src="images/temp/author1.png" alt="">
+        </div>
+        <h5 class="left">AUTHOR: Jane Sanders </h5>
+        <div class="right">
+            <div class="social facebook">
+                <a href="#"></a>
+            </div>
+            <div class="social twitter">
+                <a href="#"></a>
+            </div>
+            <div class="social deviantart">
+                <a href="#"></a>
+            </div>
+            <div class="social flickr">
+                <a href="#"></a>
+            </div>
+            <div class="social dribbble">
+                <a href="#"></a>
+            </div>
+        </div>
+        <p class="clear authortext">
+            Jane is a professional photographer working for SLC. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum. <a href="#">Browse more articles</a> by this author.<br />
+        </p>
+    </div>
+    @Html.Partial("~" + currentThemeName + "/commentslist.cshtml")
+    @Html.Partial("~" + currentThemeName + "/commentform.cshtml")
+</div>

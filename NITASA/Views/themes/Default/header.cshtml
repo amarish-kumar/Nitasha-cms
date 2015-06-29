@@ -1,3 +1,4 @@
+@{string currentThemeName = Convert.ToString(ViewBag.ActiveTheme); }
 <div class="row">
 	<div class="headerlogo four columns">
 		<div class="logo">
@@ -6,7 +7,7 @@
 			</a>
 		</div>
 	</div>
-	@Html.Partial("~/Views/Default/navigation.cshtml")
+	@Html.Partial("~" + currentThemeName + "/navigation.cshtml")
 </div>
 <div class="clear">
 </div>
