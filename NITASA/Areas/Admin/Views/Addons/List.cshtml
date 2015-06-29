@@ -94,9 +94,9 @@
             <div class="modal-body">
                 <ul class="padded separate-sections">
                     <li class="input li_input_bottom_space_settings">
-                        <label>Master Layout:&nbsp;&nbsp; Note - '{{SubLayout}}' is necessary to render below section items.</label>
-                        @Html.TextArea("AddonMasterLayout", new { style="height:150px;width:100%;" })
-                        <label>Sub Layout:&nbsp;&nbsp; Note - '{{Items}}' is necessary.</label>
+                        @*<label>Master Layout:&nbsp;&nbsp; Note - '{{SubLayout}}' is necessary to render below section items.</label>
+                        @Html.TextArea("AddonMasterLayout", new { style="height:150px;width:100%;" })*@
+                        <label>Item Layout:&nbsp;&nbsp; Note - '{{Description}}' is necessary.</label>
                         @Html.TextArea("AddonSubLayout", new { style = "height:150px;width:100%;" })
                         @Html.Hidden("addonguid")
                     </li>
