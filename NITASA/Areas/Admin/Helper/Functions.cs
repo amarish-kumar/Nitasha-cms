@@ -183,6 +183,7 @@ namespace NITASA.Areas.Admin.Helper
         {
             string fileExtension = System.IO.Path.GetExtension(currentFileName);
             string fileName = currentFileName.Replace(fileExtension, "");
+            fileName = Regex.Replace(fileName, "[^0-9a-zA-Z.]+", "");
             string newFileName = fileName + fileExtension;
             string newFilePath = Path.Combine(targetFolder, newFileName);
             int fileCounter = 1;

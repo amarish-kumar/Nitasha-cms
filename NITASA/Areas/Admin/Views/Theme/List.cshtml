@@ -78,11 +78,17 @@
                                             @item
                                         </div>
                                         <div class="media-thumb">
-                                            <img src='/Views/@item/featureimage.jpg' alt='' style="width:100px;height:100px;" />
+                                            <img src='/Views/themes/@item/thumbnail.jpg' alt='' style="width:100px;height:100px;" />
                                         </div>
                                         <div style="width: 100px; margin-left: 15px; text-align: center;">
-                                            @Html.ActionLink("Activate", "Activate", new { themename = item }, new { onclick = "return confirm('Are you sure you want to activate this theme?');" })
-                                            @Html.ActionLink("Delete", "Delete", new { themename = item }, new { onclick = "return confirm('Are you sure you want to Delete this theme?');" })
+                                            @if (ViewBag.CurrentTheme != item)
+                                            { 
+                                                @Html.ActionLink("Activate", "Activate", new { themename = item }, new { onclick = "return confirm('Are you sure you want to activate this theme?');" })
+                                            }
+                                            @if (item.ToLower() != "default")
+                                            {
+                                                @Html.ActionLink("Delete", "Delete", new { themename = item }, new { onclick = "return confirm('Are you sure you want to Delete this theme?');" })
+                                            }
                                         </div>
                                     </div>
                                 }

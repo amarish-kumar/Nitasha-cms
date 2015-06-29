@@ -1,4 +1,5 @@
-﻿using NITASA.Data;
+﻿using NITASA.Areas.Admin.Helper;
+using NITASA.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,18 +10,28 @@ using System.Web.Mvc;
 
 namespace NITASA.Areas.Admin.Controllers
 {
+    [CheckLogin]
     public class ThemeController : Controller
     {
         public NTSDBContext context;
+        
         public ThemeController()
         {
             context = new NTSDBContext();
         }
-        List<string> NotListedDirectory = new List<string> { "configure", "register", "shared", "default" };
+
         public ActionResult List()
         {
-            List<string> ThemeList = new DirectoryInfo(Server.MapPath("/Views/")).GetDirectories().Where(x => !NotListedDirectory.Contains(x.Name.ToLower()))
-                                    .Select(m => Path.GetFileNameWithoutExtension(m.FullName)).ToList();
+            List<string> ThemeList = new DirectoryInfo(Server.MapPath("/Views/themes/")).GetDirectories().Select(m => Path.GetFileNameWithoutExtension(m.FullName)).ToList();
+            Setting CurrentTheme = context.Settings.FirstOrDefault(m => m.Name == "CurrentTheme");
+            if (CurrentTheme != null)
+            {
+                ViewBag.CurrentTheme = CurrentTheme.Value;
+            }
+            else
+            {
+                ViewBag.CurrentTheme = "Default";
+            }
             return View(ThemeList);
         }
         [HttpGet]
@@ -35,8 +46,8 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 if (Path.GetExtension(ThemeFile.FileName).ToLower() == ".zip")
                 {
-                    string NewThemeDirectory = Server.MapPath("/Views/") + Path.GetFileNameWithoutExtension(ThemeFile.FileName);
-                    string zipPath = Server.MapPath("/Views/") + ThemeFile.FileName;
+                    string NewThemeDirectory = Server.MapPath("/Views/themes/") + Path.GetFileNameWithoutExtension(ThemeFile.FileName);
+                    string zipPath = Server.MapPath("/Views/themes/") + ThemeFile.FileName;
                     try
                     {
                         if (Directory.Exists(NewThemeDirectory))
@@ -48,8 +59,8 @@ namespace NITASA.Areas.Admin.Controllers
                             //Directory.CreateDirectory(NewThemeDirectory);
 
                             ThemeFile.SaveAs(zipPath);
-                            ZipFile.ExtractToDirectory(zipPath, Server.MapPath("/Views/"));
-                            
+                            ZipFile.ExtractToDirectory(zipPath, Server.MapPath("/Views/themes/"));
+
                             bool IsValid = false;
                             List<string> MissingFiles = IsValidTheme(NewThemeDirectory, ref IsValid);
                             if (!IsValid)
@@ -94,10 +105,47 @@ namespace NITASA.Areas.Admin.Controllers
         {
             isValid = true;
             List<string> misingFiles = new List<string>();
+            
             DirectoryInfo ThemeDir = new DirectoryInfo(NewThemePath);
             if (ThemeDir != null)
             {
+                #region Required files
+                List<string> Requiredfiles = new List<string>() { 
+                                                                "master.cshtml",
+                                                                "index.cshtml",
+                                                                "category.cshtml",
+                                                                "label.cshtml",
+                                                                "archive.cshtml",
+                                                                "search_form.cshtml", 
+                                                                "search_result.cshtml", 
+                                                                "content.cshtml",
+                                                                "header.cshtml",
+                                                                "footer.cshtml",
+                                                                "slider.cshtml",
+                                                                "navigation.cshtml",
+                                                                "commentslist.cshtml",
+                                                                "commentform.cshtml", 
+                                                                "recentcomments.cshtml",
+                                                                "pager.cshtml",
+                                                                "404.cshtml",
+                                                                "500.cshtml",
+                                                                "sidebar.cshtml",
+                                                                "sb_categories.cshtml", 
+                                                                "sb_labels.cshtml",
+                                                                "sb_pageview.cshtml",
+                                                                "sb_pagelist.cshtml", 
+                                                                "sb_mostpopular.cshtml",
+                                                                "sb_recentview.cshtml",
+                                                                "sb_related.cshtml",
+                                                                "sb_recentcomments.cshtml",
+                                                                "thumbnail.jpg"
+                                                            };
+                #endregion
+
                 List<string> allViews = ThemeDir.GetFiles().Select(m => m.Name.ToLower()).ToList();
+                misingFiles.AddRange(Requiredfiles.Where(x => !allViews.Contains(x)).ToList());
+                isValid = misingFiles.Count() == 0;
+                /*
                 if (!allViews.Contains("master.cshtml")) { misingFiles.Add("master.cshtml"); isValid = false; }
                 if (!allViews.Contains("index.cshtml")) { misingFiles.Add("index.cshtml"); isValid = false; }
                 if (!allViews.Contains("category.cshtml")) { misingFiles.Add("category.cshtml"); isValid = false; }
@@ -114,7 +162,7 @@ namespace NITASA.Areas.Admin.Controllers
                 if (!allViews.Contains("commentform.cshtml")) { misingFiles.Add("commentform.cshtml"); isValid = false; }
                 if (!allViews.Contains("recentcomments.cshtml")) { misingFiles.Add("recentcomments.cshtml"); isValid = false; }
                 if (!allViews.Contains("pager.cshtml")) { misingFiles.Add("Ppager.cshtml"); isValid = false; }
-                
+
                 if (!allViews.Contains("404.cshtml")) { misingFiles.Add("404.cshtml"); isValid = false; }
                 if (!allViews.Contains("500.cshtml")) { misingFiles.Add("500.cshtml"); isValid = false; }
 
@@ -127,8 +175,9 @@ namespace NITASA.Areas.Admin.Controllers
                 if (!allViews.Contains("sb_recentview.cshtml")) { misingFiles.Add("sb_recentview.cshtml"); isValid = false; }
                 if (!allViews.Contains("sb_related.cshtml")) { misingFiles.Add("sb_related.cshtml"); isValid = false; }
                 if (!allViews.Contains("sb_recentcomments.cshtml")) { misingFiles.Add("sb_recentcomments.cshtml"); isValid = false; }
-                
-                if (!allViews.Contains("featureimage.jpg")) { misingFiles.Add("featureimage.jpg"); isValid = false; }
+
+                if (!allViews.Contains("thumbnail.jpg")) { misingFiles.Add("thumbnail.jpg"); isValid = false; }
+                */
             }
             else
             {
@@ -139,8 +188,8 @@ namespace NITASA.Areas.Admin.Controllers
         }
         public ActionResult Delete(string themename)
         {
-            string ThemePath = Server.MapPath("/Views/") + themename;
-            if (!NotListedDirectory.Contains(themename.ToLower()) && Directory.Exists(ThemePath))
+            string ThemePath = Server.MapPath("/Views/themes/") + themename;
+            if (themename.ToLower() != "default" && Directory.Exists(ThemePath))
             {
                 FileInfo f = new FileInfo(ThemePath + ".zip");
                 f.Delete();
@@ -148,8 +197,10 @@ namespace NITASA.Areas.Admin.Controllers
                 Directory.Delete(ThemePath);
 
                 Setting CurrentTheme = context.Settings.FirstOrDefault(m => m.Name == "CurrentTheme");
-                if (CurrentTheme != null && CurrentTheme.Value.ToLower() == themename)
+                if (CurrentTheme != null && CurrentTheme.Value.ToLower() == themename.ToLower())
                 {
+                    CurrentTheme.Value = "Default";
+                    context.SaveChanges();
                     Request.RequestContext.HttpContext.Application["CurrentTheme"] = "Default";
                 }
                 TempData["SuccessMessage"] = "Theme deleted successfully.";
@@ -165,7 +216,7 @@ namespace NITASA.Areas.Admin.Controllers
         {
             try
             {
-                string ThemePath = Server.MapPath("/Views/") + themename;
+                string ThemePath = Server.MapPath("/Views/themes/") + themename;
                 if (Directory.Exists(ThemePath))
                 {
                     Setting CurrentTheme = context.Settings.FirstOrDefault(m => m.Name == "CurrentTheme");
