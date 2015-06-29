@@ -214,7 +214,7 @@ namespace NITASA.Areas.Admin.Controllers
         public ActionResult Delete(string guid)
         {
             Content contentToDelete = dbContext.Content.Where(m => m.Type == "page" && m.GUID == guid).Single();
-            if (contentToDelete != null)
+            if (contentToDelete != null && contentToDelete.Title.ToLower() != "index")
             {
                 if (contentToDelete.AddedBy == Functions.CurrentUserID())
                 {

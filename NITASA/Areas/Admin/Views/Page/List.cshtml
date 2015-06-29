@@ -78,34 +78,38 @@
             </div>
         </div>
     </div>
-    @helper RenderButtons(Content item)
+
+@helper RenderButtons(Content item)
 {
-    if (Functions.CurrentUserID() == item.AddedBy)
-    {
-        if (UserRights.HasRights(Rights.EditOwnPages))
+    if (item.Title.ToLower()!="index")
+    { 
+        if (Functions.CurrentUserID() == item.AddedBy)
         {
-            @Html.ActionLink("Edit", "Add", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
+            if (UserRights.HasRights(Rights.EditOwnPages))
+            {
+                @Html.ActionLink("Edit", "Add", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
+            }
         }
-    }
-    else
-    {
-        if (UserRights.HasRights(Rights.EditOtherUsersPage))
+        else
         {
-            @Html.ActionLink("Edit", "Add", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
+            if (UserRights.HasRights(Rights.EditOtherUsersPage))
+            {
+                @Html.ActionLink("Edit", "Add", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
+            }
         }
-    }
-    if (Functions.CurrentUserID() == item.AddedBy)
-    {
-        if (UserRights.HasRights(Rights.DeleteOwnPages))
+        if (Functions.CurrentUserID() == item.AddedBy)
         {
-            @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Page ?');" })
+            if (UserRights.HasRights(Rights.DeleteOwnPages))
+            {
+                @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Page ?');" })
+            }
         }
-    }
-    else
-    {
-        if (UserRights.HasRights(Rights.DeleteOtherUsersPages))
+        else
         {
-            @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Page ?');" })
+            if (UserRights.HasRights(Rights.DeleteOtherUsersPages))
+            {
+                @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Page ?');" })
+            }
         }
     }
 }

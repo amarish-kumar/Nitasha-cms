@@ -61,6 +61,9 @@ namespace NITASA.Data
         [DefaultValue(false)]
         public bool IsDeleted { get; set; }
 
+        public string AddonMasterLayout { get; set; }
+        public string AddonSubLayout { get; set; }
+
         [ForeignKey("AddedBy")]
         public virtual User user { get; set; }
 

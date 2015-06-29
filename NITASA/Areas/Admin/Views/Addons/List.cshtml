@@ -66,7 +66,7 @@
                                                 columns.Add(x => x.ContentView).Titled("Views").Sortable(true).Filterable(true);
                                                 columns.Add(x => x.user.FullName).Titled("Author").Sortable(true).Filterable(true);
                                                 columns.Add(c => c.isPublished).Sortable(true).Filterable(true).RenderValueAs(x => x.isPublished ? "Published" : "Draft").Titled("Type");
-                                                columns.Add().SetWidth(110).RenderValueAs(x => RenderButtons(x)).Sanitized(false).Encoded(false).Titled("");                                                
+                                                columns.Add().SetWidth(150).RenderValueAs(x => RenderButtons(x)).Sanitized(false).Encoded(false).Titled("");                                                
                                             }).WithPaging(25).WithMultipleFilters()
                             }
                             else
@@ -77,8 +77,38 @@
             </div>
         </div>
     </div>
+
+
+    <div id="modal-config" class="modal hide fade" tabindex="-1" data-focus-on="input:second">
+        @using (Html.BeginForm("UpdateAddonLayout", "Addons", FormMethod.Post))
+        {
+            <div class="modal-header">
+                <a class="close modal_Delete_icon_link" data-dismiss="modal" href=""><i class="icon-remove-sign modal_close_icon_fontsize"></i></a>                
+                <button id="BtnSave" name="BtnSave" class="close modal_icon_link" type="submit">
+                    <i class="icon-save modal_icon_fontsize"></i>
+                </button>
+                <h6 id="H14">
+                    <label>Addon Layout</label>
+                </h6>
+            </div>
+            <div class="modal-body">
+                <ul class="padded separate-sections">
+                    <li class="input li_input_bottom_space_settings">
+                        <label>Master Layout</label>
+                        @Html.TextArea("AddonMasterLayout", new { style="height:150px;width:100%;" })
+                        <label>Sub Layout</label>
+                        @Html.TextArea("AddonSubLayout", new { style = "height:150px;width:100%;" })
+                        @Html.Hidden("addonguid")
+                    </li>
+                </ul>
+            </div>
+        }
+    </div>
     @helper RenderButtons(Content item)
 {
+    <a data-addonguid='@item.GUID' class="model-config btn btn-mini btn-default dropdown-toggle" style="padding:2px 6px;">
+        <i class="icon-cog" style="margin-top:5px;"></i>
+    </a>
     if (Functions.CurrentUserID() == item.AddedBy)
     {
         if (UserRights.HasRights(Rights.EditOwnAddons))
@@ -107,4 +137,29 @@
             @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Page ?');" })
         }
     }
+}
+
+
+
+@section BottomScript{
+    
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.model-config').click(function () {
+                $('#addonguid').val($(this).attr("data-addonguid"));
+                $.ajax({
+                    type: "GET",
+                    url: '/Admin/Addons/GetAddonLayout',
+                    data: { addonguid: $('#addonguid').val() },
+                    dataType: "json",
+                    success: function (data) {
+                        $("#AddonMasterLayout").val(data.MasterLayout);
+                        $("#AddonSubLayout").val(data.SubLayout);
+                        $('#modal-config').modal('show');
+                    },
+                    error: function (data) { alert(data); }
+                });
+            });
+        });
+    </script>    
 }

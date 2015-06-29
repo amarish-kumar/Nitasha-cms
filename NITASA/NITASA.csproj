@@ -229,6 +229,7 @@
     <Compile Include="Helpers\Imager.cs" />
     <Compile Include="Helpers\SortingPaging.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\Slide.cs" />
     <Compile Include="ViewModels\Install.cs" />
     <Compile Include="ViewModels\Register.cs" />
   </ItemGroup>

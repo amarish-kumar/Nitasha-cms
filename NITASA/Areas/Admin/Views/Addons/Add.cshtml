@@ -108,6 +108,14 @@
                                         </div>
                                         <div class="control-group">
                                             <div class="controls">
+                                                @Html.TextBoxFor(m=> m.URL, new { placeholder = "Addon URL", @class = "width100per", style = "margin-bottom: 0px;" })
+                                                <div style="color: red">
+                                                    @Html.ValidationMessageFor(m => m.URL)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            <div class="controls">
                                                 <label>
                                                     <b>Content: </b>
                                                 </label>

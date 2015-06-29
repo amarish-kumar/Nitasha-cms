@@ -91,6 +91,10 @@
     <Compile Include="Media.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Meta.cs" />
+    <Compile Include="Migrations\201506290740337_addon-layout-added.cs" />
+    <Compile Include="Migrations\201506290740337_addon-layout-added.Designer.cs">
+      <DependentUpon>201506290740337_addon-layout-added.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NTSDBContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -106,6 +110,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Migrations\Scripts\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201506290740337_addon-layout-added.resx">
+      <DependentUpon>201506290740337_addon-layout-added.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

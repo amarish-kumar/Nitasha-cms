@@ -228,32 +228,53 @@ namespace NITASA.Areas.Admin.Helper
             sbTimeStamp.Append(DateTime.Now.Second.ToString());
             return sbTimeStamp.ToString();
         }
-        
+
         public static string GetAddons()
         {
-            NTSDBContext _dbContext = new NTSDBContext();
-            List<string> temp = new List<string> { "page", "post" };
-            List<Content> AllAddons = _dbContext.Content.Where(x => x.isPublished == true && x.IsDeleted == false && !temp.Contains(x.Type)).ToList();
-
-            List<string> addontypes = AllAddons.Select(x => x.Type).Distinct().ToList();
-
             List<TMenu> itemList = new List<TMenu>();
-            itemList = (from at in addontypes
-                        select
-                             new TMenu
-                             {
-                                 text = at,
-                                 SubMenu = (from ad in AllAddons
-                                            where ad.Type == at
-                                            select new TMenu { id = ad.ID.ToString(), text = ad.Title }).ToList()
-                             }
-                        ).ToList();
-            Random r = new Random();
-            itemList.ForEach(x =>
-                x.SubMenu.InsertRange(0, new List<TMenu> { new TMenu { id = string.Concat("tinyAll", r.Next()), text = "All" } })
-            );
+            using (NTSDBContext _dbContext = new NTSDBContext())
+            {
+                List<string> temp = new List<string> { "page", "post" };
+                List<Content> AllAddons = _dbContext.Content.Where(x => x.isPublished == true && x.IsDeleted == false && !temp.Contains(x.Type)).ToList();
+
+                List<string> addontypes = AllAddons.Select(x => x.Type).Distinct().ToList();
+
+                itemList = (from at in addontypes
+                            select
+                                 new TMenu
+                                 {
+                                     text = at,
+                                     SubMenu = (from ad in AllAddons
+                                                where ad.Type == at
+                                                select new TMenu { id = ad.ID.ToString() + "-addon", text = ad.Title }).ToList()
+                                 }
+                            ).ToList();
+                Random r = new Random();
+                itemList.ForEach(x =>
+                    x.SubMenu.InsertRange(0, new List<TMenu> { new TMenu { id = string.Concat("tinyAll", r.Next()), text = "All" } })
+                );
+            }
             string json = JsonConvert.SerializeObject(itemList);
 
+            return json;
+        }
+        public static string GetSliders()
+        {
+            List<TMenu> itemList = new List<TMenu>();
+            using (NTSDBContext _dbContext = new NTSDBContext())
+            {
+                List<Slider> AllSliders = _dbContext.Sliders.Where(x => x.IsDeleted == false).ToList();
+
+                itemList = (from at in AllSliders
+                            select
+                                 new TMenu
+                                 {
+                                     text = at.Name,
+                                     id = at.Id.ToString() + "-slider"
+                                 }
+                            ).ToList();
+            }
+            string json = JsonConvert.SerializeObject(itemList);
             return json;
         }
     }

@@ -118,7 +118,7 @@ namespace NITASA.Areas.Admin.Controllers
 
             cont.Description = Model.Description;
             cont.GUID = Functions.GetRandomGUID();
-            cont.URL = "";
+            cont.URL = Model.URL;
             cont.IsSlugEdited = false;
             cont.IsFeatured = false;
             cont.ContentOrder = Model.ContentOrder;
@@ -210,6 +210,7 @@ namespace NITASA.Areas.Admin.Controllers
                     {
                         content.Type = Model.Type;
                         content.Title = Model.Title;
+                        content.URL = Model.URL;
                         content.Description = Model.Description.Replace("<img src=\"../../../", "<img src=\"../../");
                         content.ContentOrder = Model.ContentOrder;
                         content.ModifiedOn = DateTime.Now;
@@ -298,7 +299,46 @@ namespace NITASA.Areas.Admin.Controllers
             return RedirectToAction("List");
         }
 
-
+        public class Addonlayout
+        {
+            [AllowHtml]
+            public string AddonMasterLayout { get; set; }
+            [AllowHtml]
+            public string AddonSubLayout { get; set; }
+        }
+        [HttpPost]
+        public ActionResult UpdateAddonLayout(string addonguid, Addonlayout model)
+        {
+            Content addon = context.Content.Where(x => x.GUID == addonguid).FirstOrDefault();
+            if (addon != null)
+            {
+                context.Content.Where(x => x.Type == addon.Type).ToList().ForEach(x =>
+                    {
+                        x.AddonMasterLayout = model.AddonMasterLayout;
+                        x.AddonSubLayout = model.AddonSubLayout;
+                    }
+                );
+                context.SaveChanges();
+                TempData["SuccessMessage"] = "Addon layout updated successfully.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Addon not found.";
+            }
+            return RedirectToAction("List");
+        }
+        [HttpGet]
+        public JsonResult GetAddonLayout(string addonguid)
+        {
+            var addon = context.Content.Where(m => m.GUID == addonguid).FirstOrDefault();
+            string AddonMasterLayout = addon.AddonMasterLayout;
+            if (string.IsNullOrEmpty(AddonMasterLayout))
+                AddonMasterLayout = "{{SubLayout}}";
+            string AddonSubLayout = addon.AddonSubLayout;
+            if (string.IsNullOrEmpty(AddonSubLayout))
+                AddonSubLayout = "{{Items}}";
+            return Json(new { MasterLayout = AddonMasterLayout, SubLayout = AddonSubLayout }, JsonRequestBehavior.AllowGet);
+        }
         [HttpGet]
         public JsonResult GetAddonNames(string term)
         {

@@ -10,7 +10,8 @@
     {
         ViewBag.Title = "Update Page";
     }
-    string Addons = Functions.GetAddons();    
+    string Addons = Functions.GetAddons();
+    string Sliders = Functions.GetSliders();
 }
 @section PageLevelStyles{
     <style type="text/css">
@@ -81,7 +82,7 @@
                 "insertdatetime nonbreaking save table contextmenu directionality",
                 "emoticons template paste textcolor colorpicker textpattern "
             ],
-            toolbar1: "undo redo | styleselect | forecolor backcolor | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link | Variables | mediaimages | code | Addons",
+            toolbar1: "undo redo | styleselect | forecolor backcolor | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link | Variables | mediaimages | code | Addons | Sliders",
             image_advtab: false,
             extended_valid_elements: $ext,
             force_br_newlines: false,
@@ -93,6 +94,12 @@
                     type: 'menubutton',
                     icon: false,
                     menu: @Html.Raw(Addons)
+                });
+                editor.addButton('Sliders', {
+                    text: 'Sliders',
+                    type: 'menubutton',
+                    icon: false,
+                    menu: @Html.Raw(Sliders)
                 });
                 editor.addButton('mediaimages', {
                     text: '',
@@ -205,8 +212,11 @@
                                                 <input type="submit" id="btnPublish" class="btn btn-small btn-green 1" style="text-align: right"
                                                        value="Publish" />
                                             }&nbsp;
-                                            <input type="submit" id="btnDraft" class="btn btn-small btn-blue" style="text-align: right"
-                                                   value="Save to Draft" />&nbsp;
+                                            @if (@Model != null && Model.Title.ToLower() != "index")
+                                            { 
+                                                <input type="submit" id="btnDraft" class="btn btn-small btn-blue" style="text-align: right"
+                                                    value="Save to Draft" />&nbsp;
+                                            }
                                             <input type="button" class="btn btn-small btn-red" style="text-align: right" value="Back"
                                                    onclick="window.location = '/Admin/Page/List';" />
                                         </div>
@@ -268,17 +278,24 @@
         $(document).ready(function () {
             $("body").delegate(".mce-menu-item", "click", function () {
                 var did= $(this).attr("id");
-                if(did.indexOf('mceu')==-1){                    
+                if(did.indexOf('slider')>0){
+                    var id = $(this).attr("id").replace("-slider","");
+                    var name = $("#"+did+"-text").text();
+                    tinyMCE.activeEditor.execCommand('mceInsertContent', false, "&lt;Slider name=\"" + name + "\"&gt;" + id+ "&lt;/Slider&gt;");
+                }
+                else if(did.indexOf('mceu')==-1){                    
                     if(did.indexOf('tinyAll')!=-1){
                         $(this).parent().find(".mce-menu-item").each(function( i ) {
                             var id = $(this).attr("id");
                             if (id.indexOf('tinyAll')==-1) {
                                 var name = $("#"+id+"-text").text();
+                                id = $(this).attr("id").replace("-addon","");;
                                 tinyMCE.activeEditor.execCommand('mceInsertContent', false, "&lt;Addon name=\"" + name + "\"&gt;" + id+ "&lt;/Addon&gt;");
                             }
                         });
                     }
                     else{
+                        var id = $(this).attr("id").replace("-addon","");
                         var name = $("#"+did+"-text").text();
                         tinyMCE.activeEditor.execCommand('mceInsertContent', false, "&lt;Addon name=\"" + name + "\"&gt;" + did+ "&lt;/Addon&gt;");
                     }
