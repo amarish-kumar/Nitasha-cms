@@ -9,10 +9,10 @@ namespace NITASA.ViewModels
 {
     public class CL_Slide
 	{
-        public int Image { get; set; }
-        public int Title { get; set; }
-        public int Text { get; set; }
-        public int Link { get; set; }
+        public string Image { get; set; }
+        public string Title { get; set; }
+        public string Text { get; set; }
+        public string Link { get; set; }
         public int DisplayOrder { get; set; }
 	}
 }

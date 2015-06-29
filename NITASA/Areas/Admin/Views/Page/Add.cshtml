@@ -297,7 +297,7 @@
                     else{
                         var id = $(this).attr("id").replace("-addon","");
                         var name = $("#"+did+"-text").text();
-                        tinyMCE.activeEditor.execCommand('mceInsertContent', false, "&lt;Addon name=\"" + name + "\"&gt;" + did+ "&lt;/Addon&gt;");
+                        tinyMCE.activeEditor.execCommand('mceInsertContent', false, "&lt;Addon name=\"" + name + "\"&gt;" + id+ "&lt;/Addon&gt;");
                     }
                 }
             });

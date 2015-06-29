@@ -315,7 +315,7 @@ namespace NITASA.Areas.Admin.Controllers
                 string AddonMasterLayout = model.AddonMasterLayout;
                 string AddonSubLayout = model.AddonSubLayout;
 
-                AddonMasterLayout = (string.IsNullOrEmpty(AddonMasterLayout) || !AddonMasterLayout.ToLower().Contains("{{subLayout}}")) ? AddonMasterLayout + "{{SubLayout}}" : AddonMasterLayout;
+                AddonMasterLayout = (string.IsNullOrEmpty(AddonMasterLayout) || !AddonMasterLayout.ToLower().Contains("{{sublayout}}")) ? AddonMasterLayout + "{{SubLayout}}" : AddonMasterLayout;
                 AddonSubLayout = (string.IsNullOrEmpty(AddonSubLayout) || !AddonSubLayout.ToLower().Contains("{{description}}")) ? AddonSubLayout + "{{Description}}" : AddonSubLayout;
                 
                 context.Content.Where(x => x.Type == addon.Type).ToList().ForEach(x =>
@@ -339,15 +339,15 @@ namespace NITASA.Areas.Admin.Controllers
             var addon = context.Content.Where(m => m.GUID == addonguid).FirstOrDefault();
             
             string AddonMasterLayout = addon.AddonMasterLayout;
-            if (string.IsNullOrEmpty(AddonMasterLayout) || !AddonMasterLayout.ToLower().Contains("{{subLayout}}"))
-                AddonMasterLayout = "{{SubLayout}}";
+            if (string.IsNullOrEmpty(AddonMasterLayout) || !AddonMasterLayout.ToLower().Contains("{{sublayout}}"))
+                AddonMasterLayout = AddonMasterLayout+"{{SubLayout}}";
 
             string AddonSubLayout = addon.AddonSubLayout;
             if (string.IsNullOrEmpty(AddonSubLayout))
                 AddonSubLayout = "{{Title}} {{Description}} {{URL}}";
 
             if (!AddonSubLayout.ToLower().Contains("{{description}}"))
-                AddonSubLayout = "{{Description}}";
+                AddonSubLayout = AddonSubLayout+"{{Description}}";
 
             return Json(new { MasterLayout = AddonMasterLayout, SubLayout = AddonSubLayout }, JsonRequestBehavior.AllowGet);
         }
