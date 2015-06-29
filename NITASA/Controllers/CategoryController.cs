@@ -12,6 +12,7 @@ namespace NITASA.Controllers
         // GET: /Category/
         public ActionResult Details()
         {
+            
             return View();
         }
 	}

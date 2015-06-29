@@ -7,7 +7,7 @@ using System.Web;
 
 namespace NITASA.ViewModels
 {
-    public class Slide
+    public class CL_Slide
 	{
         public int Image { get; set; }
         public int Title { get; set; }

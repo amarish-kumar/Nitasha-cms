@@ -14,7 +14,6 @@ namespace NITASA.Controllers
         {
             activeTheme = "/Views/themes/" + Request.RequestContext.HttpContext.Application["CurrentTheme"].ToString() + "/";
             ViewBag.ActiveTheme = activeTheme;
-
             base.OnActionExecuting(filterContext);
         }
 	}

@@ -81,8 +81,7 @@
 
 @helper RenderButtons(Content item)
 {
-    if (item.Title.ToLower()!="index")
-    { 
+     
         if (Functions.CurrentUserID() == item.AddedBy)
         {
             if (UserRights.HasRights(Rights.EditOwnPages))
@@ -97,6 +96,8 @@
                 @Html.ActionLink("Edit", "Add", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
             }
         }
+    if (item.Title.ToLower()!="index")
+    {
         if (Functions.CurrentUserID() == item.AddedBy)
         {
             if (UserRights.HasRights(Rights.DeleteOwnPages))

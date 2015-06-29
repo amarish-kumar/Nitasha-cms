@@ -312,10 +312,16 @@ namespace NITASA.Areas.Admin.Controllers
             Content addon = context.Content.Where(x => x.GUID == addonguid).FirstOrDefault();
             if (addon != null)
             {
+                string AddonMasterLayout = model.AddonMasterLayout;
+                string AddonSubLayout = model.AddonSubLayout;
+
+                AddonMasterLayout = (string.IsNullOrEmpty(AddonMasterLayout) || !AddonMasterLayout.ToLower().Contains("{{subLayout}}")) ? AddonMasterLayout + "{{SubLayout}}" : AddonMasterLayout;
+                AddonSubLayout = (string.IsNullOrEmpty(AddonSubLayout) || !AddonSubLayout.ToLower().Contains("{{description}}")) ? AddonSubLayout + "{{Description}}" : AddonSubLayout;
+                
                 context.Content.Where(x => x.Type == addon.Type).ToList().ForEach(x =>
                     {
-                        x.AddonMasterLayout = model.AddonMasterLayout;
-                        x.AddonSubLayout = model.AddonSubLayout;
+                        x.AddonMasterLayout = AddonMasterLayout;
+                        x.AddonSubLayout = AddonSubLayout;
                     }
                 );
                 context.SaveChanges();
@@ -331,12 +337,18 @@ namespace NITASA.Areas.Admin.Controllers
         public JsonResult GetAddonLayout(string addonguid)
         {
             var addon = context.Content.Where(m => m.GUID == addonguid).FirstOrDefault();
+            
             string AddonMasterLayout = addon.AddonMasterLayout;
-            if (string.IsNullOrEmpty(AddonMasterLayout))
+            if (string.IsNullOrEmpty(AddonMasterLayout) || !AddonMasterLayout.ToLower().Contains("{{subLayout}}"))
                 AddonMasterLayout = "{{SubLayout}}";
+
             string AddonSubLayout = addon.AddonSubLayout;
             if (string.IsNullOrEmpty(AddonSubLayout))
-                AddonSubLayout = "{{Items}}";
+                AddonSubLayout = "{{Title}} {{Description}} {{URL}}";
+
+            if (!AddonSubLayout.ToLower().Contains("{{description}}"))
+                AddonSubLayout = "{{Description}}";
+
             return Json(new { MasterLayout = AddonMasterLayout, SubLayout = AddonSubLayout }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]

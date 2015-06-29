@@ -48,7 +48,7 @@ namespace NITASA.Areas.Admin.Controllers
             if (!UserRights.HasRights(Rights.CreateNewPosts))
                 return RedirectToAction("AccessDenied", "Home");
 
-            ViewBag.Labellist = new SelectList(context.Label.ToList(), "ID", "Name");
+            ViewBag.Labellist = new SelectList(context.Label.Where(x=>x.IsDeleted==false).ToList(), "ID", "Name");
             ViewBag.Categorylist = new SelectList(context.Category.Where(m => m.IsDeleted == false).ToList(), "ID", "Name");
 
             return View();
@@ -85,7 +85,7 @@ namespace NITASA.Areas.Admin.Controllers
                     TempData["ErrorMessage"] = "Please enter post content";
                 }
             }
-            ViewBag.Labellist = new SelectList(context.Label.ToList(), "ID", "Name");
+            ViewBag.Labellist = new SelectList(context.Label.Where(x => x.IsDeleted == false).ToList(), "ID", "Name");
             ViewBag.Categorylist = new SelectList(context.Category.Where(m => m.IsDeleted == false).ToList(), "ID", "Name");
 
             return View(content);
@@ -273,7 +273,7 @@ namespace NITASA.Areas.Admin.Controllers
 
                 curCont.Description= curCont.Description.Replace("<img src=\"../../", "<img src=\"../../../");
 
-                List<SelectListItem> Labellist = new SelectList(context.Label.ToList(), "ID", "Name").ToList();
+                List<SelectListItem> Labellist = new SelectList(context.Label.Where(x => x.IsDeleted == false).ToList(), "ID", "Name").ToList();
                 List<string> selectedLabel = (from dt in context.ContentLabel.Where(m => m.ContentID == curCont.ID)
                                               select dt.LabelID.ToString()).ToList();
 
