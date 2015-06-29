@@ -244,12 +244,13 @@ namespace NITASA.Areas.Admin.Controllers
                     }
                 }
             }
-            if (autoid > 1)
-            {
-                TempData["MenuMessage"] = "Menu saved successfully";
-            }
-            else
-                TempData["MenuError"] = "oops, there seems to be some problem please try again.";
+            //if (autoid > 1)
+            //{
+            //    TempData["MenuMessage"] = "Menu saved successfully";
+            //}
+            //else
+            //    TempData["MenuError"] = "oops, there seems to be some problem please try again.";
+            TempData["MenuMessage"] = "Menu saved successfully";
             return Json("");
         }
 
