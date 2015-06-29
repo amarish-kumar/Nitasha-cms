@@ -202,22 +202,22 @@
                                                 <input type="submit" id="btnPublish" class="btn btn-small btn-green 3" style="text-align: right"
                                                        value="Publish" />
                                             }
-                                            else if (@Model != null && Functions.CurrentUserID() == @Model.content.AddedBy)
+                                            else if (Model != null && Functions.CurrentUserID() == Model.content.AddedBy)
                                             {
                                                 <input type="submit" id="btnPublish" class="btn btn-small btn-green 2" style="text-align: right"
                                                        value="Publish" />
                                             }
-                                            else if (@Model != null && Functions.CurrentUserID() != @Model.content.AddedBy)
+                                            else if (Model != null && Functions.CurrentUserID() != Model.content.AddedBy)
                                             {
                                                 <input type="submit" id="btnPublish" class="btn btn-small btn-green 1" style="text-align: right"
                                                        value="Publish" />
-                                            }&nbsp;
-                                            @if (@Model != null && Model.Title.ToLower() != "index")
-                                            { 
-                                                <input type="submit" id="btnDraft" class="btn btn-small btn-blue" style="text-align: right"
-                                                    value="Save to Draft" />&nbsp;
                                             }
-                                            <input type="button" class="btn btn-small btn-red" style="text-align: right" value="Back"
+                                            @if (Model == null  || (Model != null && Model.content.Title.ToLower() != "index"))
+                                            {
+                                                <input type="submit" id="btnDraft" class="btn btn-small btn-blue" style="text-align: right"
+                                                    value="Save to Draft" />
+                                            }
+                                            &nbsp;<input type="button" class="btn btn-small btn-red" style="text-align: right" value="Back"
                                                    onclick="window.location = '/Admin/Page/List';" />
                                         </div>
                                         <div class="box">
