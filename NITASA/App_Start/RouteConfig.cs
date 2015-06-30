@@ -18,29 +18,37 @@ namespace NITASA
                 "NotFound",
                 new { controller = "Home", action = "NotFound" },
                 new[] { "NITASA.Controllers" }
-           );
-
+            );
             routes.MapRoute(
                 "_Search",
-                "Search/Results/{text}",
-                new { controller = "Search", action = "Results" },
+                "Search/{text}",
+                new { controller = "Search", action = "Results", text = UrlParameter.Optional },
                 new[] { "NITASA.Controllers" }
             );
-
             routes.MapRoute(
-                "_Single",
-                "Content/Details/{contentURL}",
-                new { controller = "Content", action = "Details", contentURL = UrlParameter.Optional },
+                "_Content",
+                "Content/{URL}",
+                new { controller = "Content", action = "Details", URL = UrlParameter.Optional },
                 new[] { "NITASA.Controllers" }
             );
-
+            routes.MapRoute(
+              "_Category",
+              "Category/{URL}",
+              new { controller = "Category", action = "List", URL = UrlParameter.Optional },
+              new[] { "NITASA.Controllers" }
+            );
+            routes.MapRoute(
+              "_Label",
+              "Label/{URL}",
+              new { controller = "Label", action = "List", URL = UrlParameter.Optional },
+              new[] { "NITASA.Controllers" }
+            );
             routes.MapRoute(
                 "Default",
                 "{controller}/{action}/{id}",
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional },
                 new[] { "NITASA.Controllers" }
             );
-
         }
     }
 }

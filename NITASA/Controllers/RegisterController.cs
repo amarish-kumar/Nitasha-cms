@@ -34,7 +34,7 @@ namespace NITASA.Controllers
                     try
                     {
                         NITASA.Data.User user = new Data.User();
-                        user.GUID = Functions.GetRandomGUID();
+                        user.GUID = NITASA.Areas.Admin.Helper.Functions.GetRandomGUID();
                         user.FirstName = model.FirstName;
                         user.LastName = model.LastName;
                         user.Email = model.UserEmail;

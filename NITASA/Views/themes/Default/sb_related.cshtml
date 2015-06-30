@@ -1,19 +1,27 @@
-<h6 class="sidebartitle">RELATED POSTS</h6>
-			<p>
-				7 Oct 2013
-			</p>
-			<p>
-				Many pieces were proposed, but none seemed suitable, because each one wished to play a good and suitable part ...
-			</p>
-			<p>
-				6 Sept 2013
-			</p>
-			<p>
-				It was ready for production, when through accident we were disappointed about securing the private theatre on ...
-			</p>
-			<p>
-				4 Aug 2013
-			</p>
-			<p>
-				The over-kind praise which it won encouraged me to have the play printed. I decided, as I could see no other prospects...
-			</p>
+@model string
+@using NITASA.ViewModels
+@{
+    CL_WidgetOption wOption = NITASA.Helpers.Functions.ParseJson<CL_WidgetOption>(Model);
+    int contentID = 0;
+    if (ViewBag.ContentID != null)
+    {
+        contentID = ViewBag.ContentID;
+    }
+    List<CL_Content> RecentViewPosts = NITASA.Helpers.Functions.GetRelatedPosts(contentID,wOption.Count);
+}
+
+@if (RecentViewPosts.Count() > 0)
+{
+    <h6 class="sidebartitle">@wOption.Title</h6>
+    foreach (var item in RecentViewPosts)
+    {
+        <p>
+            @NITASA.Helpers.Functions.FormatDate(item.PublishedOn, "dd MMM yyyy")
+        </p>
+        <p>
+            @{string Description = NITASA.Helpers.Functions.RemoveHTMLTags(item.Description);}
+            @(Description.Length > 110 ? Description.Substring(0, 110) + "..." : Description)
+        </p>
+    }
+    <br class="clear" />
+}

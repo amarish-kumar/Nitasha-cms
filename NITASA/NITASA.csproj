@@ -229,11 +229,17 @@
     </Compile>
     <Compile Include="Helpers\AllAction.cs" />
     <Compile Include="Areas\Admin\Helper\UserRights.cs" />
-    <Compile Include="Helpers\Helper.cs" />
+    <Compile Include="Helpers\Functions.cs" />
     <Compile Include="Helpers\Imager.cs" />
     <Compile Include="Helpers\SortingPaging.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\CL_Category.cs" />
+    <Compile Include="ViewModels\CL_Comments.cs" />
+    <Compile Include="ViewModels\CL_Label.cs" />
+    <Compile Include="ViewModels\CL_Menu.cs" />
+    <Compile Include="ViewModels\CL_Content.cs" />
     <Compile Include="ViewModels\CL_Slide.cs" />
+    <Compile Include="ViewModels\CL_Widget.cs" />
     <Compile Include="ViewModels\Install.cs" />
     <Compile Include="ViewModels\Register.cs" />
   </ItemGroup>

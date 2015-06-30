@@ -1,55 +1,68 @@
+@model NITASA.ViewModels.CL_Content
 @{
-    string currentThemeName = Convert.ToString(ViewBag.ActiveTheme);
+    string currentThemeName = ViewBag.ActiveTheme;
     Layout = currentThemeName + "master.cshtml";
 }
-<div class="eight columns">
-    <div class="sectiontitle">
-        <h4>The Dower Farm</h4>
-    </div>
-    <p>
-        <img src="images/temp/post.jpg" class="blogimage grayscale" alt="">
-    </p>
-    <p>
-        Mrs. Delorane had died of decline: people would say to one another, in confidence, they hoped Ellin might escape it. The largest and <b>best farm</b> in the neighbourhood of Timberdale, larger than even that of the Ashtons, was called the Dower Farm.
-    </p>
-    <p>
-        Out-of-doors he was the keen, active, thorough farmer; indoors he lived as a gentleman. He had four children: three boys and one girl. Nothing must prevent her journey upon the desert!
-    </p>
-    <p>
-        From her window she looked out toward it, so wonderful, so superb, so exquisite, weird and beautiful. Exactly, she told herself, like a big, black smudge.
-    </p>
-    <p>
-        But she cuddled in bed with one knee up to her neck in cute boyish fashion, laughing softly at the remembrance of another time when she had popped a cigarette stump into the eye of a London bobby from the top of a bus.
-    </p>
-    <p>
-        And such a merry fight as she had put up when he had yanked her down! She was wearing her usual boy's clothes and when she had given her real name at the station, the policeman wouldn't believe it of her and the matron had resigned rather than carry the investigation further.
-    </p><br />
-    <div class="panel">
-        <div class="avatar">
-            <img src="images/temp/author1.png" alt="">
+
+<div id="subheader">
+    <div class="row">
+        <div class="eight columns">
+            <p class="bread leftalign">
+                @Model.Title
+            </p>
         </div>
-        <h5 class="left">AUTHOR: Jane Sanders </h5>
-        <div class="right">
-            <div class="social facebook">
-                <a href="#"></a>
-            </div>
-            <div class="social twitter">
-                <a href="#"></a>
-            </div>
-            <div class="social deviantart">
-                <a href="#"></a>
-            </div>
-            <div class="social flickr">
-                <a href="#"></a>
-            </div>
-            <div class="social dribbble">
-                <a href="#"></a>
-            </div>
+        <div class="four columns">
+            @Html.Partial("~" + currentThemeName + "/search_form.cshtml")
         </div>
-        <p class="clear authortext">
-            Jane is a professional photographer working for SLC. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum. <a href="#">Browse more articles</a> by this author.<br />
-        </p>
     </div>
-    @Html.Partial("~" + currentThemeName + "/commentslist.cshtml")
-    @Html.Partial("~" + currentThemeName + "/commentform.cshtml")
 </div>
+<div class="hr">
+</div>
+
+@if (Model.Type == "page")
+{
+    @Html.Raw(Model.Description) 
+}
+else if(Model.Type=="post")
+{
+    <div class="row">
+	<div class="twelve columns noleftmargin">
+	     <!-- MAIN CONTENT -->
+		<div class="eight columns">
+	        @Html.Raw(Model.Description) 		
+
+            @Html.Partial("~" + currentThemeName + "/commentslist.cshtml", Model.Comments)
+
+            @if (Model.Comments.Count()==0)
+            { 
+                <h5>No Comments !!! be first to write comment.</h5>
+            }
+            
+            @if (Model.PostCommentEnable && DateTime.Now < Model.PublishedOn.AddDays(Model.PostCommentEnabledTill))
+            {
+                if (Session["CommentBy"] == null)
+                {
+                    <span>Sign in to write comment. </span>
+                    <div style="margin-top: 20px;">
+                        <a href="@Url.Action("Index", "OpenID", new { Areas = "", signInWith = "google" })" class="pull-left">
+                            <img src="https://developers.google.com/accounts/images/sign-in-with-google.png"
+                                style="height: 41px; margin-top: -5px; margin-right: 20px;" alt="Sign in with Google" /></a>
+                        <a href="@Url.Action("Index", "OpenID", new { Areas = "", signInWith = "yahoo" })"  class="pull-left">
+                            <img src="https://s.yimg.com/zz/combo?oo/oib/y-open-id-button-1.png" style="height: 34px;"
+                                alt="Sign in with Yahoo" /></a>
+                    </div>
+                }
+                else
+                { 
+                    @Html.Partial("~" + currentThemeName + "/commentform.cshtml")
+                }
+            }
+		</div>
+		 <!-- SIDEBAR -->
+		@Html.Partial("~" + currentThemeName + "/sidebar.cshtml")
+	</div>
+</div>
+<div class="hr">
+</div> 
+    
+}

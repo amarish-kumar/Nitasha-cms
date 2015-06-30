@@ -1,1 +1,21 @@
-<h6 class="sidebartitle">RECENT COMMENTS</h6>			<div class="avatar">                <img src="/views/default/images/temp/author1.png" alt="">			</div>			<p>				 Many pieces were proposed, but none seemed suitable, because each one wished to play a good ...			</p>			<div class="avatar">                <img src="/views/default/images/temp/author2.png" alt="">			</div>			<p>				 Many pieces were proposed, but none seemed suitable, because each one wished to play a good ...			</p>			<div class="avatar">                <img src="/views/default/images/temp/author3.png" alt="">			</div>			<p>				 Many pieces were proposed, but none seemed suitable, because each one wished to play a good ...			</p>			<br class="clear"/>
+@model string
+@using NITASA.ViewModels
+@{
+    CL_WidgetOption wOption = NITASA.Helpers.Functions.ParseJson<CL_WidgetOption>(Model);
+    List<CL_Comments> Comments = NITASA.Helpers.Functions.GetRecentComments(wOption.Count);
+}
+
+@if (Comments.Count() > 0)
+{
+    <h6 class="sidebartitle">@wOption.Title</h6>
+    foreach (var item in Comments)
+    {
+        <div class="avatar">
+                <img src="@item.ProfilePicUrl" alt="">
+			</div>
+			<p>
+				 @(item.Description.Length > 95 ? item.Description.Substring(0, 95) + "..." : item.Description)
+			</p>
+    }
+    <br class="clear" />
+}

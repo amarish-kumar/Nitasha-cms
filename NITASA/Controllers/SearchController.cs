@@ -10,7 +10,7 @@ namespace NITASA.Controllers
     {
         //
         // GET: /Search/
-        public ActionResult Results()
+        public ActionResult Results(string text)
         {
             return View();
         }

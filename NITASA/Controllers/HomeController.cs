@@ -44,7 +44,7 @@ namespace NITASA.Controllers
                         List<CL_Slide> slides = context.Slides.Where(x => x.SliderId == sliderid).Select(x =>
                             new CL_Slide { Image = x.Image, Link = x.Link, Text = x.Text, Title = x.Title, DisplayOrder = x.DisplayOrder }
                             ).ToList();
-                        HTMLSlider = RenderRazorViewToString(this.ControllerContext, activeTheme + "slider.cshtml", slides);
+                        HTMLSlider = Functions.RenderRazorViewToString(this.ControllerContext, activeTheme + "slider.cshtml", slides);
                     }
                     //HtmlAgilityPack.HtmlNode newNode = HtmlAgilityPack.HtmlNode.CreateNode(HTMLSlider);
                     //item.ParentNode.ReplaceChild(newNode, item);
@@ -53,7 +53,6 @@ namespace NITASA.Controllers
                     newNode.Attributes.Add("class", "divNTS");
                     newNode.InnerHtml = HTMLSlider;
                     item.ParentNode.ReplaceChild(newNode, item);
-                    //string temp = doc.DocumentNode.OuterHtml;
                 }
             }
             string HTMLContent = doc.DocumentNode.OuterHtml;
@@ -66,13 +65,13 @@ namespace NITASA.Controllers
                     int addonid = 0;
                     if (Int32.TryParse(item.InnerText, out addonid))
                     {
-                        Content addon = context.Content.Where(x => x.ID == addonid).FirstOrDefault();
+                        Content addon = context.Content.Where(x => x.ID == addonid && x.isPublished == true && x.IsDeleted == false).FirstOrDefault();
                         if (addon != null)
                         {
                             //string MasterLayout = addon.AddonMasterLayout;
                             HTMLAddon = addon.AddonSubLayout;
                             HTMLAddon = HTMLAddon.Replace("{{Title}}", addon.Title);
-                            HTMLAddon = HTMLAddon.Replace("{{URL}}", addon.URL);
+                            HTMLAddon = HTMLAddon.Replace("{{URL}}", (string.IsNullOrEmpty(addon.URL) ? "#" : addon.URL));
                             HTMLAddon = HTMLAddon.Replace("{{Description}}", addon.Description);
                         }
                     }
@@ -81,31 +80,31 @@ namespace NITASA.Controllers
                 }
             }
             HTMLContent = doc.DocumentNode.OuterHtml;
-            HTMLContent = HTMLContent.Replace("<div class=\"divNTS\">", "");
-            HTMLContent =HTMLContent.Substring(0,HTMLContent.LastIndexOf("</div>"));
-            ViewBag.HTMLContent = HTMLContent;
-            return View(activeTheme + "index.cshtml");
-        }
-        public static String RenderRazorViewToString(ControllerContext controllerContext, String viewName, Object model)
-        {
-            if (!string.IsNullOrEmpty(viewName))
-            {
-                controllerContext.Controller.ViewData.Model = model;
+            //HTMLContent = HTMLContent.Replace("<div class=\"divNTS\">", "");
+            //HTMLContent =HTMLContent.Substring(0,HTMLContent.LastIndexOf("</div>"));
 
-                using (var sw = new StringWriter())
-                {
-                    var ViewResult = ViewEngines.Engines.FindPartialView(controllerContext, viewName);
-                    var ViewContext = new ViewContext(controllerContext, ViewResult.View, controllerContext.Controller.ViewData, controllerContext.Controller.TempData, sw);
-                    ViewResult.View.Render(ViewContext, sw);
-                    ViewResult.ViewEngine.ReleaseView(controllerContext, ViewResult.View);
-                    return sw.GetStringBuilder().ToString();
-                }
-            }
-            return "";
+            return View(viewName: activeTheme + "index.cshtml", model: HTMLContent);
         }
+        //public static String RenderRazorViewToString(ControllerContext controllerContext, String viewName, Object model)
+        //{
+        //    if (!string.IsNullOrEmpty(viewName))
+        //    {
+        //        controllerContext.Controller.ViewData.Model = model;
+
+        //        using (var sw = new StringWriter())
+        //        {
+        //            var ViewResult = ViewEngines.Engines.FindPartialView(controllerContext, viewName);
+        //            var ViewContext = new ViewContext(controllerContext, ViewResult.View, controllerContext.Controller.ViewData, controllerContext.Controller.TempData, sw);
+        //            ViewResult.View.Render(ViewContext, sw);
+        //            ViewResult.ViewEngine.ReleaseView(controllerContext, ViewResult.View);
+        //            return sw.GetStringBuilder().ToString();
+        //        }
+        //    }
+        //    return "";
+        //}
         public ActionResult NotFound()
         {
-            return View();
+            return View(viewName: activeTheme + "404.cshtml");
         }
     }
 }

@@ -405,6 +405,27 @@ namespace NITASA.Controllers
             gadget.IsActive = true;
             context.Widget.Add(gadget);
             context.SaveChanges();
+
+            gadget = new Widget();
+            gadget.Name = "Recent Comments";
+            gadget.Title = "Recent Comments";
+            gadget.GUID = Functions.GetRandomGUID();
+            gadget.Option = "{ \"title\": \"Recent Comments\",\"count\": 3,\"showthumb\": false }";
+            gadget.DisplayOrder = 6;
+            gadget.IsActive = true;
+            context.Widget.Add(gadget);
+            context.SaveChanges();
+
+            gadget = new Widget();
+            gadget.Name = "Page List";
+            gadget.Title = "Page List";
+            gadget.GUID = Functions.GetRandomGUID();
+            gadget.Option = "{ \"title\": \"Page List\",\"count\": 3,\"showthumb\": false }";
+            gadget.DisplayOrder = 6;
+            gadget.IsActive = true;
+            context.Widget.Add(gadget);
+            context.SaveChanges();
+
         }
     }
 }

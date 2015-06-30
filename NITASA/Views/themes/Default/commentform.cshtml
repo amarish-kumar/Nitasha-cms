@@ -1,6 +1,35 @@
 <h5>SPEAK YOUR MIND</h5>		
-			<input type="text" class="five smoothborder" placeholder="Your name *"/>			
-			<input type="text" class="five smoothborder" placeholder="E-mail address *"/>			
-			<input type="text" class="five smoothborder" placeholder="Website"/>			
-			<textarea class="six smoothborder" rows="7" placeholder="Comments *"></textarea>
-			<button type="submit" class="readmore">Publish</button>
+@using (Html.BeginForm("Post", "Single", FormMethod.Post, new { id = "comment-form" }))
+{
+    @Html.AntiForgeryToken()
+	<input type="text" class="five smoothborder" placeholder="Your name *" value="@Session["CommentBy"]" readonly="readonly"/>
+	@*<input type="text" class="five smoothborder" placeholder="E-mail address *"/>
+	<input type="text" class="five smoothborder" placeholder="Website"/>*@
+    <textarea id="CommentDescription" name="CommentDescription" class="six smoothborder " rows="7" placeholder="Comments *"></textarea>
+    <button type="submit" class="readmore" onclick="validate()">Publish</button>
+}
+
+<script>
+    function validate() {
+        var element = document.getElementById("CommentDescription");
+        if (!element.value) {
+            alert("Comment is required");
+            return false;
+        }
+        else {
+            document.getElementById("comment-form").submit();
+        }
+    }
+    @if (TempData["comment-added"] != null && (bool)TempData["comment-added"] == true)
+    {
+        @: alert("Your comment is added. we will review and it add. :)");
+    }
+    @if (TempData["comment-flagged"] != null && (bool)TempData["comment-flagged"] == true)
+    {
+        @: alert("Comment is Flagged. We will review. :)");
+    }
+    @if (TempData["comment-error"] != null)
+    {
+        @: alert("@((String)TempData["comment-error"])");
+    }
+</script>

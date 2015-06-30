@@ -1,12 +1,17 @@
-<h6 class="sidebartitle">PAGE LIST</h6>
-			<a href="#" class="tags">Photography</a>
-			<a href="#" class="tags">Vintage</a>
-			<a href="#" class="tags">Nature</a>
-			<a href="#" class="tags">Design</a>
-			<a href="#" class="tags">Printing</a>
-			<a href="#" class="tags">Contemporary</a>
-			<a href="#" class="tags">Classic</a>
-			<a href="#" class="tags">Elegant</a>
-			<a href="#" class="tags">Graphics</a>
-			<br class="clear"/>
-			<br/><br/>
+@model string
+@using NITASA.ViewModels
+@{
+    CL_WidgetOption wOption = NITASA.Helpers.Functions.ParseJson<CL_WidgetOption>(Model);
+    List<NITASA.ViewModels.CL_Content> pages = NITASA.Helpers.Functions.GetPages(wOption.Count);
+}
+
+@if (pages.Count() > 0)
+{
+
+    <h6 class="sidebartitle">PAGE LIST</h6>
+    foreach (var item in pages)
+    {
+        <a href="@(string.IsNullOrEmpty(item.URL) ? "#" : "/Content/" + item.URL)" class="tags">@item.Title</a>
+    }
+	<br class="clear"/>
+}
