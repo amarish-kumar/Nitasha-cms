@@ -34,6 +34,10 @@ namespace NITASA.Areas.Admin.ViewModels
         [DefaultValue(10)]
         public string ShowNoOfLastPostsAtHome { get; set; }
 
+        [Display(Name = "Show # of post on category, label and search listing")]
+        [DefaultValue(10)]
+        public int ListingPostsPageSize { get; set; }
+
         [Display(Name = "Facebook URL")]
         public string FacebookURL { get; set; }
 

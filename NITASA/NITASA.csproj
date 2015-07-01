@@ -185,7 +185,6 @@
     <Compile Include="Areas\Admin\Controllers\LabelController.cs" />
     <Compile Include="Areas\Admin\Controllers\MediaController.cs" />
     <Compile Include="Areas\Admin\Controllers\MenusController.cs" />
-    <Compile Include="Areas\Admin\Controllers\OpenIDController.cs" />
     <Compile Include="Areas\Admin\Controllers\PageController.cs" />
     <Compile Include="Areas\Admin\Controllers\PostController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProfileController.cs" />
@@ -238,6 +237,7 @@
     <Compile Include="ViewModels\CL_Label.cs" />
     <Compile Include="ViewModels\CL_Menu.cs" />
     <Compile Include="ViewModels\CL_Content.cs" />
+    <Compile Include="ViewModels\CL_SearchResult.cs" />
     <Compile Include="ViewModels\CL_Slide.cs" />
     <Compile Include="ViewModels\CL_Widget.cs" />
     <Compile Include="ViewModels\Install.cs" />
@@ -271,12 +271,10 @@
     <Content Include="Areas\Admin\assets\images\bg.png" />
     <Content Include="Areas\Admin\assets\images\blue.png" />
     <Content Include="Areas\Admin\assets\images\delete.png" />
-    <Content Include="Areas\Admin\assets\images\header-bg-.png" />
     <Content Include="Areas\Admin\assets\images\ie-spacer.gif" />
     <Content Include="Areas\Admin\assets\images\loader-big.gif" />
     <Content Include="Areas\Admin\assets\images\loading.gif" />
     <Content Include="Areas\Admin\assets\images\logo.png" />
-    <Content Include="Areas\Admin\assets\images\logo1.png" />
     <Content Include="Areas\Admin\assets\js\application-min.js" />
     <Content Include="Areas\Admin\assets\js\application.js" />
     <Content Include="Areas\Admin\assets\js\bootstrap-timepicker.js" />
@@ -645,7 +643,6 @@
     <Content Include="Views\Register\Users.cshtml" />
     <Content Include="Views\themes\Default\404.cshtml" />
     <Content Include="Views\themes\Default\500.cshtml" />
-    <Content Include="Views\themes\Default\archive.cshtml" />
     <Content Include="Views\themes\Default\category.cshtml" />
     <Content Include="Views\themes\Default\commentform.cshtml" />
     <Content Include="Views\themes\Default\commentslist.cshtml" />
@@ -678,14 +675,13 @@
     <Content Include="Views\themes\Default\master.cshtml" />
     <Content Include="Views\themes\Default\navigation.cshtml" />
     <Content Include="Views\themes\Default\pager.cshtml" />
-    <Content Include="Views\themes\Default\recentcomments.cshtml" />
     <Content Include="Views\themes\Default\sb_categories.cshtml" />
     <Content Include="Views\themes\Default\sb_labels.cshtml" />
     <Content Include="Views\themes\Default\sb_mostpopular.cshtml" />
     <Content Include="Views\themes\Default\sb_pagelist.cshtml" />
     <Content Include="Views\themes\Default\sb_pageview.cshtml" />
     <Content Include="Views\themes\Default\sb_recentcomments.cshtml" />
-    <Content Include="Views\themes\Default\sb_recentview.cshtml" />
+    <Content Include="Views\themes\Default\sb_recentposts.cshtml" />
     <Content Include="Views\themes\Default\sb_related.cshtml" />
     <Content Include="Views\themes\Default\search_form.cshtml" />
     <Content Include="Views\themes\Default\search_result.cshtml" />

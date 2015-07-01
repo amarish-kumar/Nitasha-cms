@@ -1,7 +1,10 @@
 @model string
+@using NITASA.Helpers
 @{
     string currentThemeName = ViewBag.ActiveTheme;
     Layout = currentThemeName + "/master.cshtml";
+    ViewBag.Title = Functions.GetSiteTitle();
+    //List<NITASA.ViewModels.CL_Content> posts = Functions.GetHomePagePosts();
 }
 
 @Html.Raw(Model)

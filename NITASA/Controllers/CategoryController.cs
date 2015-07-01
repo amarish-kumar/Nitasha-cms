@@ -13,13 +13,16 @@ namespace NITASA.Controllers
     public class CategoryController : AppController
     {
         public NTSDBContext context;
+        int PageSize = 0;
         public CategoryController()
         {
             this.context = new NTSDBContext();
         }
 
-        public ActionResult List(string URL)
+        public ActionResult List(string URL, Pager pager)
         {
+            PageSize = Functions.PageSize();
+
             Category category = context.Category.Where(x => x.Slug.ToLower() == URL.ToLower() && x.IsDeleted == false).FirstOrDefault();
 
             if (category == null)
@@ -27,31 +30,44 @@ namespace NITASA.Controllers
                 return RedirectToAction("NotFound", "Home");
             }
 
-            List<Content> PostList = context.ContentCategory.Include("Content").Where(x=> x.CategoryID == category.ID)
-            .Select(x=>x.Content).Where(x=>x.isPublished==true && x.IsDeleted==false).OrderByDescending(x=>x.PublishedOn).ToList();
+            IQueryable<Content> query = context.ContentCategory.Include("Content").Where(x => x.CategoryID == category.ID)
+            .Select(x => x.Content).Where(x => x.isPublished == true && x.IsDeleted == false);
 
-            List<CL_Content> Posts = PostList.Select(x =>
-                        new CL_Content
-                        {
-                            Title = x.Title,
-                            Description = x.Description,
-                            FeaturedImage = x.FeaturedImage,
-                            URL = x.URL,
-                            CoverContent = x.CoverContent,
-                            PublishedOn = (DateTime)x.PublishedOn,
-                            AddedBy = x.AddedBy,
-                            CommentsCount = context.Comment.Where(c => c.ContentID == c.ID && c.IsModerated == true && c.IsAbused == false).Count()
-                        }
-                    ).ToList();
+            if (pager.CurrentPageIndex == null || pager.PageSize== null || pager.PageCount == null) // first time
+            {
+                int totalRecords = query.Count();
+                int totalPage = (totalRecords / PageSize) + (totalRecords % PageSize == 0 ? 0 : 1);
+                pager = new Pager { PageSize = PageSize, CurrentPageIndex = 0, PageCount = totalPage, Controller = "Category", Action = "List" };
+            }
 
             CL_Category data = new CL_Category();
             data.Name = category.Name;
             data.Description = category.Description;
             data.ParentCategoryID = category.ParentCategoryID;
             data.URL = category.Slug;
-            data.Posts = Posts;
+            data.Posts = GetPosts(query,pager);
+            data.Pager = pager;
 
             return View(viewName: activeTheme + "category.cshtml", model: data);
         }
-	}
+
+        private List<CL_Content> GetPosts(IQueryable<Content> query, Pager pager)
+        {
+            List<Content> PostList = query.OrderByDescending(content => content.PublishedOn).Skip((int)pager.CurrentPageIndex * (int)pager.PageSize).Take((int)pager.PageSize).ToList();
+            List<CL_Content> Posts = PostList.Select(x =>
+                       new CL_Content
+                       {
+                           Title = x.Title,
+                           Description = x.Description,
+                           FeaturedImage = x.FeaturedImage,
+                           URL = x.URL,
+                           CoverContent = x.CoverContent,
+                           PublishedOn = (DateTime)x.PublishedOn,
+                           AddedBy = x.AddedBy,
+                           CommentsCount = context.Comment.Where(c => c.ContentID == c.ID && c.IsModerated == true && c.IsAbused == false).Count()
+                       }
+                   ).ToList();
+            return Posts;
+        }
+    }
 }

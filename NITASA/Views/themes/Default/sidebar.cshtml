@@ -6,11 +6,10 @@
 <div class="four columns">
     @foreach (var item in Widgets)
     {
-        //for (int gadgetCount = 0; gadgetCount < gadgets.Count; gadgetCount++)
         switch (item.WidgetID)
         {
             case 1:
-                @Html.Partial("~" + currentThemeName + "/sb_recentview.cshtml", item.Option)
+                @Html.Partial("~" + currentThemeName + "/sb_recentposts.cshtml", item.Option)
                 break;
             case 2:
                 @Html.Partial("~" + currentThemeName + "/sb_mostpopular.cshtml", item.Option)

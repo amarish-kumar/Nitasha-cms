@@ -3,6 +3,7 @@
 @{
     string currentThemeName = ViewBag.ActiveTheme;
     Layout = currentThemeName + "/master.cshtml";
+    ViewBag.Title = Model.Name;
 }
 <div id="subheader">
     <div class="row">
@@ -43,7 +44,12 @@
             }
             @if (Model.Posts.Count() > 0)
             {
-                @Html.Partial("~" + currentThemeName + "/pager.cshtml")
+                <br class="clear"/>
+                @Html.Partial("~" + currentThemeName + "/pager.cshtml", Model.Pager)
+            }
+            else
+            {
+                <h5>No post found...</h5>
             }
         </div>
         <!-- SIDEBAR -->

@@ -17,7 +17,89 @@ namespace NITASA.Helpers
             return new NTSDBContext();
         }
 
-        #region currenty in use
+        public static string GetSiteURL()
+        {
+            return "/home";
+        }
+
+        public static string GetSiteName()
+        {
+            var dbContext = getDbContextObject();
+            Setting SiteName = dbContext.Settings.FirstOrDefault(m => m.Name == "SiteName");
+            return ((SiteName == null) ? string.Empty : Convert.ToString(SiteName.Value));
+        }
+
+        public static string GetSiteTitle()
+        {
+            var dbContext = getDbContextObject();
+            Setting SiteTitle = dbContext.Settings.FirstOrDefault(m => m.Name == "SiteTitle");
+            return ((SiteTitle == null) ? string.Empty : Convert.ToString(SiteTitle.Value));
+        }
+        
+        public static bool HasLogo()
+        {
+            var dbContext = getDbContextObject();
+            Setting logopath = dbContext.Settings.FirstOrDefault(m => m.Name == "LogoPath");
+            if ( logopath !=null && !String.IsNullOrWhiteSpace(logopath.Value))
+                return true;
+            else
+                return false;
+        }
+        
+        public static string GetLogoPath()
+        {
+            var dbContext = getDbContextObject();
+            Setting LogoPath = dbContext.Settings.FirstOrDefault(m => m.Name == "LogoPath");
+            return ((LogoPath == null) ? string.Empty : Convert.ToString(LogoPath.Value));
+        }
+        
+        public static string GetFaviconURL()
+        {
+            var dbContext = getDbContextObject();
+            Setting FaviconPath = dbContext.Settings.FirstOrDefault(m => m.Name == "FaviconPath");
+            if (FaviconPath != null)
+            {
+                string strURL = FaviconPath.Value;
+                if (File.Exists(HttpContext.Current.Server.MapPath(strURL)))
+                    return "<link href='" + strURL + "' rel='icon' type='image/x-icon'/>";
+                else
+                    return "";
+            }
+            else
+                return "";
+        }
+        
+        public static string GetMetaData(HttpRequestBase Request)
+        {
+            string strController = Convert.ToString(Request.RequestContext.RouteData.Values["Controller"]).ToLower();
+
+            string strMeta = "";
+            string url = Convert.ToString(Request.RequestContext.RouteData.Values["URL"]).ToLower();
+            if (strController == "content")
+            {
+                var dbContext = getDbContextObject();
+                Content contentEdit = dbContext.Content.Where(content =>
+                       content.URL.ToLower() == url && content.IsDeleted == false && content.isPublished == true).FirstOrDefault();
+
+                List<Meta> meta = (from mt in dbContext.Meta
+                                   join cont in dbContext.Content on mt.ContentID equals cont.ID
+                                   where cont.URL.ToLower() == url && cont.IsDeleted == false && cont.isPublished == true && cont.IsDeleted == false
+                                   select mt).ToList();
+
+                if (meta.Count() > 0)
+                {
+                    strMeta = "<meta name=\"description\" content=\"" + meta[0].Description + "\">";
+                    strMeta += "<meta name=\"author\" content=\"" + meta[0].Author + "\">";
+                    strMeta += "<meta name=\"keywords\" content=\"" + meta[0].Keyword + "\">";
+                }
+            }
+            else
+            {
+                strMeta = GetDefaultMetaData();
+            }
+            return strMeta;
+        }
+        
         public static List<CL_Menu> GetMenu()
         {
             var dbContext = getDbContextObject();
@@ -38,6 +120,7 @@ namespace NITASA.Helpers
                     ).ToList();
             return Menus;
         }
+        
         private static string getURLSlug(string type, string slug)
         {
             if (type == "Page")
@@ -49,6 +132,7 @@ namespace NITASA.Helpers
             return strURL + "/" + type + "/" + slug;
             //return strURL + "/" + type + "/Index/" + slug;
         }
+        
         public static String RenderRazorViewToString(ControllerContext controllerContext, String viewName, Object model)
         {
             if (!string.IsNullOrEmpty(viewName))
@@ -66,6 +150,7 @@ namespace NITASA.Helpers
             }
             return "";
         }
+        
         public static List<CL_Category> GetCategories(int TotalRecord)
         {
             var dbContext = getDbContextObject();
@@ -75,6 +160,7 @@ namespace NITASA.Helpers
                 .OrderBy(x => x.Name).ToList();
             return Categories;
         }
+        
         public static List<CL_Label> GetLabels(int TotalRecord)
         {
             var dbContext = getDbContextObject();
@@ -84,6 +170,7 @@ namespace NITASA.Helpers
                 .OrderBy(x => x.Name).ToList();
             return Labels;
         }
+        
         public static string GetUserNameByID(int? userID)
         {
             var context = getDbContextObject();
@@ -97,6 +184,7 @@ namespace NITASA.Helpers
             }
             return contentAuthor;
         }
+        
         public static string FormatDate(DateTime? date,string formate)
         {
             string convertedDate = string.Empty;
@@ -106,11 +194,13 @@ namespace NITASA.Helpers
             }
             return convertedDate;
         }
+        
         public static string RemoveHTMLTags(string sourceString)
         {
             sourceString = Regex.Replace(sourceString, @"<[^>]+>|&nbsp;|\n|\r", string.Empty);
             return sourceString;
         }
+        
         public static bool HasImage(string content)
         {
             bool hasImg = false;
@@ -122,6 +212,7 @@ namespace NITASA.Helpers
             }
             return hasImg;
         }
+        
         public static string GetImage(string content)
         {
             string link = string.Empty;
@@ -130,6 +221,7 @@ namespace NITASA.Helpers
             link = matchesImgSrc[0].Groups[1].Value;
             return link;
         }
+        
         public static List<CL_Content> GetRelatedPosts(int ContentId,int TotalRecord)
         {
             var context = getDbContextObject();
@@ -152,6 +244,7 @@ namespace NITASA.Helpers
                         }).ToList();
             return data;
         }
+        
         public static List<CL_Comments> GetRecentComments(int TotalRecord)
         {
             var context = getDbContextObject();
@@ -161,6 +254,7 @@ namespace NITASA.Helpers
                         ).ToList();
             return data;
         }
+        
         public static List<CL_Content> GetPages(int TotalRecord)
         {
             var context = getDbContextObject();
@@ -178,6 +272,7 @@ namespace NITASA.Helpers
                         }).ToList();
             return data;
         }
+        
         public static List<CL_Widget> GetWidgets()
         {
             var context = getDbContextObject();
@@ -195,10 +290,12 @@ namespace NITASA.Helpers
             return data;
             
         }
+        
         public static T ParseJson<T>(string jsonString)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(jsonString);
         }
+        
         public static int PagesView()
         {
             var context = getDbContextObject();
@@ -208,10 +305,11 @@ namespace NITASA.Helpers
             else
                 return 0;
         }
+        
         public static List<CL_Content> GetMostPopularPosts(int TotalRecord)
         {
             var context = getDbContextObject();
-            List<Content> RelatedContents = context.Content.Where(x => x.Type.ToLower() == "post" && x.IsDeleted == false && x.isPublished == true).OrderBy(x => x.ContentView).Take(TotalRecord).ToList();
+            List<Content> RelatedContents = context.Content.Where(x => x.Type.ToLower() == "post" && x.IsDeleted == false && x.isPublished == true).OrderByDescending(x => x.ContentView).Take(TotalRecord).ToList();
             List<CL_Content> data = RelatedContents.Select(x =>
                         new CL_Content
                         {
@@ -225,11 +323,12 @@ namespace NITASA.Helpers
                         }).ToList();
             return data;
         }
+        
         public static List<CL_Content> GetRecentViewPosts(int TotalRecord)
         {
             var context = getDbContextObject();
             List<Content> RelatedContents = context.Content.Where(x => x.Type.ToLower() == "post" && x.IsDeleted == false && x.isPublished == true)
-                .OrderBy(x => x.PublishedOn).Take(TotalRecord).ToList();
+                .OrderByDescending(x => x.PublishedOn).Take(TotalRecord).ToList();
             List<CL_Content> data = RelatedContents.Select(x =>
                         new CL_Content
                         {
@@ -243,6 +342,7 @@ namespace NITASA.Helpers
                         }).ToList();
             return data;
         }
+        
         public static void IncreaseContentView(int contentID, HttpRequestBase Request)
         {
             var context = getDbContextObject();
@@ -275,83 +375,41 @@ namespace NITASA.Helpers
             }
             context.SaveChanges();
         }
-        #endregion
 
-
-        public static bool HasLogo()
+        public static List<CL_Content> GetHomePagePosts()
         {
-            var dbContext = getDbContextObject();
-            if (!String.IsNullOrWhiteSpace(dbContext.Settings.FirstOrDefault(m => m.Name == "LogoPath").Value))
-                return true;
+            var context = getDbContextObject();
+            Setting ListingPostsPageSize = context.Settings.Where(m => m.Name == "ListingPostsPageSize").FirstOrDefault();
+            int noofposts = 0;
+            if (ListingPostsPageSize != null)
+                noofposts = Convert.ToInt32(ListingPostsPageSize.Value);
+            
+            List<Content> posts = context.Content.Where(x => x.Type.ToLower() == "post" && x.IsDeleted == false && x.isPublished == true)
+               .OrderByDescending(x => x.PublishedOn).Take(noofposts).ToList();
+            List<CL_Content> data = posts.Select(x =>
+                        new CL_Content
+                        {
+                            Title = x.Title,
+                            Description = x.Description,
+                            FeaturedImage = x.FeaturedImage,
+                            URL = x.URL,
+                            CoverContent = x.CoverContent,
+                            PublishedOn = (DateTime)x.PublishedOn,
+                            AddedBy = x.AddedBy
+                        }).ToList();
+            return data;
+        }
+
+        public static int PageSize()
+        {
+            var context = getDbContextObject();
+            Setting ListingPostsPageSize = context.Settings.Where(m => m.Name == "ListingPostsPageSize").FirstOrDefault();
+            if (ListingPostsPageSize != null)
+                return Convert.ToInt32(ListingPostsPageSize.Value);
             else
-                return false;
+                return 0;                
         }
-
-        public static string GetLogoPath()
-        {
-            var dbContext = getDbContextObject();
-            Setting LogoPath = dbContext.Settings.FirstOrDefault(m => m.Name == "LogoPath");
-            return ((LogoPath == null) ? string.Empty : Convert.ToString(LogoPath.Value));
-        }
-
-        public static string GetSiteName()
-        {
-            var dbContext = getDbContextObject();
-            Setting SiteName = dbContext.Settings.FirstOrDefault(m => m.Name == "SiteName");
-            return ((SiteName == null) ? string.Empty : Convert.ToString(SiteName.Value));
-        }
-
-        public static string GetSiteTitle()
-        {
-            var dbContext = getDbContextObject();
-            Setting SiteTitle = dbContext.Settings.FirstOrDefault(m => m.Name == "SiteTitle");
-            return ((SiteTitle == null) ? string.Empty : Convert.ToString(SiteTitle.Value));
-        }
-
-        public static string GetFaviconURL()
-        {
-            var dbContext = getDbContextObject();
-            Setting FaviconPath = dbContext.Settings.FirstOrDefault(m => m.Name == "FaviconPath");
-            if (FaviconPath != null)
-            {
-                string strURL = FaviconPath.Value;
-                if (File.Exists(HttpContext.Current.Server.MapPath(strURL)))
-                    return "<link href='" + strURL + "' rel='icon' type='image/x-icon'/>";
-                else
-                    return "";
-            }
-            else
-                return "";
-        }
-
-        public static string GetMetaData(string contentURL)
-        {
-            var dbContext = getDbContextObject();
-            Content contentEdit = dbContext.Content.Where(content =>
-                   content.URL == contentURL && content.IsDeleted == false && content.isPublished == true).FirstOrDefault();
-
-            List<Meta> meta = (from mt in dbContext.Meta
-                               join cont in dbContext.Content on mt.ContentID equals cont.ID
-                               where cont.URL == contentURL && cont.IsDeleted == false && cont.isPublished == true && cont.IsDeleted == false
-                               select mt).ToList();
-
-            string strMeta = "";
-            if (meta.Count() > 0)
-            {
-                strMeta = "<meta name=\"description\" content=\"" + meta[0].Description + "\">";
-                strMeta += "<meta name=\"author\" content=\"" + meta[0].Author + "\">";
-                strMeta += "<meta name=\"keywords\" content=\"" + meta[0].Keyword + "\">";
-            }
-            return strMeta;
-        }
-
-        public static string GetSiteURL()
-        {
-            return "/home";
-        }
-
         
-
         public static bool HasThumbnail(int contentID)
         {
             bool hasThumb = false;
@@ -361,6 +419,14 @@ namespace NITASA.Helpers
                 hasThumb = true;
             }
             return hasThumb;
+        }
+
+        public static MatchCollection FindImages(int contentID)
+        {
+            string regexImgSrc = @"<img[^>]*?src\s*=\s*[""']?([^'"" >]+?)[ '""][^>]*?>";
+            var dbContext = getDbContextObject();
+            Content content = dbContext.Content.Where(x => x.ID == contentID).FirstOrDefault();
+            return Regex.Matches(content.Description, regexImgSrc, RegexOptions.IgnoreCase | RegexOptions.Singleline);
         }
 
         public static string GetThumbnail(int contentID)
@@ -383,88 +449,11 @@ namespace NITASA.Helpers
             return link;
         }
 
-        public static MatchCollection FindImages(int contentID)
-        {
-            string regexImgSrc = @"<img[^>]*?src\s*=\s*[""']?([^'"" >]+?)[ '""][^>]*?>";
-            var dbContext = getDbContextObject();
-            Content content = dbContext.Content.Where(x => x.ID == contentID).FirstOrDefault();
-            return Regex.Matches(content.Description, regexImgSrc, RegexOptions.IgnoreCase | RegexOptions.Singleline);
-        }
-
-        public static bool IsCommentEnabled(int contentID)
-        {
-            var dbContext = getDbContextObject();
-            var content = dbContext.Content.Where(x => x.ID == contentID).Where(x => x.EnableComment != false).ToList();
-
-            if (content.Count() > 0)
-                return true;
-            else
-                return false;
-        }
-
         public static int GetCommentEnabledTill(int contentID)
         {
             var dbContext = getDbContextObject();
             int tillDate = dbContext.Content.Where(x => x.ID == contentID).Select(x => x.CommentEnabledTill).FirstOrDefault();
             return tillDate;
-        }
-
-        public static string GetDefaultMetaData()
-        {
-            var dbContext = getDbContextObject();
-            Setting DefaultMetaTags = dbContext.Settings.FirstOrDefault(m => m.Name == "DefaultMetaTags");
-            return ((DefaultMetaTags == null) ? string.Empty : Convert.ToString(DefaultMetaTags.Value));
-        }
-
-        public static string GetHeaderCustomCode()
-        {
-            var dbContext = getDbContextObject();
-            Setting CustomHeadTag = dbContext.Settings.FirstOrDefault(m => m.Name == "CustomHeadTag");
-            return ((CustomHeadTag == null) ? string.Empty : Convert.ToString(CustomHeadTag.Value));
-        }
-
-        public static string GetFooterCustomCode()
-        {
-            var dbContext = getDbContextObject();
-            //string FooterScript = string.Empty;
-            //AspNetCMS.Areas.CMSAdmin.Models.Config config = _dbContext.Config.FirstOrDefault();
-            //if (config != null)
-            //{
-            //    FooterScript = config.FooterScript;
-            //}
-            //return FooterScript;
-            //return HttpContext.Current.Application["CustomHeadTag"].ToString().Trim();
-            return "";
-        }
-
-        public static List<string> GetMediaList(string MediaType)
-        {
-            var dbContext = getDbContextObject();
-            return dbContext.Media.Where(m => m.Type == MediaType && m.IsDeleted == false).OrderByDescending(m => m.AddedOn).Select(m => m.FileName).ToList();
-        }
-
-        public static List<Content> GetContentByCategory(string categoryName, int contentCount)
-        {
-            var dbContext = getDbContextObject();
-            int catid = dbContext.Category.Where(cat => cat.Name == categoryName).Select(cat => cat.ID).FirstOrDefault();
-
-            if (contentCount <= 0)
-                return (from cont in dbContext.Content
-                        join concat in dbContext.ContentCategory on cont.ID equals concat.ContentID
-                        where concat.CategoryID == catid && cont.isPublished == true && cont.Type.ToLower() == "post" && cont.IsDeleted == false
-                        select cont).OrderByDescending(x => x.ContentOrder).ToList();
-            else
-                return (from cont in dbContext.Content
-                        join concat in dbContext.ContentCategory on cont.ID equals concat.ContentID
-                        where concat.CategoryID == catid && cont.isPublished == true && cont.Type.ToLower() == "post" && cont.IsDeleted == false
-                        select cont).OrderByDescending(x => x.ContentOrder).Take(contentCount).ToList();
-        }
-
-        public static string GetFacebookURL()
-        {
-            var dbContext = getDbContextObject();
-            Setting FacebookURL = dbContext.Settings.FirstOrDefault(m => m.Name == "FacebookURL");
-            return ((FacebookURL == null) ? "#" : Convert.ToString(FacebookURL.Value));
         }
 
         public static string GetTwitterURL()
@@ -474,11 +463,25 @@ namespace NITASA.Helpers
             return ((TwitterURL == null) ? "#" : Convert.ToString(TwitterURL.Value));
         }
 
+        public static string GetFacebookURL()
+        {
+            var dbContext = getDbContextObject();
+            Setting FacebookURL = dbContext.Settings.FirstOrDefault(m => m.Name == "FacebookURL");
+            return ((FacebookURL == null) ? "#" : Convert.ToString(FacebookURL.Value));
+        }
+
         public static string GetGooglePlusURL()
         {
             var dbContext = getDbContextObject();
             Setting GooglePlusURL = dbContext.Settings.FirstOrDefault(m => m.Name == "GooglePlusURL");
             return ((GooglePlusURL == null) ? "#" : Convert.ToString(GooglePlusURL.Value));
+        }
+
+        public static string GetLinkedInURL()
+        {
+            var dbContext = getDbContextObject();
+            Setting LinkedInURL = dbContext.Settings.FirstOrDefault(m => m.Name == "LinkedInURL");
+            return ((LinkedInURL == null) ? "#" : Convert.ToString(LinkedInURL.Value));
         }
 
         public static string GetPinterestURL()
@@ -488,11 +491,18 @@ namespace NITASA.Helpers
             return ((PinterestURL == null) ? "#" : Convert.ToString(PinterestURL.Value));
         }
 
-        public static string GetCustomJavaScript()
+        public static string GetHeaderCustomCode()
         {
             var dbContext = getDbContextObject();
-            Setting CustomJavaScript = dbContext.Settings.FirstOrDefault(m => m.Name == "CustomJavaScript");
-            return ((CustomJavaScript == null) ? string.Empty : Convert.ToString(CustomJavaScript.Value));
+            Setting CustomHeadTag = dbContext.Settings.FirstOrDefault(m => m.Name == "CustomHeadTag");
+            return ((CustomHeadTag == null) ? string.Empty : Convert.ToString(CustomHeadTag.Value));
+        }
+
+        public static string GetDefaultMetaData()
+        {
+            var dbContext = getDbContextObject();
+            Setting DefaultMetaTags = dbContext.Settings.FirstOrDefault(m => m.Name == "DefaultMetaTags");
+            return ((DefaultMetaTags == null) ? string.Empty : Convert.ToString(DefaultMetaTags.Value));
         }
 
         public static string GetCustomCSS()
@@ -500,6 +510,13 @@ namespace NITASA.Helpers
             var dbContext = getDbContextObject();
             Setting CustomCSS = dbContext.Settings.FirstOrDefault(m => m.Name == "CustomCSS");
             return ((CustomCSS == null) ? string.Empty : Convert.ToString(CustomCSS.Value));
+        }
+
+        public static string GetCustomJavaScript()
+        {
+            var dbContext = getDbContextObject();
+            Setting CustomJavaScript = dbContext.Settings.FirstOrDefault(m => m.Name == "CustomJavaScript");
+            return ((CustomJavaScript == null) ? string.Empty : Convert.ToString(CustomJavaScript.Value));
         }
 
         public static string GetGoogleAnalytics()

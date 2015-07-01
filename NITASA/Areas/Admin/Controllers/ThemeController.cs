@@ -115,7 +115,6 @@ namespace NITASA.Areas.Admin.Controllers
                                                                 "index.cshtml",
                                                                 "category.cshtml",
                                                                 "label.cshtml",
-                                                                "archive.cshtml",
                                                                 "search_form.cshtml", 
                                                                 "search_result.cshtml", 
                                                                 "content.cshtml",
@@ -125,7 +124,6 @@ namespace NITASA.Areas.Admin.Controllers
                                                                 "navigation.cshtml",
                                                                 "commentslist.cshtml",
                                                                 "commentform.cshtml", 
-                                                                "recentcomments.cshtml",
                                                                 "pager.cshtml",
                                                                 "404.cshtml",
                                                                 "500.cshtml",
@@ -135,7 +133,7 @@ namespace NITASA.Areas.Admin.Controllers
                                                                 "sb_pageview.cshtml",
                                                                 "sb_pagelist.cshtml", 
                                                                 "sb_mostpopular.cshtml",
-                                                                "sb_recentview.cshtml",
+                                                                "sb_recentposts.cshtml",
                                                                 "sb_related.cshtml",
                                                                 "sb_recentcomments.cshtml",
                                                                 "thumbnail.jpg"
@@ -145,39 +143,6 @@ namespace NITASA.Areas.Admin.Controllers
                 List<string> allViews = ThemeDir.GetFiles().Select(m => m.Name.ToLower()).ToList();
                 misingFiles.AddRange(Requiredfiles.Where(x => !allViews.Contains(x)).ToList());
                 isValid = misingFiles.Count() == 0;
-                /*
-                if (!allViews.Contains("master.cshtml")) { misingFiles.Add("master.cshtml"); isValid = false; }
-                if (!allViews.Contains("index.cshtml")) { misingFiles.Add("index.cshtml"); isValid = false; }
-                if (!allViews.Contains("category.cshtml")) { misingFiles.Add("category.cshtml"); isValid = false; }
-                if (!allViews.Contains("label.cshtml")) { misingFiles.Add("label.cshtml"); isValid = false; }
-                if (!allViews.Contains("archive.cshtml")) { misingFiles.Add("archive.cshtml"); isValid = false; }
-                if (!allViews.Contains("search_form.cshtml")) { misingFiles.Add("search_form.cshtml"); isValid = false; }
-                if (!allViews.Contains("search_result.cshtml")) { misingFiles.Add("search_result.cshtml"); isValid = false; }
-                if (!allViews.Contains("content.cshtml")) { misingFiles.Add("content.cshtml"); isValid = false; }
-                if (!allViews.Contains("header.cshtml")) { misingFiles.Add("header.cshtml"); isValid = false; }
-                if (!allViews.Contains("footer.cshtml")) { misingFiles.Add("footer.cshtml"); isValid = false; }
-                if (!allViews.Contains("slider.cshtml")) { misingFiles.Add("slider.cshtml"); isValid = false; }
-                if (!allViews.Contains("navigation.cshtml")) { misingFiles.Add("navigation.cshtml"); isValid = false; }
-                if (!allViews.Contains("commentslist.cshtml")) { misingFiles.Add("commentslist.cshtml"); isValid = false; }
-                if (!allViews.Contains("commentform.cshtml")) { misingFiles.Add("commentform.cshtml"); isValid = false; }
-                if (!allViews.Contains("recentcomments.cshtml")) { misingFiles.Add("recentcomments.cshtml"); isValid = false; }
-                if (!allViews.Contains("pager.cshtml")) { misingFiles.Add("Ppager.cshtml"); isValid = false; }
-
-                if (!allViews.Contains("404.cshtml")) { misingFiles.Add("404.cshtml"); isValid = false; }
-                if (!allViews.Contains("500.cshtml")) { misingFiles.Add("500.cshtml"); isValid = false; }
-
-                if (!allViews.Contains("sidebar.cshtml")) { misingFiles.Add("sidebar.cshtml"); isValid = false; }
-                if (!allViews.Contains("sb_categories.cshtml")) { misingFiles.Add("sb_categories.cshtml"); isValid = false; }
-                if (!allViews.Contains("sb_labels.cshtml")) { misingFiles.Add("sb_labels.cshtml"); isValid = false; }
-                if (!allViews.Contains("sb_pageview.cshtml")) { misingFiles.Add("sb_pageview.cshtml"); isValid = false; }
-                if (!allViews.Contains("sb_pagelist.cshtml")) { misingFiles.Add("sb_pagelist.cshtml"); isValid = false; }
-                if (!allViews.Contains("sb_mostpopular.cshtml")) { misingFiles.Add("sb_mostpopular.cshtml"); isValid = false; }
-                if (!allViews.Contains("sb_recentview.cshtml")) { misingFiles.Add("sb_recentview.cshtml"); isValid = false; }
-                if (!allViews.Contains("sb_related.cshtml")) { misingFiles.Add("sb_related.cshtml"); isValid = false; }
-                if (!allViews.Contains("sb_recentcomments.cshtml")) { misingFiles.Add("sb_recentcomments.cshtml"); isValid = false; }
-
-                if (!allViews.Contains("thumbnail.jpg")) { misingFiles.Add("thumbnail.jpg"); isValid = false; }
-                */
             }
             else
             {

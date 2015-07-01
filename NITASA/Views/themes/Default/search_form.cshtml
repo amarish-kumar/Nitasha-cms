@@ -1,8 +1,23 @@
 <div class="row collapse">
-				<div class="ten mobile-three columns">
-					<input type="text" class="nomargin" placeholder="Search...">
-				</div>
-				<div class="two mobile-one columns">
-					<a href="#" class="postfix button expand">Go</a>
-				</div>
-			</div>
+    @using (Html.BeginForm("Results", "Search", FormMethod.Post, new { id = "frmsearch" }))
+    {
+        <div class="ten mobile-three columns">
+            <input type="text" id="SearchText" name="SearchText" class="nomargin" placeholder="Search..." />
+        </div>
+        <div class="two mobile-one columns">
+            <a href="#" id="submit-search" class="postfix button expand">Go</a>
+        </div>
+    }
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#submit-search").click(function (evt) {
+            if ($("#SearchText").val().trim() != '')
+                $("#frmsearch").submit();
+            else
+                alert("Please enter text to search");
+            return false;
+        });
+    });
+</script>

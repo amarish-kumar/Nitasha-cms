@@ -1,4 +1,44 @@
-<ul class="pagination">
+@model NITASA.Helpers.Pager
+
+    @if (Model.PageCount > 1)
+    {
+        using (Html.BeginForm(Model.Action, Model.Controller, FormMethod.Post, new { id = "frm1" }))
+        {
+            @Html.Hidden("PageCount", Model.PageCount)
+            @Html.Hidden("PageSize", Model.PageSize)
+            @Html.Hidden("CurrentPageIndex", Model.CurrentPageIndex)
+            @Html.Hidden("SearchText", Model.SearchText)
+        }
+        <ul class="pagination">
+            @for (var i = 0; i < Model.PageCount; i++)
+            {
+                if (i == Model.CurrentPageIndex)
+                {
+                    <li class="current"><a href="">@(i + 1)</a></li>
+                }
+                else
+                {
+                    <li><a href="" class="pager" pageindex="@i" >@(i + 1)</a></li>
+                }
+            }
+        </ul>
+        
+        <script>
+            $(document).ready(function () {
+                $(".pager").click(function (evt) {
+                    evt.preventDefault();
+                    var pageindex = $(this).attr("pageindex");
+                    $("#CurrentPageIndex").val(pageindex);
+                    $('#frm1').submit();
+                });
+            });
+        </script>
+    }
+    
+    
+
+
+@*<ul class="pagination">
 				<li class="arrow unavailable"><a href="">&laquo;</a></li>
 				<li class="current"><a href="">1</a></li>
 				<li><a href="">2</a></li>
@@ -8,4 +48,4 @@
 				<li><a href="">12</a></li>
 				<li><a href="">13</a></li>
 				<li class="arrow"><a href="">&raquo;</a></li>
-			</ul>
+			</ul>*@

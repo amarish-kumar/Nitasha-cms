@@ -290,10 +290,8 @@ namespace NITASA.Areas.Admin.Controllers
         {
             return View();
         }
-        public ActionResult NotFound(string aspxerrorpath = "")
+        public ActionResult NotFound()
         {
-            if (aspxerrorpath.ToLower().Contains("client"))
-                return RedirectToRoute("_client_Error");
             return View();
         }
     }

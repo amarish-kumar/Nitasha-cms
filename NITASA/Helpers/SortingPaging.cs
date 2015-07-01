@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace NITASA.Helpers
 {
-    public class SortingPaging
+    public class Pager
     {
-        public string SortField { get; set; }
-        public string SortDirection { get; set; }
-        public int PageSize { get; set; }
-        public int PageCount { get; set; }
-        public int CurrentPageIndex { get; set; }
+        public int? PageSize { get; set; }
+        public int? PageCount { get; set; }
+        public int? CurrentPageIndex { get; set; }
+        public string Controller { get; set; }
+        public string Action { get; set; }
+        [AllowHtml]
+        public string SearchText { get; set; }
     }
 }

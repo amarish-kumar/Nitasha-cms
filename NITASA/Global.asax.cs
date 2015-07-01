@@ -46,6 +46,16 @@ namespace NITASA
         {
             
         }
-
+        void Application_Error(object sender, EventArgs e)
+        {
+            if (Request.Url.ToString().ToLower().Contains("/admin/"))
+            {
+                Server.TransferRequest("~/Admin/Home/NotFound");
+            }
+            else
+            {
+                Server.TransferRequest("~/Home/NotFound");
+            }
+        }
     }
 }

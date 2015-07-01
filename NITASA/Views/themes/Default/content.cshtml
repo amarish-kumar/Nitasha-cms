@@ -2,6 +2,7 @@
 @{
     string currentThemeName = ViewBag.ActiveTheme;
     Layout = currentThemeName + "master.cshtml";
+    ViewBag.Title = Model.Title;
 }
 
 <div id="subheader">
@@ -33,13 +34,12 @@ else if(Model.Type=="post")
 
             @Html.Partial("~" + currentThemeName + "/commentslist.cshtml", Model.Comments)
 
-            @if (Model.Comments.Count()==0)
-            { 
-                <h5>No Comments !!! be first to write comment.</h5>
-            }
-            
             @if (Model.PostCommentEnable && DateTime.Now < Model.PublishedOn.AddDays(Model.PostCommentEnabledTill))
             {
+                if (Model.Comments.Count()==0)
+                { 
+                    <h5>No Comments !!! be first to write comment.</h5>
+                }
                 if (Session["CommentBy"] == null)
                 {
                     <span>Sign in to write comment. </span>

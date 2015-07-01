@@ -41,6 +41,11 @@ namespace NITASA.Areas.Admin.Controllers
             siteSettings.CustomCSS = context.Settings.Where(m => m.Name == "CustomCSS").Select(m => m.Value).FirstOrDefault();
             siteSettings.GoogleAnalytics = context.Settings.Where(m => m.Name == "GoogleAnalytics").Select(m => m.Value).FirstOrDefault();
             siteSettings.CurrentTheme = context.Settings.Where(m => m.Name == "CurrentTheme").Select(m => m.Value).FirstOrDefault();
+            Setting ListingPostsPageSize = context.Settings.Where(m => m.Name == "ListingPostsPageSize").FirstOrDefault();
+            if (ListingPostsPageSize != null)
+                siteSettings.ListingPostsPageSize = Convert.ToInt32(ListingPostsPageSize.Value);
+            else
+                siteSettings.ListingPostsPageSize = 0;
 
             List<string> ThemeList = new DirectoryInfo(Server.MapPath("/Views/themes/")).GetDirectories().Select(m => Path.GetFileNameWithoutExtension(m.FullName)).ToList();
             ViewBag.Themes = new SelectList(ThemeList);
@@ -86,30 +91,28 @@ namespace NITASA.Areas.Admin.Controllers
                     {
                         if (logopath != null && logopath.ContentLength > 0)
                         {
-                            string relativePath = "/content/" + logopath.FileName;
-                            string logoFullPath = Server.MapPath(relativePath);
-                            logopath.SaveAs(logoFullPath);
+                            string logoFullPath = Functions.GetNewFileName("/content/", logopath.FileName);
+                            logopath.SaveAs(Server.MapPath(logoFullPath));
 
                             Setting LogoPath = context.Settings.FirstOrDefault(m => m.Name == "LogoPath");
                             if (LogoPath == null)
                             {
-                                LogoPath = new Setting() { Name = "LogoPath", Value = relativePath };
+                                LogoPath = new Setting() { Name = "LogoPath", Value = logoFullPath };
                                 context.Settings.Add(LogoPath);
                             }
-                            else LogoPath.Value = relativePath;
+                            else LogoPath.Value = logoFullPath;
                         }
                         if (FaviconIcon != null && FaviconIcon.ContentLength > 0)
                         {
-                            string relativePath = "/content/" + FaviconIcon.FileName;
-                            string logoFullPath = Server.MapPath(relativePath);
-                            FaviconIcon.SaveAs(logoFullPath);
+                            string FaviconIconFullPath = Functions.GetNewFileName("/content/", FaviconIcon.FileName);
+                            FaviconIcon.SaveAs(Server.MapPath(FaviconIconFullPath));
                             Setting FaviconPath = context.Settings.FirstOrDefault(m => m.Name == "FaviconPath");
                             if (FaviconPath == null)
                             {
-                                FaviconPath = new Setting() { Name = "FaviconPath", Value = relativePath };
+                                FaviconPath = new Setting() { Name = "FaviconPath", Value = FaviconIconFullPath };
                                 context.Settings.Add(FaviconPath);
                             }
-                            else FaviconPath.Value = relativePath;
+                            else FaviconPath.Value = FaviconIconFullPath;
                         }
 
                         Setting SiteName = context.Settings.FirstOrDefault(m => m.Name == "SiteName");
@@ -135,6 +138,14 @@ namespace NITASA.Areas.Admin.Controllers
                             context.Settings.Add(ShowNoOfLastPostsAtHome);
                         }
                         else ShowNoOfLastPostsAtHome.Value = con.ShowNoOfLastPostsAtHome;
+
+                        Setting ListingPostsPageSize= context.Settings.FirstOrDefault(m => m.Name == "ListingPostsPageSize");
+                        if (ListingPostsPageSize == null)
+                        {
+                            ListingPostsPageSize = new Setting() { Name = "ListingPostsPageSize", Value = con.ListingPostsPageSize.ToString() };
+                            context.Settings.Add(ListingPostsPageSize);
+                        }
+                        else ListingPostsPageSize.Value = con.ListingPostsPageSize.ToString();
 
                         Setting FacebookURL = context.Settings.FirstOrDefault(m => m.Name == "FacebookURL");
                         if (FacebookURL == null)

@@ -21,8 +21,8 @@ namespace NITASA
             );
             routes.MapRoute(
                 "_Search",
-                "Search/{text}",
-                new { controller = "Search", action = "Results", text = UrlParameter.Optional },
+                "Search/{SearchText}",
+                new { controller = "Search", action = "Results", SearchText = UrlParameter.Optional },
                 new[] { "NITASA.Controllers" }
             );
             routes.MapRoute(

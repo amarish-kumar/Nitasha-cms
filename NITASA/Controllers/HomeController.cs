@@ -21,6 +21,7 @@ namespace NITASA.Controllers
         {
             this.context = new NTSDBContext();
         }
+        
         public ActionResult Index()
         {
             Content indexPage = context.Content.Where(x => x.Title.ToLower() == "index").FirstOrDefault();
@@ -85,23 +86,7 @@ namespace NITASA.Controllers
 
             return View(viewName: activeTheme + "index.cshtml", model: HTMLContent);
         }
-        //public static String RenderRazorViewToString(ControllerContext controllerContext, String viewName, Object model)
-        //{
-        //    if (!string.IsNullOrEmpty(viewName))
-        //    {
-        //        controllerContext.Controller.ViewData.Model = model;
-
-        //        using (var sw = new StringWriter())
-        //        {
-        //            var ViewResult = ViewEngines.Engines.FindPartialView(controllerContext, viewName);
-        //            var ViewContext = new ViewContext(controllerContext, ViewResult.View, controllerContext.Controller.ViewData, controllerContext.Controller.TempData, sw);
-        //            ViewResult.View.Render(ViewContext, sw);
-        //            ViewResult.ViewEngine.ReleaseView(controllerContext, ViewResult.View);
-        //            return sw.GetStringBuilder().ToString();
-        //        }
-        //    }
-        //    return "";
-        //}
+        
         public ActionResult NotFound()
         {
             return View(viewName: activeTheme + "404.cshtml");
