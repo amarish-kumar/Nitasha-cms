@@ -36,7 +36,7 @@ namespace NITASA.Areas.Admin.Controllers
                 Content = Content.Where(m => m.Type.ToLower() == "post" && m.IsDeleted == false && m.isPublished == false);
 
             if (cid > 0)
-                Content = Content.Where(cont => cont.contentCategory.Where(m => m.CategoryID == cid).Count() > 0);
+                Content = Content.Where(cont => cont.Categories.Where(m => m.CategoryID == cid).Count() > 0);
 
             List<Content> ContentList = Content.OrderByDescending(m => m.PublishedOn).ToList();
 

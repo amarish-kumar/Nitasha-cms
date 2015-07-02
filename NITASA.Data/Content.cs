@@ -68,10 +68,14 @@ namespace NITASA.Data
         public virtual User user { get; set; }
 
         [ForeignKey("ContentID")]
-        public virtual ICollection<ContentCategory> contentCategory { get; set; }
+        //public virtual ICollection<ContentCategory> contentCategory { get; set; }
+        public virtual ICollection<ContentCategory> Categories { get; set; }
 
         [ForeignKey("ContentID")]
-        public virtual ICollection<ContentLabel> contentLabel { get; set; }
+        //public virtual ICollection<ContentLabel> contentLabel { get; set; }
+        public virtual ICollection<ContentLabel> Labels { get; set; }
+
+        public virtual ICollection<Comment> Comments { get; set; }
     }
 
     public class ContentCategory

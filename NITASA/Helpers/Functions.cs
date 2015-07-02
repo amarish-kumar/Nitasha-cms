@@ -68,7 +68,31 @@ namespace NITASA.Helpers
             else
                 return "";
         }
-        
+
+        #region Date Format Fumction
+
+        public static string GetDay(DateTime dateTime)
+        {
+            return dateTime.ToString("dd");// ultureInfo.InvariantCulture)
+        }
+        public static string GetMonth(DateTime dateTime)
+        {
+            return dateTime.ToString("M");
+        }
+        public static string GetMonthName(DateTime dateTime)
+        {
+            return dateTime.ToString("MMM");
+        }
+        public static string GetFullMonthName(DateTime dateTime)
+        {
+            return dateTime.ToString("MMMM");
+        }
+        public static string GetYear(DateTime dateTime)
+        {
+            return dateTime.ToString("yyyy");
+        }
+        #endregion
+
         public static string GetMetaData(HttpRequestBase Request)
         {
             string strController = Convert.ToString(Request.RequestContext.RouteData.Values["Controller"]).ToLower();
@@ -399,6 +423,7 @@ namespace NITASA.Helpers
             
             List<Content> posts = context.Content.Where(x => x.Type.ToLower() == "post" && x.IsDeleted == false && x.isPublished == true)
                .OrderByDescending(x => x.PublishedOn).Take(noofposts).ToList();
+
             List<CL_Content> data = posts.Select(x =>
                         new CL_Content
                         {
@@ -409,7 +434,19 @@ namespace NITASA.Helpers
                             URL = x.URL,
                             CoverContent = x.CoverContent,
                             PublishedOn = (DateTime)x.PublishedOn,
-                            AddedBy = x.AddedBy
+                            AddedBy = x.AddedBy,
+                            CommentsCount = x.Comments.Count(),
+                            Category = x.Categories.Select(c => new CL_Category { 
+                                Name = c.Category.Name,
+                                Description = c.Category.Description,
+                                URL = c.Category.Slug
+                            }).ToList(),
+                            Labels = x.Labels.Select(c => new CL_Label
+                            {
+                                Name = c.Label.Name,
+                                Description = c.Label.Description,
+                                URL = c.Label.Slug
+                            }).ToList()
                         }).ToList();
             return data;
         }

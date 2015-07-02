@@ -22,5 +22,8 @@ namespace NITASA.ViewModels
         public int PostCommentEnabledTill { get; set; }
         
         public List<CL_Comments> Comments { get; set; }
+        public List<CL_Category> Category { get; set; }
+        public List<CL_Label> Labels { get; set; }
+        
     }
 }
