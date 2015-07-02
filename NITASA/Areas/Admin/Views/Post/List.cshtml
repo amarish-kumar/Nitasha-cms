@@ -62,8 +62,8 @@
                                 @Html.Grid(Model).Columns(columns =>
                                             {
                                                 columns.Add(x => x.Title).Titled("Post Title").Sortable(true).Filterable(true);
-                                                columns.Add(x => x.contentCategory).Titled("Categories").Sortable(true).Filterable(true).RenderValueAs(x => GetCategories(x));
-                                                columns.Add(x => x.contentLabel).Titled("Labels").Sortable(true).Filterable(true).RenderValueAs(x => GetLabels(x));
+                                                columns.Add(x => x.Categories).Titled("Categories").Sortable(true).Filterable(true).RenderValueAs(x => GetCategories(x));
+                                                columns.Add(x => x.Labels).Titled("Labels").Sortable(true).Filterable(true).RenderValueAs(x => GetLabels(x));
                                                 columns.Add(x => x.ContentView).Titled("Views").Sortable(true).Filterable(true);
                                                 columns.Add(x => x.user.FullName).Titled("Author").Sortable(true).Filterable(true);
                                                 columns.Add(c => c.isPublished).Sortable(true).Filterable(true).RenderValueAs(x => x.isPublished ? "Published" : "Draft").Titled("Type");
@@ -85,7 +85,7 @@
 @helper GetCategories(Content item)
 {
     string cats = "";
-    foreach (var member in item.contentCategory)
+    foreach (var member in item.Categories)
     {
         cats += member.Category.Name + ", ";
     }
@@ -94,7 +94,7 @@
 @helper GetLabels(Content item)
 {
     string cats = "";
-    foreach (var member in item.contentLabel)
+    foreach (var member in item.Labels)
     {
         cats += member.Label.Name + ", ";
     }

@@ -29,7 +29,7 @@ namespace NITASA.Areas.Admin.Controllers
             List<Category> categoryList = context.Category.Where(m => m.IsDeleted == false).ToList();
             ViewBag.categoryList = new SelectList(categoryList, "ID", "Name");
 
-            IQueryable<Content> Content = context.Content.Include("user").Include("contentCategory").Include("contentLabel");
+            IQueryable<Content> Content = context.Content.Include("user").Include("Categories").Include("Labels");
             if (ViewAllPostsRights)
                 Content = Content.Where(m => m.Type.ToLower() == "post" && m.IsDeleted == false);
             else if (ViewUnPublishedPostsRights)

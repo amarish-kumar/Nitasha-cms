@@ -12,8 +12,7 @@ namespace NITASA.Controllers
         
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            //activeTheme = "/Views/themes/" + Request.RequestContext.HttpContext.Application["CurrentTheme"].ToString() + "/";
-            activeTheme = "/Views/themes/livetest/";
+            activeTheme = "/Views/themes/" + Request.RequestContext.HttpContext.Application["CurrentTheme"].ToString() + "/";            
             ViewBag.ActiveTheme = activeTheme;
             base.OnActionExecuting(filterContext);
         }

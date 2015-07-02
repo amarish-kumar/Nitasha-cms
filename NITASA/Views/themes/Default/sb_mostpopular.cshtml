@@ -9,8 +9,15 @@
     <h6 class="sidebartitle">@wOption.Title</h6>
     foreach (var item in MostPopularPosts)
     {
+        if (wOption.showthumb)
+        {
+            <div class="avatar">
+                <img src="@(!string.IsNullOrEmpty(item.FeaturedImage) ? item.FeaturedImage : "/Content/postdefult.png")" style="width:36px;height:36px;" alt="" />
+		    </div> 
+        }
         <p>
-			@NITASA.Helpers.Functions.FormatDate(item.PublishedOn, "dd MMM yyyy")@*7 Oct 2013*@
+            <a href="/Content/@item.URL">@item.Title</a>
+			@*@NITASA.Helpers.Functions.FormatDate(item.PublishedOn, "dd MMM yyyy")*@
 		</p>
 		<p>
             @{string Description = NITASA.Helpers.Functions.RemoveHTMLTags(item.Description);}
