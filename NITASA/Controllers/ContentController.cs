@@ -151,9 +151,9 @@ namespace NITASA.Controllers
             {
                 TempData["comment-error"] ="Google login required";
             }
-            else if (CommentAs == "nameurl" && (string.IsNullOrEmpty(UserName) || string.IsNullOrEmpty(Website)))
+            else if (CommentAs == "nameurl" && (string.IsNullOrEmpty(UserName)))
             {
-                TempData["comment-error"] ="Name and URL required";
+                TempData["comment-error"] ="Name required";
             }
             else
             {
@@ -163,7 +163,7 @@ namespace NITASA.Controllers
                 }
                 else if (CommentAs == "anonymous")
                 {
-                    UserName = null;
+                    UserName = "Anonymous";
                     Website = null;
                     ProfilePicUrl = null;
                 }
@@ -184,13 +184,13 @@ namespace NITASA.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddFlag(string AbuseReason, string UserName, int CommentID)
+        public ActionResult AddFlag(string AbuseReason, string AbuseByUserName, int CommentID)
         {
             if (!string.IsNullOrEmpty(AbuseReason) && CommentID != 0)
             {
                 Comment comment = context.Comment.Find(CommentID);
                 comment.IsAbused = true;
-                comment.AbusedBy = UserName.Trim();
+                comment.AbusedBy = AbuseByUserName.Trim();
                 comment.AbusedReason = AbuseReason;
                 context.SaveChanges();
                 TempData["flag-added"] = true;

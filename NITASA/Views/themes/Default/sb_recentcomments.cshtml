@@ -3,7 +3,6 @@
 @{
     CL_WidgetOption wOption = NITASA.Helpers.Functions.ParseJson<CL_WidgetOption>(Model);
     List<CL_Comments> Comments = NITASA.Helpers.Functions.GetRecentComments(wOption.Count);
-    string currentThemeName = ViewBag.ActiveTheme;
 }
 
 @if (Comments.Count() > 0)
@@ -17,13 +16,13 @@
             <div class="avatar">
                 @if (!string.IsNullOrEmpty(item.Website))
                 {
-                    <a title="@username" href="@item.Website" style="text-decoration: none; color: #222222;">
-                        <img src="@(!string.IsNullOrEmpty(item.ProfilePicUrl) ? item.ProfilePicUrl : currentThemeName+"images/gravatar.png")" style="width:36px;height:36px;" alt="" />
+                    <a target="_blank" title="@username" href="@item.Website" style="text-decoration: none; color: #222222;">
+                        <img src="@(!string.IsNullOrEmpty(item.ProfilePicUrl) ? item.ProfilePicUrl : "/Content/gravatar.png")" style="width:36px;height:36px;" alt="" />
                     </a>
                 }
                 else
                 {
-                    <img title="@username" src="@(!string.IsNullOrEmpty(item.ProfilePicUrl) ? item.ProfilePicUrl : currentThemeName+"images/gravatar.png")" style="width:36px;height:36px;" alt="" />
+                    <img title="@username" src="@(!string.IsNullOrEmpty(item.ProfilePicUrl) ? item.ProfilePicUrl : "/Content/gravatar.png")" style="width:36px;height:36px;" alt="" />
                 }
 		    </div>
         }

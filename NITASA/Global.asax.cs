@@ -50,7 +50,7 @@ namespace NITASA
         {
             if (Request.Url.ToString().ToLower().Contains("/admin/"))
             {
-                Server.TransferRequest("~/Admin/Home/NotFound");
+               // Server.TransferRequest("~/Admin/Home/NotFound");
             }
             else
             {

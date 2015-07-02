@@ -232,7 +232,25 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="box">
+                                        
+                                        <div class="box" style="display:@(Model != null && Model.content.Title.ToLower() == "index"?"":"none")">
+                                            <div class="box-header">
+                                                <span class="title">Layout</span>
+                                            </div>
+                                            <div class="box-content">
+                                                <div class="padded" style="text-align: left; vertical-align: top">
+                                                    <label>
+                                                        <b>Content Position: </b>
+                                                    </label>
+                                                    @Html.DropDownListFor(m => m.content.ContentPosition, new List<SelectListItem>()
+                                                                { 
+                                                                    new SelectListItem { Text = "Above Posts", Value = "AbovePosts" },
+                                                                    new SelectListItem { Text = "Below Posts", Value = "BelowPosts" }
+                                                                }, new { @class = "chzn-select" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                         <div class="box">
                                             <div class="box-header">
                                                 <span class="title">Cover Content</span>
                                             </div>

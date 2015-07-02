@@ -5,7 +5,7 @@
 {
     @Html.AntiForgeryToken()
     <input type="text" id="username" name="username" class="five smoothborder displaynone" placeholder="Your name *" />
-    <input type="text" id="Website" name="Website" class="five smoothborder displaynone" placeholder="URL *" />
+    <input type="text" id="Website" name="Website" class="five smoothborder displaynone" placeholder="URL" />
     <textarea id="CommentDescription" name="CommentDescription" class="six smoothborder " rows="7" placeholder="Comments *"></textarea>
     @Html.Hidden("ProfilePicUrl")
     <button type="submit" class="readmore" id="postcomment">Publish</button>
@@ -18,7 +18,7 @@
 }
 
 <div class="displaynone">
-    <div id="sk-signin"></div>
+    <div id="sk-comment-signin"></div>
 </div>
 <style>
     .displaynone {
@@ -27,15 +27,15 @@
 </style>
 
 <script>
-    var isSubmit = false;
+    var isCommentSubmit = false;
     $(document).ready(function () {
         $("#CommentAs").click(function (evt) {
             $("#username").addClass("displaynone");
             $("#Website").addClass("displaynone");
+            $("#username").val("")
+            $("#Website").val("");
             if ($(this).val() == "nameurl")
             {
-                $("#username").val("")
-                $("#Website").val("");
                 $("#username").removeClass("displaynone");
                 $("#Website").removeClass("displaynone");
             }
@@ -46,21 +46,19 @@
                 alert("Comment is required");
                 isvalid = false;
             }
-            if ($("#CommentAs").val() == "google") {
+            else if ($("#CommentAs").val() == "google") {
                 if ($("#username").val().trim() == "") {
                     isvalid = false;
-                    isSubmit = true;
-                    $(".abcRioButton").click(); // google authentication
+                    isCommentSubmit = true;
+                    $("#sk-comment-signin").find(".abcRioButton").click(); // google authentication
                 }
             }
             else if ($("#CommentAs").val() == "nameurl") {
-                if ($("#username").val().trim() == "" && $("#Website").val().trim() == "") {
-                    alert("Name and URL required")
+                if ($("#username").val().trim() == "") {
+                    alert("Name required");
                     isvalid = false;
                 }
             }
-            //$("#comment-form").submit();
-            //alert("submit");
             if (isvalid)
                 return true;
             else
@@ -68,30 +66,30 @@
         });
     });
     
-    function onSuccess(googleUser) {
+    function onCommentSuccess(googleUser) {
         $("#username").val(googleUser.getBasicProfile().getName());
         $("#ProfilePicUrl").val(googleUser.getBasicProfile().getImageUrl());
-        if (isSubmit == true) {
-            isSubmit = false;
+        if (isCommentSubmit == true) {
+            isCommentSubmit = false;
             $("#postcomment").trigger("click");
         }
     }
-    function onFailure(error) {
+    function onCommentFailure(error) {
         alert(error);
     }
-    function renderGoogleButton() {
-        gapi.signin2.render('sk-signin', {
+    function renderCommentGoogleButton() {
+        gapi.signin2.render('sk-comment-signin', {
             'scope': 'https://www.googleapis.com/auth/plus.login',
             'width': 200,
             'height': 50,
             'longtitle': true,
             'theme': 'dark',
-            'onsuccess': onSuccess,
-            'onfailure': onFailure
+            'onsuccess': onCommentSuccess,
+            'onfailure': onCommentFailure
         });
     }
 </script>
-<script src="https://apis.google.com/js/platform.js?onload=renderGoogleButton" async defer></script>
+<script src="https://apis.google.com/js/platform.js?onload=renderCommentGoogleButton" async defer></script>
 
 <script>
     @if (TempData["comment-added"] != null)

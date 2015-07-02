@@ -140,6 +140,14 @@ namespace NITASA.Areas.Admin.Controllers
                 {
                     contentNew.FeaturedImage = null;
                 }
+                if (contentPage.content.Title.ToLower() == "index")
+                {
+                    contentNew.ContentPosition = contentPage.content.ContentPosition;
+                }
+                else
+                {
+                    contentNew.ContentPosition = null;
+                }
                 contentNew.AddedBy = Functions.CurrentUserID();
                 contentNew.AddedOn = DateTime.Now;
                 contentNew.isPublished = contentPage.content.isPublished;
@@ -177,6 +185,10 @@ namespace NITASA.Areas.Admin.Controllers
                 else
                 {
                     contentUpdate.FeaturedImage = null;
+                }
+                if (contentPage.content.Title.ToLower() == "index")
+                {
+                    contentUpdate.ContentPosition = contentPage.content.ContentPosition;
                 }
                 contentUpdate.ModifiedBy = Functions.CurrentUserID();
                 contentUpdate.ModifiedOn = DateTime.Now;

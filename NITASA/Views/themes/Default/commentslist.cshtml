@@ -1,7 +1,4 @@
 @model List<NITASA.ViewModels.CL_Comments>
-@{
-    string currentThemeName = ViewBag.ActiveTheme;
-}
 
     <h5>@Model.Count() Comment</h5>
     <hr>
@@ -9,12 +6,12 @@
     @foreach (var item in Model)
     {
         <div class="gravatar">
-            <img src="@(item.ProfilePicUrl != "" ? item.ProfilePicUrl : currentThemeName+"images/gravatar.png")" style="width:80px;height:80px;" alt="" />
+            <img src="@(!string.IsNullOrEmpty(item.ProfilePicUrl) ? item.ProfilePicUrl : "/Content/gravatar.png")" style="width:80px;height:80px;" alt="" />
         </div>
         <h5>
             @if (!string.IsNullOrEmpty(item.Website))
             {
-                <a href="@item.Website" style="text-decoration: none; color: #222222;">
+                <a target="_blank" href="@item.Website" style="text-decoration: none; color: #222222;">
                     @(item.CommentAs != "anonymous" ? item.UserName : "Anonymous")
                 </a>
             }

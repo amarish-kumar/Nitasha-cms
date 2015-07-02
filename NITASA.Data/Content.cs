@@ -63,6 +63,7 @@ namespace NITASA.Data
 
         public string AddonMasterLayout { get; set; }
         public string AddonSubLayout { get; set; }
+        public string ContentPosition { get; set; }
 
         [ForeignKey("AddedBy")]
         public virtual User user { get; set; }
