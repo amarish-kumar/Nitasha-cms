@@ -233,6 +233,7 @@ namespace NITASA.Helpers
             List<CL_Content> data = RelatedContents.Select(x =>
                         new CL_Content
                         {
+                            ContentID = x.ID,
                             Title = x.Title,
                             Description = x.Description,
                             FeaturedImage = x.FeaturedImage,
@@ -250,8 +251,17 @@ namespace NITASA.Helpers
             var context = getDbContextObject();
             List<Comment> RecentComments = context.Comment.Where(x => x.IsModerated == true && x.IsAbused == false).OrderByDescending(x=>x.AddedOn).Take(TotalRecord).ToList();
             List<CL_Comments> data = RecentComments.Select(x =>
-                        new CL_Comments { Description = x.Description, UserName = x.UserName, ProfilePicUrl = x.ProfilePicUrl, AddedOn = x.AddedOn }
-                        ).ToList();
+                        new CL_Comments
+                        {
+                            CommentID = x.ID,
+                            ContentID = x.ContentID,
+                            Website = x.Website,
+                            CommentAs =x.CommentAs,
+                            Description = x.Description,
+                            UserName = x.UserName,
+                            ProfilePicUrl = x.ProfilePicUrl,
+                            AddedOn = x.AddedOn
+                        }).ToList();
             return data;
         }
         
@@ -262,6 +272,7 @@ namespace NITASA.Helpers
             List<CL_Content> data = RelatedContents.Select(x =>
                         new CL_Content
                         {
+                            ContentID = x.ID,
                             Title = x.Title,
                             Description = x.Description,
                             FeaturedImage = x.FeaturedImage,
@@ -313,6 +324,7 @@ namespace NITASA.Helpers
             List<CL_Content> data = RelatedContents.Select(x =>
                         new CL_Content
                         {
+                            ContentID = x.ID,
                             Title = x.Title,
                             Description = x.Description,
                             FeaturedImage = x.FeaturedImage,
@@ -332,6 +344,7 @@ namespace NITASA.Helpers
             List<CL_Content> data = RelatedContents.Select(x =>
                         new CL_Content
                         {
+                            ContentID = x.ID,
                             Title = x.Title,
                             Description = x.Description,
                             FeaturedImage = x.FeaturedImage,
@@ -389,6 +402,7 @@ namespace NITASA.Helpers
             List<CL_Content> data = posts.Select(x =>
                         new CL_Content
                         {
+                            ContentID = x.ID,
                             Title = x.Title,
                             Description = x.Description,
                             FeaturedImage = x.FeaturedImage,

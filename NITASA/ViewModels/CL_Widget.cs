@@ -20,7 +20,7 @@ namespace NITASA.ViewModels
         public string Title { get; set; }
         public string WidgetID { get; set; }
         public int Count { get; set; }
-        public bool ShowThumbnail { get; set; }
+        public bool showthumb { get; set; }
         public int GadgetOrder { get; set; }
     }
 }

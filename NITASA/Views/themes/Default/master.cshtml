@@ -29,6 +29,7 @@
     @Html.Raw(Functions.GetFaviconURL())
     @Html.Raw(Functions.GetHeaderCustomCode())
     @Html.Raw(Functions.GetCustomCSS())
+    @RenderSection("PageLevelStyles",false)
 </head>
 <body>
     <div id="panel">
@@ -63,6 +64,7 @@
     <script src="@currentTheme/js/hoverIntent.js"></script>
     <script src="@currentTheme/js/superfish.js"></script>
     <script src="@currentTheme/js/responsivemenu.js"></script>
+    @RenderSection("PageLevelScripts", false)
     @Html.Raw(Functions.GetCustomJavaScript())
     @Html.Raw(Functions.GetGoogleAnalytics())
 </body>

@@ -23,8 +23,8 @@ namespace NITASA.Data
 
         public string UserName { get; set; }
         public string ProfilePicUrl { get; set; }
-        //public string EmailAddress{ get; set; }
-        //public string URL{ get; set; }
+        public string Website { get; set; }
+        public string CommentAs { get; set; }
 
         public DateTime AddedOn { get; set; }
 

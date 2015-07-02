@@ -53,6 +53,7 @@ namespace NITASA.Controllers
             List<CL_Content> Posts = PostList.Select(x =>
                        new CL_Content
                        {
+                           ContentID = x.ID,
                            Title = x.Title,
                            Description = x.Description,
                            FeaturedImage = x.FeaturedImage,

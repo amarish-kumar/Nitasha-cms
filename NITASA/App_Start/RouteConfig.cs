@@ -26,6 +26,18 @@ namespace NITASA
                 new[] { "NITASA.Controllers" }
             );
             routes.MapRoute(
+                "_Content-Comment",
+                "Content/AddComment/{ContentID}",
+                new { controller = "Content", action = "AddComment", ContentID = UrlParameter.Optional },
+                new[] { "NITASA.Controllers" }
+            );
+            routes.MapRoute(
+                "_Content-Comment-Flag",
+                "Content/AddFlag/{CommentID}",
+                new { controller = "Content", action = "AddFlag", CommentID = UrlParameter.Optional },
+                new[] { "NITASA.Controllers" }
+            );
+            routes.MapRoute(
                 "_Content",
                 "Content/{URL}",
                 new { controller = "Content", action = "Details", URL = UrlParameter.Optional },

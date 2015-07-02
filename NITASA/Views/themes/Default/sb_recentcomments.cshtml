@@ -3,6 +3,7 @@
 @{
     CL_WidgetOption wOption = NITASA.Helpers.Functions.ParseJson<CL_WidgetOption>(Model);
     List<CL_Comments> Comments = NITASA.Helpers.Functions.GetRecentComments(wOption.Count);
+    string currentThemeName = ViewBag.ActiveTheme;
 }
 
 @if (Comments.Count() > 0)
@@ -10,12 +11,32 @@
     <h6 class="sidebartitle">@wOption.Title</h6>
     foreach (var item in Comments)
     {
-        <div class="avatar">
-                <img src="@item.ProfilePicUrl" alt="">
-			</div>
-			<p>
-				 @(item.Description.Length > 95 ? item.Description.Substring(0, 95) + "..." : item.Description)
-			</p>
+        string username = (item.CommentAs != "anonymous" ? item.UserName : "Anonymous");
+        if (wOption.showthumb)
+        {
+            <div class="avatar">
+                @if (!string.IsNullOrEmpty(item.Website))
+                {
+                    <a title="@username" href="@item.Website" style="text-decoration: none; color: #222222;">
+                        <img src="@(!string.IsNullOrEmpty(item.ProfilePicUrl) ? item.ProfilePicUrl : currentThemeName+"images/gravatar.png")" style="width:36px;height:36px;" alt="" />
+                    </a>
+                }
+                else
+                {
+                    <img title="@username" src="@(!string.IsNullOrEmpty(item.ProfilePicUrl) ? item.ProfilePicUrl : currentThemeName+"images/gravatar.png")" style="width:36px;height:36px;" alt="" />
+                }
+		    </div>
+        }
+        else
+        {
+            <h6 style="margin-top: 0px; padding-top: 0px; margin-bottom: 0px; padding-bottom: 0px; ">@username</h6>
+        }
+		<p>
+				@(item.Description.Length > 95 ? item.Description.Substring(0, 95) + "..." : item.Description)
+		</p>
+        if (wOption.showthumb)
+        {
+            <br class="clear" />
+        }
     }
-    <br class="clear" />
 }

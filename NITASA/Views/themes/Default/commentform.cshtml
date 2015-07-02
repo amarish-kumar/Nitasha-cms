@@ -1,32 +1,102 @@
-<h5>SPEAK YOUR MIND</h5>		
-@using (Html.BeginForm("Post", "Single", FormMethod.Post, new { id = "comment-form" }))
+@model int
+
+<h5>SPEAK YOUR MIND</h5>
+@using (Html.BeginForm("AddComment", "Content", new { ContentID = Model }, FormMethod.Post, new { id = "comment-form" }))
 {
     @Html.AntiForgeryToken()
-	<input type="text" class="five smoothborder" placeholder="Your name *" value="@Session["CommentBy"]" readonly="readonly"/>
-	@*<input type="text" class="five smoothborder" placeholder="E-mail address *"/>
-	<input type="text" class="five smoothborder" placeholder="Website"/>*@
+    <input type="text" id="username" name="username" class="five smoothborder displaynone" placeholder="Your name *" />
+    <input type="text" id="Website" name="Website" class="five smoothborder displaynone" placeholder="URL *" />
     <textarea id="CommentDescription" name="CommentDescription" class="six smoothborder " rows="7" placeholder="Comments *"></textarea>
-    <button type="submit" class="readmore" onclick="validate()">Publish</button>
+    @Html.Hidden("ProfilePicUrl")
+    <button type="submit" class="readmore" id="postcomment">Publish</button>
+    <label style="display: inline;margin-left:20px;">Comment as:</label>
+    <select id="CommentAs" name="CommentAs" class="five smoothborder" style="display: inline; width: 140px">
+        <option value="google">Google Account</option>
+        <option value="nameurl">Name/URL</option>
+        <option value="anonymous">Anonymous</option>
+    </select>
 }
 
+<div class="displaynone">
+    <div id="sk-signin"></div>
+</div>
+<style>
+    .displaynone {
+        display: none !important;
+    }
+</style>
+
 <script>
-    function validate() {
-        var element = document.getElementById("CommentDescription");
-        if (!element.value) {
-            alert("Comment is required");
-            return false;
-        }
-        else {
-            document.getElementById("comment-form").submit();
+    var isSubmit = false;
+    $(document).ready(function () {
+        $("#CommentAs").click(function (evt) {
+            $("#username").addClass("displaynone");
+            $("#Website").addClass("displaynone");
+            if ($(this).val() == "nameurl")
+            {
+                $("#username").val("")
+                $("#Website").val("");
+                $("#username").removeClass("displaynone");
+                $("#Website").removeClass("displaynone");
+            }
+        });
+        $("#postcomment").click(function (e) {
+            var isvalid = true;
+            if ($("#CommentDescription").val().trim() == "") {
+                alert("Comment is required");
+                isvalid = false;
+            }
+            if ($("#CommentAs").val() == "google") {
+                if ($("#username").val().trim() == "") {
+                    isvalid = false;
+                    isSubmit = true;
+                    $(".abcRioButton").click(); // google authentication
+                }
+            }
+            else if ($("#CommentAs").val() == "nameurl") {
+                if ($("#username").val().trim() == "" && $("#Website").val().trim() == "") {
+                    alert("Name and URL required")
+                    isvalid = false;
+                }
+            }
+            //$("#comment-form").submit();
+            //alert("submit");
+            if (isvalid)
+                return true;
+            else
+                return false;
+        });
+    });
+    
+    function onSuccess(googleUser) {
+        $("#username").val(googleUser.getBasicProfile().getName());
+        $("#ProfilePicUrl").val(googleUser.getBasicProfile().getImageUrl());
+        if (isSubmit == true) {
+            isSubmit = false;
+            $("#postcomment").trigger("click");
         }
     }
-    @if (TempData["comment-added"] != null && (bool)TempData["comment-added"] == true)
+    function onFailure(error) {
+        alert(error);
+    }
+    function renderGoogleButton() {
+        gapi.signin2.render('sk-signin', {
+            'scope': 'https://www.googleapis.com/auth/plus.login',
+            'width': 200,
+            'height': 50,
+            'longtitle': true,
+            'theme': 'dark',
+            'onsuccess': onSuccess,
+            'onfailure': onFailure
+        });
+    }
+</script>
+<script src="https://apis.google.com/js/platform.js?onload=renderGoogleButton" async defer></script>
+
+<script>
+    @if (TempData["comment-added"] != null)
     {
         @: alert("Your comment is added. we will review and it add. :)");
-    }
-    @if (TempData["comment-flagged"] != null && (bool)TempData["comment-flagged"] == true)
-    {
-        @: alert("Comment is Flagged. We will review. :)");
     }
     @if (TempData["comment-error"] != null)
     {

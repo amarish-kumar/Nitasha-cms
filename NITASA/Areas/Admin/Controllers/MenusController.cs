@@ -147,7 +147,8 @@ namespace NITASA.Areas.Admin.Controllers
 
             string strURL = Request.Url.AbsoluteUri.ToString();
             strURL = strURL.Remove(strURL.IndexOf("Admin"));
-            return strURL + type + "/Details/" + slug;
+            //return strURL + type + "/Details/" + slug;
+            return strURL + type + "/" + slug;
         }
         private string EndParentMenuHTML(bool hasParent)
         {

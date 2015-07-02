@@ -1,23 +1,36 @@
 @model List<NITASA.ViewModels.CL_Comments>
-
-        <h5>@Model.Count() Comment</h5>
-		<hr>
-		
-@foreach (var item in Model)
-{
-    
-        <div class="gravatar">
-            <img src="@item.ProfilePicUrl" alt="">
-		</div>
-		<h5>Sam
-		<span class="commentdate">
-			- @NITASA.Helpers.Functions.FormatDate(item.AddedOn, "MMMM dd, yyyy at hh:mm tt")@*October 26, 2013 at 9:39 am*@
-		</span>
-		</h5>
-			
-		<p>
-            @item.Description
-			@*But she cuddled in bed with one knee up to her neck in cute boyish fashion, laughing softly at the remembrance of another time when she had popped a cigarette stump into the eye of a London bobby from the top of a bus.  Temporibus autem quibusdam.*@
-		</p>
-		<br class="clear">
+@{
+    string currentThemeName = ViewBag.ActiveTheme;
 }
+
+    <h5>@Model.Count() Comment</h5>
+    <hr>
+
+    @foreach (var item in Model)
+    {
+        <div class="gravatar">
+            <img src="@(item.ProfilePicUrl != "" ? item.ProfilePicUrl : currentThemeName+"images/gravatar.png")" style="width:80px;height:80px;" alt="" />
+        </div>
+        <h5>
+            @if (!string.IsNullOrEmpty(item.Website))
+            {
+                <a href="@item.Website" style="text-decoration: none; color: #222222;">
+                    @(item.CommentAs != "anonymous" ? item.UserName : "Anonymous")
+                </a>
+            }
+            else
+            { 
+                @(item.CommentAs != "anonymous" ? item.UserName : "Anonymous")
+            }
+            <a href="javascript:;" data-id="@(item.CommentID)" class="commentflag">Flag</a>
+            <br />
+            <span class="commentdate">
+                - @NITASA.Helpers.Functions.FormatDate(item.AddedOn, "MMMM dd, yyyy on hh:mm tt")
+            </span>
+        </h5>
+        
+        <p>
+            @item.Description
+        </p>
+        <br class="clear">
+    }
