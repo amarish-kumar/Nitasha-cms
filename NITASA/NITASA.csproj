@@ -371,7 +371,9 @@
     <Content Include="Areas\Admin\assets\js\typeahead.bundle.js" />
     <Content Include="Areas\Admin\assets\js\xcharts.min.js" />
     <Content Include="Content\default.css" />
+    <Content Include="Content\gravatar.png" />
     <Content Include="Content\Gridmvc.css" />
+    <Content Include="Content\postdefult.png" />
     <Content Include="Global.asax" />
     <Content Include="Areas\Admin\Views\Web.config" />
     <Content Include="Areas\Admin\Views\Authenticate\Login.cshtml" />

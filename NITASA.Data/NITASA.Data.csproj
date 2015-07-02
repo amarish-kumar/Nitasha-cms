@@ -99,6 +99,10 @@
     <Compile Include="Migrations\201507020611011_comments-model-changes.Designer.cs">
       <DependentUpon>201507020611011_comments-model-changes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201507021303377_contentposition-contentmodel.cs" />
+    <Compile Include="Migrations\201507021303377_contentposition-contentmodel.Designer.cs">
+      <DependentUpon>201507021303377_contentposition-contentmodel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NTSDBContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -121,6 +125,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201507020611011_comments-model-changes.resx">
       <DependentUpon>201507020611011_comments-model-changes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507021303377_contentposition-contentmodel.resx">
+      <DependentUpon>201507021303377_contentposition-contentmodel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

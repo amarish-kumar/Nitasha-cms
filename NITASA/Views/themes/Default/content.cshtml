@@ -92,6 +92,14 @@ else if(Model.Type=="post")
                 @Html.AntiForgeryToken()
                 @Html.Hidden("CommentID")
                 @Html.Hidden("AbuseReason")
+                @Html.Hidden("AbuseByUserName")
+                <div style="float:left;">
+                    <label style="display: inline;margin-left:20px;">Comment as:</label>
+                    <select id="FlagAs" name="FlagAs" class="five smoothborder" style="display: inline; width: 140px">
+                        <option value="google">Google Account</option>
+                        <option value="anonymous">Anonymous</option>
+                    </select>
+                </div>
                 <div class="control">
                     <input type="submit" id="flag-submit" value="Flag" class="readmore" />
                     <input type="button" id="flag-cancel" value="Cancel" class="readmore" />
@@ -100,10 +108,15 @@ else if(Model.Type=="post")
         </div>
     </div>
     <!-- end  comments flag -->
-
+    <div class="displaynone">
+        <div id="sk-flag-signin"></div>
+    </div>
     @section PageLevelStyles
     {
         <style>
+            .displaynone {
+                display: none !important;
+            }
             .commentflag {
                 font-size: 12px;
                 text-decoration: none;
@@ -163,6 +176,7 @@ else if(Model.Type=="post")
     @section PageLevelScripts
     {
         <script>
+            var isFlagSubmit = false;
             $(document).ready(function () {
                 $(".flag-radio").change(function () {
                     if ($(".flag-radio:checked").val() == "PostOther") {
@@ -185,24 +199,52 @@ else if(Model.Type=="post")
                     $(".flag-radio").trigger("change");
                 });
                 $("#flag-submit").click(function () {
-                    var isvalid = true;
                     if ($(".flag-radio:checked").val() == "PostOther" && $("#FlagReasonText").val().trim()=="") {
-                        isvalid = false;
                         alert("Please specify other reason.");
+                        return false;
                     }
                     else {
+                        if ($("#FlagAs").val() == "google") {
+                            if ($("#AbuseByUserName").val().trim() == "") {
+                                isFlagSubmit = true;
+                                $("#sk-flag-signin").find(".abcRioButton").click(); // google authentication
+                                return false;
+                            }
+                        }
+                        else if ($("#FlagAs").val() == "anonymous") {
+                            $("#AbuseByUserName").val("Anonymous");
+                        }
                         if ($(".flag-radio:checked").val() == "PostOther")
                             $("#AbuseReason").val($("#FlagReasonText").val());
                         else
                             $("#AbuseReason").val($(".flag-radio:checked").val());
-                    }
-                    if (isvalid)
                         return true;
-                    else
-                        return false;
+                    }
                 });
             });
+            function onFlagSuccess(googleUser) {
+                $("#AbuseByUserName").val(googleUser.getBasicProfile().getName());
+                if (isFlagSubmit == true) {
+                    isFlagSubmit = false;
+                    $("#flag-submit").trigger("click");
+                }
+            }
+            function onFlagFailure(error) {
+                alert(error);
+            }
+            function renderFlagGoogleButton() {
+                gapi.signin2.render('sk-flag-signin', {
+                    'scope': 'https://www.googleapis.com/auth/plus.login',
+                    'width': 200,
+                    'height': 50,
+                    'longtitle': true,
+                    'theme': 'dark',
+                    'onsuccess': onFlagSuccess,
+                    'onfailure': onFlagFailure
+                });
+            }
         </script>
+        <script src="https://apis.google.com/js/platform.js?onload=renderFlagGoogleButton" async defer></script>
         <script>
             @if (TempData["flag-added"] != null)
             {
