@@ -41,22 +41,25 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 try
                 {
-                    if (ProfilePicURL != null && ProfilePicURL.ContentLength > 0)
+                    if (ProfilePicURL != null && !Functions.IsValidImage(ProfilePicURL.FileName.ToLower()))
                     {
-                        string relativePath = "/Areas/Admin/assets/images/avatars/" + ProfilePicURL.FileName;
-                        string logoFullPath = Server.MapPath(relativePath);
-                        ProfilePicURL.SaveAs(logoFullPath);
-                        userEdit.ProfilePicURL = relativePath;
-                        usr.ProfilePicURL = relativePath;
+                        TempData["Error"] = "Please upload valid profile picture";
+                        usr.ProfilePicURL = userEdit.ProfilePicURL;
                     }
                     else
                     {
-                        usr.ProfilePicURL = userEdit.ProfilePicURL;
+                        if (ProfilePicURL != null && ProfilePicURL.ContentLength > 0)
+                        {
+                            string relativePath = Functions.GetNewFileName("/Areas/Admin/assets/images/avatars/", ProfilePicURL.FileName);
+                            ProfilePicURL.SaveAs(Server.MapPath(relativePath));
+                            userEdit.ProfilePicURL = relativePath;
+                            usr.ProfilePicURL = relativePath;
+                        }
+                        userEdit.FirstName = usr.FirstName;
+                        userEdit.LastName = usr.LastName;
+                        context.SaveChanges();
+                        TempData["Message"] = "User profile updated successfully.";
                     }
-                    userEdit.FirstName = usr.FirstName;
-                    userEdit.LastName = usr.LastName;
-                    context.SaveChanges();
-                    TempData["Message"] = "User profile updated successfully.";
                 }
                 catch (Exception ex)
                 {

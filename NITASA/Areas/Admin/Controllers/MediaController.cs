@@ -114,7 +114,7 @@ namespace NITASA.Areas.Admin.Controllers
             return Json(Attributes, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
+        [ChildActionOnly]
         public ActionResult GetMedia(bool isEditor = false)
         {
             List<Media> AllMediaList = context.Media.Where(m => m.Type == "Image" && m.IsDeleted == false).OrderByDescending(m => m.ID).ToList();

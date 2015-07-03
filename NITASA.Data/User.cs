@@ -59,6 +59,9 @@ namespace NITASA.Data
         [DefaultValue(false)]
         public bool IsDeleted { get; set; }
 
+        [DefaultValue(false)]
+        public bool IsSuperAdmin { get; set; }
+
         public string FullName
         {
             get
@@ -71,5 +74,8 @@ namespace NITASA.Data
 
         [ForeignKey("RoleID")]
         public virtual Role Role { get; set; }
+
+        [NotMapped]
+        public bool IsChangePassword { get; set; }
     }
 }

@@ -150,7 +150,7 @@ namespace NITASA.Controllers
                 }
                 catch (SqlException ex)
                 {
-                    @ViewBag.invalidData = ex.Message;
+                    ViewBag.invalidData = ex.Message;
                 }
                 finally
                 {
@@ -161,28 +161,6 @@ namespace NITASA.Controllers
             }
             catch { return false; }
         }
-        /*private bool CreateDatabase(string dbName)
-        {
-            var result = false;
-            SqlConnection myConn = new SqlConnection(ConnectionString);
-            string sql = "CREATE DATABASE " + dbName + "; ";
-            SqlCommand myCommand = new SqlCommand(sql, myConn);
-            try
-            {
-                myConn.Open();
-                myCommand.ExecuteNonQuery();
-                result = true;
-            }
-            catch (System.Exception ex) { }
-            finally
-            {
-                if (myConn.State == ConnectionState.Open)
-                {
-                    myConn.Close();
-                }
-            }
-            return result;
-        }*/
         private bool SaveConfig(string dbName)
         {
             string connectionstring = "";
@@ -191,7 +169,7 @@ namespace NITASA.Controllers
                 var configuration = WebConfigurationManager.OpenWebConfiguration("~");
                 var section = (ConnectionStringsSection)configuration.GetSection("connectionStrings");
                 connectionstring = ConnectionString.Replace("master", dbName);
-                
+
                 NTSDBContext context = new NTSDBContext("NITASAConnection");
                 context.Database.Connection.ConnectionString = connectionstring;
                 context.Database.CreateIfNotExists();
@@ -213,8 +191,13 @@ namespace NITASA.Controllers
                 TempData["message"] = "Configuration file updated successfully. Please enter admin login credentials.";
                 return true;
             }
-            catch (Exception ex){
-                ViewBag.invalidData = "Error occured while updating configuration file."; 
+            catch (System.Data.Entity.Validation.DbEntityValidationException ex)
+            {
+                var errorMessages = ex.EntityValidationErrors
+                    .SelectMany(x => x.ValidationErrors)
+                    .Select(x => x.ErrorMessage);
+                var fullErrorMessage = string.Join("; ", errorMessages);
+                ViewBag.invalidData = "Error occured while updating configuration file.";
                 return false;
             }
         }
@@ -232,16 +215,17 @@ namespace NITASA.Controllers
             user.GUID = Functions.GetRandomGUID();
             user.FirstName = "Super";
             user.LastName = "Admin";
-            user.Email = ConfigurationManager.AppSettings["DefaultSuperAdminEmail"].ToString();
+            user.Email = "admin@nitasa.com";
             user.SaltKey = CryptoUtility.GetNewSalt();
-            string DefaultPassword = ConfigurationManager.AppSettings["DefaultSuperAdminPassword"].ToString();
-            user.Password = CryptoUtility.GetPasswordHash(DefaultPassword, user.SaltKey); 
+            string DefaultPassword = "admin@1234";
+            user.Password = CryptoUtility.GetPasswordHash(DefaultPassword, user.SaltKey);
             user.ProfilePicURL = "/Areas/Admin/assets/images/avatars/noprofile.jpg";
             user.IsActive = true;
             user.IsDefault = true;
             user.AddedOn = DateTime.UtcNow;
             user.AddedBy = 1;
             user.RoleID = AdminRole.ID;
+            user.IsSuperAdmin = true;
             context.User.Add(user);
             context.SaveChanges();
             int userID = user.ID;
@@ -310,7 +294,7 @@ namespace NITASA.Controllers
             page.Type = "page";
             page.Title = "Index";
             page.URL = "";
-            page.Description = "";
+            page.Description = "Home page";
             page.AddedBy = userID;
             page.AddedOn = DateTime.UtcNow;
             page.isPublished = true;

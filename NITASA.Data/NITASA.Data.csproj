@@ -91,18 +91,6 @@
     <Compile Include="Media.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Meta.cs" />
-    <Compile Include="Migrations\201506290740337_addon-layout-added.cs" />
-    <Compile Include="Migrations\201506290740337_addon-layout-added.Designer.cs">
-      <DependentUpon>201506290740337_addon-layout-added.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201507020611011_comments-model-changes.cs" />
-    <Compile Include="Migrations\201507020611011_comments-model-changes.Designer.cs">
-      <DependentUpon>201507020611011_comments-model-changes.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201507021303377_contentposition-contentmodel.cs" />
-    <Compile Include="Migrations\201507021303377_contentposition-contentmodel.Designer.cs">
-      <DependentUpon>201507021303377_contentposition-contentmodel.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="NTSDBContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -116,20 +104,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Migrations\Scripts\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201506290740337_addon-layout-added.resx">
-      <DependentUpon>201506290740337_addon-layout-added.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201507020611011_comments-model-changes.resx">
-      <DependentUpon>201507020611011_comments-model-changes.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201507021303377_contentposition-contentmodel.resx">
-      <DependentUpon>201507021303377_contentposition-contentmodel.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

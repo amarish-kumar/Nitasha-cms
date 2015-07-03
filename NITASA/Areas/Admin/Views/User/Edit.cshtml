@@ -47,15 +47,6 @@
                                                 </div>
                                             </div>
                                             <div class="control-group">
-                                                <label class="control-label" style="text-align: left;">Password: </label>
-                                                <div class="controls">
-                                                    @Html.PasswordFor(m => m.Password)
-                                                    <div style="color: red">
-                                                        @Html.ValidationMessageFor(m => m.Password)
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="control-group">
                                                 <label class="control-label" style="text-align: left;">First Name: </label>
                                                 <div class="controls">
                                                     @Html.TextBoxFor(m => m.FirstName)
@@ -91,6 +82,26 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="control-group">
+                                                <label class="control-label" style="text-align: left;">
+                                                    Change Password?:
+                                                </label>
+                                                <div class="controls">
+                                                    @Html.CheckBoxFor(c => c.IsChangePassword, new { @class = "icheck" })
+                                                    @Html.ValidationMessageFor(c => c.IsChangePassword)
+                                                </div>
+                                            </div>
+                                            @{Html.EnableClientValidation(false);}
+                                            <div class="control-group">
+                                                <label class="control-label" style="text-align: left;">Password: </label>
+                                                <div class="controls">
+                                                    @Html.PasswordFor(m => m.Password)
+                                                    <div style="color: red">
+                                                        @Html.ValidationMessageFor(m => m.Password)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @{Html.EnableClientValidation(true);}
                                             <div class="control-group">
                                                 <label class="control-label" style="text-align: left;">IsActive: </label>
                                                 <div class="controls">

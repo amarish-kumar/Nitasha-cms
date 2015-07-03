@@ -8,7 +8,7 @@
 @if (pages.Count() > 0)
 {
 
-    <h6 class="sidebartitle">PAGE LIST</h6>
+    <h6 class="sidebartitle">@wOption.Title</h6>
     foreach (var item in pages)
     {
         <a href="@(string.IsNullOrEmpty(item.URL) ? "#" : "/Content/" + item.URL)" class="tags">@item.Title</a>

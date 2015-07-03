@@ -32,9 +32,16 @@ namespace NITASA
             {
                 using (NITASA.Data.NTSDBContext context = new Data.NTSDBContext())
                 {
-                    var CurrentTheme = context.Settings.FirstOrDefault(m => m.Name == "CurrentTheme");
-                    if (CurrentTheme != null) Application["CurrentTheme"] = CurrentTheme.Value;
-                    else Application["CurrentTheme"] = "Default";
+                    if (context.Database.Exists())
+                    {
+                        var CurrentTheme = context.Settings.FirstOrDefault(m => m.Name == "CurrentTheme");
+                        if (CurrentTheme != null) Application["CurrentTheme"] = CurrentTheme.Value;
+                        else Application["CurrentTheme"] = "Default";
+                    }
+                    else
+                    {
+                        Application["CurrentTheme"] = "Default";
+                    }
                 }
             }
             catch(Exception ex)

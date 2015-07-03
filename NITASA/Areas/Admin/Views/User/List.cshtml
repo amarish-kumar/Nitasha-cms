@@ -105,7 +105,7 @@
 
 @helper RenderStatusButton(Tuple<User, string> usr)
 {
-    if (usr.Item2 != "Administrator")
+    if (usr.Item1.IsSuperAdmin == false)
     {
         if (Functions.CurrentUserID() == usr.Item1.ID)
         {
@@ -125,7 +125,7 @@
 }
 @helper RenderActions(Tuple<User, string> usr)
 {
-    if (usr.Item2 != "Administrator")
+    if (usr.Item1.IsSuperAdmin == false)
     {
         if (Functions.CurrentUserID() == usr.Item1.ID)
         {

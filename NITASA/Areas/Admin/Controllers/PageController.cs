@@ -68,6 +68,10 @@ namespace NITASA.Areas.Admin.Controllers
                     cont.Description= cont.Description.Replace("<img src=\"../../", "<img src=\"../../../");
                     pModel.content = cont;
                     pModel.meta = dbContext.Meta.Where(m => m.ContentID == cont.ID).FirstOrDefault();
+                    if (cont.Title.ToLower() == "index")
+                    {
+                        ViewBag.isIndexpage = true;
+                    }
                     return View(pModel);
                 }
                 else
@@ -83,6 +87,17 @@ namespace NITASA.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (contentPage.content.Title.ToLower() == "index") // add new page
+                {
+                    var index = dbContext.Content.FirstOrDefault(x => x.Title.ToLower() == "index");
+                    if (index != null && (contentPage.content.ID != index.ID))
+                    {
+                        TempData["ErrorMessage"] = "Index page already added, please add diffrent page.";
+                        return View(contentPage);
+                    }
+                    else
+                    { ViewBag.isIndexpage = true; }
+                }
                 string pageContent = contentPage.content.Description.Replace("&nbsp;", "").Replace("<p>", "").Replace("</p>", "").Trim();
                 if (pageContent != string.Empty)
                 {
@@ -91,7 +106,7 @@ namespace NITASA.Areas.Admin.Controllers
                     else
                         contentPage.content.isPublished = false;
 
-                    if (Request.Form["content.ID"] == null) // Add
+                    if (contentPage.content.ID == 0) // Add
                     {
                         AddUpdateContentWithMeta(contentPage, 'A');
                     }
@@ -103,14 +118,14 @@ namespace NITASA.Areas.Admin.Controllers
                         TempData["SuccessMessage"] = "Page published successfully.";
                     else
                         TempData["SuccessMessage"] = "Page saved to draft successfully.";
+                    return RedirectToAction("List");
                 }
                 else
                 {
                     TempData["ErrorMessage"] = "Please enter page description";
-                    return RedirectToAction("Add");
                 }
             }
-            return RedirectToAction("List");
+            return View(contentPage);
         }
 
         public void AddUpdateContentWithMeta(PageModel contentPage, char operationType)

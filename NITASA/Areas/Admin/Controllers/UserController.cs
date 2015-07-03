@@ -49,32 +49,39 @@ namespace NITASA.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                int duplicateUser = context.User.Where(m => m.Email == user.Email && m.IsDeleted == false).Count();
-                if (duplicateUser == 0)
+                if (ProfilePic != null && !Functions.IsValidImage(ProfilePic.FileName.ToLower()))
                 {
-                    user.GUID = Functions.GetRandomGUID();                    
-                    user.SaltKey = CryptoUtility.GetNewSalt();
-                    user.Password = CryptoUtility.GetPasswordHash(user.Password, user.SaltKey); 
-
-                    if (ProfilePic != null && ProfilePic.ContentLength > 0)
-                    {
-                        string relativePath = "/Areas/Admin/assets/images/avatars/" + ProfilePic.FileName;
-                        string logoFullPath = Server.MapPath(relativePath);
-                        ProfilePic.SaveAs(logoFullPath);
-                        user.ProfilePicURL = relativePath;
-                    }
-                    user.AddedOn = DateTime.UtcNow;
-                    user.AddedBy = Functions.CurrentUserID();
-                    user.IsDefault = false;
-                    user.IsDeleted = false;
-                    context.User.Add(user);
-                    context.SaveChanges();
-                    TempData["SuccessMessage"] = "User added successfully.";
-                    return RedirectToAction("List");
+                    TempData["ErrorMessage"] = "Please upload valid profile picture";
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "User already exist with same email address. Please enter different email.";
+                    int duplicateUser = context.User.Where(m => m.Email == user.Email && m.IsDeleted == false).Count();
+                    if (duplicateUser == 0)
+                    {
+                        user.GUID = Functions.GetRandomGUID();
+                        user.SaltKey = CryptoUtility.GetNewSalt();
+                        user.Password = CryptoUtility.GetPasswordHash(user.Password, user.SaltKey);
+
+                        if (ProfilePic != null && ProfilePic.ContentLength > 0)
+                        {
+                            string relativePath = Functions.GetNewFileName("/Areas/Admin/assets/images/avatars/", ProfilePic.FileName);
+                            ProfilePic.SaveAs(Server.MapPath(relativePath));
+                            user.ProfilePicURL = relativePath;
+                        }
+                        user.AddedOn = DateTime.UtcNow;
+                        user.AddedBy = Functions.CurrentUserID();
+                        user.IsDefault = false;
+                        user.IsDeleted = false;
+                        user.IsSuperAdmin = false;
+                        context.User.Add(user);
+                        context.SaveChanges();
+                        TempData["SuccessMessage"] = "User added successfully.";
+                        return RedirectToAction("List");
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "User already exist with same email address. Please enter different email.";
+                    }
                 }
             }
             ViewBag.RoleList = new SelectList(context.Role.Where(m => m.IsDeleted != true).ToList(), "ID", "Name");
@@ -122,39 +129,50 @@ namespace NITASA.Areas.Admin.Controllers
                 if (!UserRights.HasRights(Rights.EditOtherUsers))
                     return RedirectToAction("AccessDenied", "Home");
             }
-
+            if (!user.IsChangePassword)
+            {
+                ModelState.Remove("Password");
+            }
             if (ModelState.IsValid)
             {
-                int duplicateUser = context.User.Where(m => m.Email == user.Email && m.ID != user.ID && m.IsDeleted == false).Count();
-                if (duplicateUser == 0)
+                if (ProfilePic != null && !Functions.IsValidImage(ProfilePic.FileName.ToLower()))
                 {
-                    User userUpdate = context.User.Find(user.ID);
-
-                    userUpdate.Email = user.Email;
-                    userUpdate.SaltKey = CryptoUtility.GetNewSalt();
-                    userUpdate.Password = CryptoUtility.GetPasswordHash(user.Password, user.SaltKey); 
-
-                    userUpdate.FirstName = user.FirstName;
-                    userUpdate.LastName = user.LastName;
-                    if (ProfilePic != null && ProfilePic.ContentLength > 0)
-                    {
-                        string relativePath = "/Areas/Admin/assets/images/avatars/" + ProfilePic.FileName;
-                        string logoFullPath = Server.MapPath(relativePath);
-                        ProfilePic.SaveAs(logoFullPath);
-                        userUpdate.ProfilePicURL = relativePath;
-                    }
-                    userUpdate.RoleID = user.RoleID;
-                    user.ModifiedOn = DateTime.UtcNow;
-                    user.ModifiedBy = Functions.CurrentUserID();
-                    userUpdate.IsActive = user.IsActive;
-                    userUpdate.IsDefault = user.IsDefault;
-                    context.SaveChanges();
-                    TempData["SuccessMessage"] = "User updated successfully.";
-                    return RedirectToAction("List");
+                    TempData["ErrorMessage"] = "Please upload valid profile picture";
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "User already exist with same email address. Please enter different email.";
+                    int duplicateUser = context.User.Where(m => m.Email == user.Email && m.ID != user.ID && m.IsDeleted == false).Count();
+                    if (duplicateUser == 0)
+                    {
+                        User userUpdate = context.User.Find(user.ID);
+
+                        userUpdate.Email = user.Email;
+                        if (user.IsChangePassword)
+                        {
+                            userUpdate.SaltKey = CryptoUtility.GetNewSalt();
+                            userUpdate.Password = CryptoUtility.GetPasswordHash(user.Password, userUpdate.SaltKey);
+                        }
+                        userUpdate.FirstName = user.FirstName;
+                        userUpdate.LastName = user.LastName;
+                        if (ProfilePic != null && ProfilePic.ContentLength > 0)
+                        {
+                            string relativePath = Functions.GetNewFileName("/Areas/Admin/assets/images/avatars/", ProfilePic.FileName);
+                            ProfilePic.SaveAs(Server.MapPath(relativePath));
+                            userUpdate.ProfilePicURL = relativePath;
+                        }
+                        userUpdate.RoleID = user.RoleID;
+                        user.ModifiedOn = DateTime.UtcNow;
+                        user.ModifiedBy = Functions.CurrentUserID();
+                        userUpdate.IsActive = user.IsActive;
+                        userUpdate.IsDefault = user.IsDefault;
+                        context.SaveChanges();
+                        TempData["SuccessMessage"] = "User updated successfully.";
+                        return RedirectToAction("List");
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "User already exist with same email address. Please enter different email.";
+                    }
                 }
             }
             ViewBag.RoleList = new SelectList(context.Role.Where(m => m.IsDeleted != true).ToList(), "ID", "Name", user.RoleID);
