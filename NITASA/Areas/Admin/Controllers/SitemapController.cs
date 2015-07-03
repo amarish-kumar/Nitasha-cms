@@ -1,4 +1,5 @@
-﻿using NITASA.Areas.Admin.Helper.Sitemap;
+﻿using NITASA.Areas.Admin.Helper;
+using NITASA.Areas.Admin.Helper.Sitemap;
 using NITASA.Areas.Admin.ViewModels;
 using NITASA.Data;
 using System;
@@ -11,6 +12,7 @@ using System.Xml.Linq;
 
 namespace NITASA.Areas.Admin.Controllers
 {
+    [CheckLogin]
     public class SitemapController : Controller
     {
         public NTSDBContext context;
@@ -27,7 +29,7 @@ namespace NITASA.Areas.Admin.Controllers
 
 
         [HttpPost]
-        public FileStreamResult Generate(Sitemap model)
+        public ActionResult Generate(Sitemap model)
         {
             //string siteDomain = "http://nixon.mynitasa.com/";
             string siteDomain = Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/";
@@ -48,7 +50,7 @@ namespace NITASA.Areas.Admin.Controllers
 
             TempData["PostMessage"] = "Sitemap generated";
 
-            return SitemapResult(file);
+            return View();
         }
 
 
@@ -69,7 +71,8 @@ namespace NITASA.Areas.Admin.Controllers
                 items.Add(new SitemapItem(
                 (siteDomain + "content/" + post.URL),
                 (post.ModifiedOn.HasValue ? post.ModifiedOn.Value : (DateTime?)null),
-                model.postFreqency, model.postPriority));
+                (model.postFreqency.HasValue ? model.postFreqency.Value : SitemapChangeFrequency.Never), 
+                (model.postPriority.HasValue?model.postPriority.Value:1)));
             }
 
             foreach (var page in pages)
@@ -77,7 +80,8 @@ namespace NITASA.Areas.Admin.Controllers
                 items.Add(new SitemapItem(
                 (siteDomain + "content/" + page.URL),
                 (page.ModifiedOn.HasValue ? page.ModifiedOn.Value : (DateTime?)null),
-                model.pageFreqency, model.pagePriority));
+                (model.postFreqency.HasValue ? model.postFreqency.Value : SitemapChangeFrequency.Monthly),
+                (model.postPriority.HasValue ? model.postPriority.Value : 1)));
             }
 
             foreach (var cat in categories)
@@ -85,7 +89,8 @@ namespace NITASA.Areas.Admin.Controllers
                 items.Add(new SitemapItem(
                 (siteDomain + "category/" + cat.Slug),
                 (cat.ModifiedOn.HasValue ? cat.ModifiedOn.Value : (DateTime?)null),
-                model.categoryFreqency, model.categoryPriority));
+                (model.postFreqency.HasValue ? model.postFreqency.Value : SitemapChangeFrequency.Monthly),
+                (model.postPriority.HasValue ? model.postPriority.Value : 1)));
             }
 
             foreach (var tag in tags)
@@ -93,7 +98,8 @@ namespace NITASA.Areas.Admin.Controllers
                 items.Add(new SitemapItem(
                 (siteDomain + "label/" + tag.Slug),
                 (tag.ModifiedOn.HasValue ? tag.ModifiedOn.Value : (DateTime?)null),
-                model.labelFreqency, model.labelPriority));
+                (model.postFreqency.HasValue ? model.postFreqency.Value : SitemapChangeFrequency.Monthly),
+                (model.postPriority.HasValue ? model.postPriority.Value : 1)));
             }
 
             SitemapGenerator generator = new SitemapGenerator();
@@ -102,15 +108,15 @@ namespace NITASA.Areas.Admin.Controllers
         }
 
 
-        public FileStreamResult SitemapResult(XDocument xmlFile)
-        {
-            string name = "Sitemap.xml";
-            var str = new MemoryStream();
-            xmlFile.Save(str);
-            str.Flush();
-            str.Position = 0;
+        //public FileStreamResult SitemapResult(XDocument xmlFile)
+        //{
+        //    string name = "Sitemap.xml";
+        //    var str = new MemoryStream();
+        //    xmlFile.Save(str);
+        //    str.Flush();
+        //    str.Position = 0;
 
-            return File(str, "text/xml", name);
-        }
+        //    return File(str, "text/xml", name);
+        //}
     }
 }

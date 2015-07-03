@@ -105,7 +105,7 @@
                                             <div class="control-group">
                                                 <label class="control-label" style="text-align: left;">IsActive: </label>
                                                 <div class="controls">
-                                                    @Html.CheckBoxFor(m => m.IsActive)
+                                                    @Html.CheckBoxFor(m => m.IsActive, new { @class = "icheck" })
                                                     <div style="color: red">
                                                         @Html.ValidationMessageFor(m => m.IsActive)
                                                     </div>

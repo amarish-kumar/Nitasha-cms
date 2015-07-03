@@ -53,66 +53,82 @@
                                                     </td>
                                                     <td>
                                                         @Html.DropDownListFor(c => c.postFreqency, DropDownHelper.GetFrequencyDDL(string.Empty), "Select")<br />
-                                                    @Html.ValidationMessageFor(c => c.postFreqency)
-                                                </td>
-                                                <td>
-                                                    @Html.TextBoxFor(c => c.postPriority)<br />
-                                                @Html.ValidationMessageFor(c => c.postPriority)
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                Pages
-                                            </td>
-                                            <td>
-                                                @Html.DropDownListFor(c => c.postFreqency, DropDownHelper.GetFrequencyDDL(string.Empty), "Select")<br />
-                                            @Html.ValidationMessageFor(c => c.pageFreqency)
-                                        </td>
-                                        <td>
-                                            @Html.TextBoxFor(c => c.pagePriority)<br />
-                                        @Html.ValidationMessageFor(c => c.pagePriority)
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Categories
-                                    </td>
-                                    <td>
-                                        @Html.DropDownListFor(c => c.postFreqency, DropDownHelper.GetFrequencyDDL(string.Empty), "Select")<br />
-                                    @Html.ValidationMessageFor(c => c.categoryFreqency)
-                                </td>
-                                <td>
-                                    @Html.TextBoxFor(c => c.categoryPriority)<br />
-                                @Html.ValidationMessageFor(c => c.categoryPriority)
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Tags
-                            </td>
-                            <td>
-                                @Html.DropDownListFor(c => c.postFreqency, DropDownHelper.GetFrequencyDDL(string.Empty), "Select")<br />
-                            @Html.ValidationMessageFor(c => c.labelFreqency)
-                        </td>
-                        <td>
-                            @Html.TextBoxFor(c => c.labelPriority)<br />
-                        @Html.ValidationMessageFor(c => c.labelPriority)
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-</div>
-</div>
-<div class="row-fluid">
-    <div class="control-group">
-        <input type="submit" value="Generate Sitemap" class="btn btn-blue" />
-    </div>
-</div>
-</div>
-</div>
-</div>
-</div>
+                                                        <div style="color:red;">
+                                                            @Html.ValidationMessageFor(c => c.postFreqency)
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        @Html.TextBoxFor(c => c.postPriority)<br />
+                                                        <div style="color:red;">
+                                                            @Html.ValidationMessageFor(c => c.postPriority)
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Pages
+                                                    </td>
+                                                    <td>
+                                                        @Html.DropDownListFor(c => c.postFreqency, DropDownHelper.GetFrequencyDDL(string.Empty), "Select")<br />
+                                                        <div style="color:red;">
+                                                            @Html.ValidationMessageFor(c => c.pageFreqency)
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        @Html.TextBoxFor(c => c.pagePriority)<br />
+                                                        <div style="color:red;">
+                                                            @Html.ValidationMessageFor(c => c.pagePriority)
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Categories
+                                                    </td>
+                                                    <td>
+                                                        @Html.DropDownListFor(c => c.postFreqency, DropDownHelper.GetFrequencyDDL(string.Empty), "Select")<br />
+                                                        <div style="color:red;">
+                                                            @Html.ValidationMessageFor(c => c.categoryFreqency)
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        @Html.TextBoxFor(c => c.categoryPriority)<br />
+                                                        <div style="color:red;">
+                                                            @Html.ValidationMessageFor(c => c.categoryPriority)
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Tags
+                                                    </td>
+                                                    <td>
+                                                        @Html.DropDownListFor(c => c.postFreqency, DropDownHelper.GetFrequencyDDL(string.Empty), "Select")<br />
+                                                        <div style="color:red;">
+                                                            @Html.ValidationMessageFor(c => c.labelFreqency)
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        @Html.TextBoxFor(c => c.labelPriority)<br />
+                                                        <div style="color:red;">
+                                                            @Html.ValidationMessageFor(c => c.labelPriority)
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="control-group">
+                                    <input type="submit" value="Generate Sitemap" class="btn btn-blue" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
     </div>
 </div>

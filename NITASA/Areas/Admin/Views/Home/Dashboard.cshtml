@@ -340,7 +340,7 @@
                                     {
                                         <li class="arrow-box-left gray">
                                             <div class="avatar">
-                                                <img class="avatar-small" src="@(comment.ProfilePicUrl ?? Url.Content("~/Assets/images/avatars/profile_b48.png"))">
+                                                <img class="avatar-small" src="@(!string.IsNullOrEmpty(comment.ProfilePicUrl) ? comment.ProfilePicUrl : "/Content/gravatar.png")">
                                             </div>
                                             <div class="info">
                                                 <span class="name"><strong>@comment.UserName</strong></span> <span class="time"><i class="icon-time"></i>@comment.AddedOn.ToString("M")</span>
