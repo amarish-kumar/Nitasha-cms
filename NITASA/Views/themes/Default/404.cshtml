@@ -1,1 +1,71 @@
-404 not found
+@using NITASA.Helpers
+@{
+    string currentTheme = ViewBag.ActiveTheme;
+}
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title> 404 - Not Found :: @Functions.GetSiteName()</title>
+    <link rel="stylesheet" href="@currentTheme/css/style.css">
+    <link rel="stylesheet" href="@currentTheme/css/skins/orange.css">
+    <link rel="stylesheet" href="@currentTheme/css/responsive.css">
+    @Html.Raw(Functions.GetFaviconURL())
+</head>
+<body>    
+    <div class="row">
+        <div class="headerlogo four columns">
+            <div class="logo">
+                <a href="@Functions.GetSiteURL()">
+                    <h4>@Functions.GetSiteName()</h4>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="clear">
+    </div>
+    <div id="subheader" class="blogstyle">
+        <div class="row">
+            <div class="eight columns">
+                <p class="bread leftalign">
+            </div>
+            <div class="four columns">
+            </div>
+        </div>
+    </div>
+    <div class="row" style="height:420px;vertical-align:top;padding-top:50px;">
+        <div class="twelve columns">
+            <div class="typography">
+                <h2 style="color:red">
+                    404: Page Not Found.
+                </h2>
+                <span>
+                    <i>
+                        It's looking like you may have taken a wrong turn. <br />
+                        Don't Worry..... it happens to best of us!
+                    </i>
+                </span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="copyright">
+        <div class="row">
+            <div class="six columns">
+                &copy;<span class="small"> Copyright &nbsp;<a target="_blank" style="text-decoration: none; color: #444" href="http://www.drcsystems.com/">Drc Systems</a></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="@currentTheme/js/foundation.min.js"></script>
+    <script src="@currentTheme/js/jquery.easing.1.3.js"></script>
+    <script src="@currentTheme/js/elasticslideshow.js"></script>
+    <script src="@currentTheme/js/jquery.carouFredSel-6.0.5-packed.js"></script>
+    <script src="@currentTheme/js/jquery.cycle.js"></script>
+    <script src="@currentTheme/js/app.js"></script>
+    <script src="@currentTheme/js/modernizr.foundation.js"></script>
+    <script src="@currentTheme/js/responsivemenu.js"></script>
+</body>
+</html>

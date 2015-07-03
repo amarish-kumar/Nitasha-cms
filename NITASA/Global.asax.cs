@@ -57,11 +57,16 @@ namespace NITASA
         {
             if (Request.Url.ToString().ToLower().Contains("/admin/"))
             {
-               // Server.TransferRequest("~/Admin/Home/NotFound");
+                Server.TransferRequest("~/Admin/Home/NotFound");
             }
             else
             {
-             //   Server.TransferRequest("~/Home/NotFound");
+                var ex = HttpContext.Current.Server.GetLastError();
+                var httpException = ex as HttpException;
+                if (httpException != null && httpException.GetHttpCode() == 500)
+                    Server.TransferRequest("~/Home/NotFound500");
+                else
+                    Server.TransferRequest("~/Home/NotFound404"); //404 error
             }
         }
     }

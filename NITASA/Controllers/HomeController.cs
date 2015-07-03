@@ -86,10 +86,14 @@ namespace NITASA.Controllers
 
             return View(viewName: activeTheme + "index.cshtml", model: HTMLContent);
         }
-        
-        public ActionResult NotFound()
+
+        public ActionResult NotFound404()
         {
             return View(viewName: activeTheme + "404.cshtml");
+        }
+        public ActionResult NotFound500()
+        {
+            return View(viewName: activeTheme + "500.cshtml");
         }
     }
 }

@@ -14,12 +14,6 @@ namespace NITASA
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
-                "_client_Error",
-                "NotFound",
-                new { controller = "Home", action = "NotFound" },
-                new[] { "NITASA.Controllers" }
-            );
-            routes.MapRoute(
                 "_Search",
                 "Search/{SearchText}",
                 new { controller = "Search", action = "Results", SearchText = UrlParameter.Optional },

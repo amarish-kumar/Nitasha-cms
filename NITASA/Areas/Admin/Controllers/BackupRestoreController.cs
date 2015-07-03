@@ -15,6 +15,7 @@ using NITASA.Areas.Admin.Helper;
 
 namespace NITASA.Areas.Admin.Controllers
 {
+    [CheckLogin]
     public class BackupRestoreController : Controller
     {
         public ActionResult List()
