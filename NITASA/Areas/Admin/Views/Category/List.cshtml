@@ -70,9 +70,6 @@
     @Html.ActionLink("Edit", null, null, new { @class = "btn btn-small btn-blue edit-cat" })
     @Html.ActionLink("Delete", null, null, new { @class = "btn btn-small btn-red delete-cat" })
     <input type="hidden" class="catGUID" value="@item.GUID" />
-    @*<input type="hidden" class="catName" value="@item.Name" />
-        <input type="hidden" class="catSlug" value="@item.Slug" />
-        <input type="hidden" class="catDesc" value="@item.Description" />*@
 }
 <div id="modal-confirm" class="modal hide fade" style="width: 370px;">
     <div class="modal-header">
@@ -162,6 +159,7 @@
         $("#btnAddCat").val("Save");
     });
     $(".edit-cat").click(function () {
+        debugger;
         var guid = $(this).parent().find(".catGUID").val();
         $.ajax({
             type: "Get",
