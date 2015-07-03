@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NITASA.Areas.Admin.Helper.Sitemap;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -27,15 +28,5 @@ namespace NITASA.Areas.Admin.ViewModels
         public SitemapChangeFrequency? labelFreqency { get; set; }
         [Range(0.1, 1.0, ErrorMessage = "Only 0.1 to 1.0 allowed")]
         public double? labelPriority { get; set; }
-    }
-    public enum SitemapChangeFrequency
-    {
-        Always,
-        Hourly,
-        Daily,
-        Weekly,
-        Monthly,
-        Yearly,
-        Never
     }
 }

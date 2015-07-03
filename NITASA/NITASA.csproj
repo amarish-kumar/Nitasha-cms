@@ -470,7 +470,6 @@
     <Content Include="Areas\Admin\Views\User\List.cshtml" />
     <Content Include="Areas\Admin\Views\User\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\User\Add.cshtml" />
-    <Content Include="Areas\Admin\Helper\Sitemap\vssver.scc" />
     <Content Include="Areas\Admin\Views\Profile\ChangePassword.cshtml" />
     <Content Include="Areas\Admin\Views\Post\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Media\GetMedia.cshtml" />
