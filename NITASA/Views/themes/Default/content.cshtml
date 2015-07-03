@@ -51,15 +51,15 @@ else if(Model.Type=="post")
     
     
     <!-- for comments flag -->
-    <div class="flag-black-layer">
+    <div id="flag-black-layer">
     </div>
-    <div class="flag-reason-popup">
+    <div id="flag-reason-popup">
         <div>
             <h3>I am flagging this comment because...</h3>
             <ul class="action-list">
                 <li class="item">
                     <label>
-                        <input type="radio" name="FlagReason" value="Comment is spam" checked class="flag-radio" />
+                        <input type="radio" name="FlagReason" value="Comment is spam" checked />
                         <span class="action-name">It is spam </span>
                         <span class="action-desc">This comment is effectively an advertisement/spam. It is not useful or relevant, but promotional.
                         </span>
@@ -67,14 +67,14 @@ else if(Model.Type=="post")
                 </li>
                 <li class="item">
                     <label>
-                        <input type="radio" name="FlagReason" value="Comment is Offensive, abusive, or hate speech" class="flag-radio" />
+                        <input type="radio" name="FlagReason" value="Comment is Offensive, abusive, or hate speech" />
                         <span class="action-name">It is offensive, abusive, or hate speech </span>
                         <span class="action-desc">This comment contains content that a reasonable person would deem inappropriate for respectful discourse. </span>
                     </label>
                 </li>
                 <li class="item">
                     <label>
-                        <input type="radio" name="FlagReason" value="PostOther" class="flag-radio" />
+                        <input type="radio" name="FlagReason" value="PostOther" />
                         <span class="action-name">Other</span>
                         <span class="action-desc">Please describe exactly what's wrong. </span>
                         <div id="otherreasontext" style="margin: 5px 0px; width: auto; display: none;">
@@ -121,7 +121,7 @@ else if(Model.Type=="post")
                 font-size: 12px;
                 text-decoration: none;
             }
-            .flag-black-layer {
+            #flag-black-layer {
                 display: none;
                 background-color: #000;
                 height: 100%;
@@ -132,7 +132,7 @@ else if(Model.Type=="post")
                 width: 100%;
                 z-index: 999;
             }
-            .flag-reason-popup {
+            #flag-reason-popup {
                 display:none;
                 background-color: #fff;
                 max-height: 450px;
@@ -144,32 +144,32 @@ else if(Model.Type=="post")
                 width: 500px;
                 z-index: 1000;
             }
-            .flag-reason-popup h3 {
+            #flag-reason-popup h3 {
                 margin: 20px 0 0 20px;
-                font-size:20px;
+                font-size: 20px;
             }
-            .flag-reason-popup .action-list {
+            #flag-reason-popup .action-list {
                 padding: 5px 20px 20px;
             }
-            .flag-reason-popup .action-list .item {
+            #flag-reason-popup .action-list .item {
                 margin-top: 10px;
             }
-            .flag-reason-popup .action-list li {
+            #flag-reason-popup .action-list li {
                 list-style-type: none;
             }
-            .flag-reason-popup .action-list .action-name {
+            #flag-reason-popup .action-list .action-name {
                 color: #333;
                 font-weight: bold;
             }
-            .flag-reason-popup .action-list .action-desc {
+            #flag-reason-popup .action-list .action-desc {
                 color: #666;
                 display: block;
                 margin-left: 25px;
             }
-            .flag-reason-popup .control {
+            #flag-reason-popup .control {
                 float: right;
                 padding: 0 20px;
-                margin-bottom:10px;
+                margin-bottom: 10px;
             }
         </style>
     }
@@ -178,28 +178,28 @@ else if(Model.Type=="post")
         <script>
             var isFlagSubmit = false;
             $(document).ready(function () {
-                $(".flag-radio").change(function () {
-                    if ($(".flag-radio:checked").val() == "PostOther") {
+                $("input:radio[name=FlagReason]").change(function () {
+                    if ($("input:radio[name=FlagReason]:checked").val() == "PostOther") {
                         $("#otherreasontext").show();
                     }
                     else {
                         $("#otherreasontext").hide();
                     }
                 });
-                $("#flag-cancel,.flag-black-layer").click(function () {
-                    $(".flag-black-layer").hide();
-                    $(".flag-reason-popup").hide();
+                $("#flag-cancel,#flag-black-layer").click(function () {
+                    $("#flag-black-layer").hide();
+                    $("#flag-reason-popup").hide();
                 });
                 $(".commentflag").click(function () {
                     $("#CommentID").val($(this).attr("data-id"));
                     $("#AbuseReason").val("");
                     $("#FlagReasonText").val("");
-                    $(".flag-black-layer").show();
-                    $(".flag-reason-popup").show();
-                    $(".flag-radio").trigger("change");
+                    $("#flag-black-layer").show();
+                    $("#flag-reason-popup").show();
+                    $("input:radio[name=FlagReason]").trigger("change");
                 });
                 $("#flag-submit").click(function () {
-                    if ($(".flag-radio:checked").val() == "PostOther" && $("#FlagReasonText").val().trim()=="") {
+                    if ($("input:radio[name=FlagReason]:checked").val() == "PostOther" && $("#FlagReasonText").val().trim() == "") {
                         alert("Please specify other reason.");
                         return false;
                     }
@@ -214,10 +214,10 @@ else if(Model.Type=="post")
                         else if ($("#FlagAs").val() == "anonymous") {
                             $("#AbuseByUserName").val("Anonymous");
                         }
-                        if ($(".flag-radio:checked").val() == "PostOther")
+                        if ($("input:radio[name=FlagReason]:checked").val() == "PostOther")
                             $("#AbuseReason").val($("#FlagReasonText").val());
                         else
-                            $("#AbuseReason").val($(".flag-radio:checked").val());
+                            $("#AbuseReason").val($("input:radio[name=FlagReason]:checked").val());
                         return true;
                     }
                 });
