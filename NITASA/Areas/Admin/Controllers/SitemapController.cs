@@ -45,10 +45,10 @@ namespace NITASA.Areas.Admin.Controllers
             }
             catch (Exception)
             {
-
+                TempData["ErrorMessage"] = "Oops, there seems to be some problem, please try again";
             }
 
-            TempData["PostMessage"] = "Sitemap generated";
+            TempData["SuccessMessage"] = "Sitemap generated successfully";
 
             return View();
         }
