@@ -75,6 +75,7 @@ namespace NITASA.Areas.Admin.Controllers
                         user.IsSuperAdmin = false;
                         context.User.Add(user);
                         context.SaveChanges();
+                        
                         TempData["SuccessMessage"] = "User added successfully.";
                         return RedirectToAction("List");
                     }

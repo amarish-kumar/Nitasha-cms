@@ -23,8 +23,8 @@ namespace NITASA.Areas.Admin.Controllers
         public ActionResult Dashboard()
         {
             if (!UserRights.HasRights(Rights.ShowDashboard))
-                return RedirectToAction("AccessDenied", "Home");
-
+                return RedirectToAction("Details", "Profile");
+                
             CustomizedDashboard dBoard = new CustomizedDashboard();
 
             dBoard.TotalPage = context.Content.Where(x => x.Type == "page" && x.IsDeleted == false).Count();
@@ -197,7 +197,12 @@ namespace NITASA.Areas.Admin.Controllers
             dBoard.LastNewUsers = Last10NewUsers;
             #endregion
 
-            dBoard.TotalPageview = 1;//context.Config.ToList().Select(m => m.TotalPageView).FirstOrDefault();
+            Setting TotalPageView = context.Settings.Where(m => m.Name == "TotalPageView").FirstOrDefault();
+            if (TotalPageView != null)
+                dBoard.TotalPageview = Convert.ToInt32(TotalPageView.Value);
+            else
+                dBoard.TotalPageview = 0;
+
             #region Getting Last 12 days PageViews
 
 
@@ -207,17 +212,17 @@ namespace NITASA.Areas.Admin.Controllers
                              select new { Date = g.Key, Views = g.Count() };
 
             var getViews = pageviews1.Select(m => m.Views).ToArray().Take(12);
-            string Last10Views = String.Join(",", getViews);
+            //string Last10Views = String.Join(",", getViews);
 
-            if (pageviews1.Count() < 12)
-            {
-                string temp = "";
-                int tempPosts = pageviews1.Count();
-                for (int i = 0; i < (12 - tempPosts); i++)
-                    temp += "0,";
-                Last10Views = temp + Last10Views;
-            }
-            dBoard.LastPageview = Last10Views;
+            //if (pageviews1.Count() < 12)
+            //{
+            //    string temp = "";
+            //    int tempPosts = pageviews1.Count();
+            //    for (int i = 0; i < (12 - tempPosts); i++)
+            //        temp += "0,";
+            //    Last10Views = temp + Last10Views;
+            //}
+            //dBoard.LastPageview = Last10Views;
 
             #endregion
 

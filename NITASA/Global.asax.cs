@@ -68,7 +68,7 @@ namespace NITASA
                 else
                     Server.TransferRequest("~/Home/NotFound404"); //404 error
             }
-            Server.ClearError();
+            //Server.ClearError();
         }
     }
 }

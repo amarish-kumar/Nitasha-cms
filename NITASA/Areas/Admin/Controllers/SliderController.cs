@@ -96,6 +96,8 @@ namespace NITASA.Areas.Admin.Controllers
 
         public JsonResult GetSliderDetails(string GUID)
         {
+            context.Configuration.LazyLoadingEnabled = false;
+            context.Configuration.ProxyCreationEnabled = false;
             Slider slider = context.Sliders.Where(m => m.GUID == GUID).FirstOrDefault();
             return Json(slider, JsonRequestBehavior.AllowGet);
         }

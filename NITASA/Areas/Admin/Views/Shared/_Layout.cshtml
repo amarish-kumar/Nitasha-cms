@@ -19,15 +19,16 @@
         <script src="@Url.Content("~/Areas/Admin/assets/js/excanvas.js")" type=4"text/javascript"></script>
     <![endif]-->
     @RenderSection("PageLevelStyles", false)
+    <link rel="icon" type="image/png" href="~/Areas/Admin/assets/images/favicon.ico" />
 </head>
 <body>
     <div id="page">
         <div class="navbar navbar-top navbar-inverse">
             <div class="navbar-inner">
                 <div class="container-fluid">
-                    <div style="padding-left: 2%;">
-                        <a class="brand" href="@Url.Action("Dashboard","Admin")">
-                            <img src="@Url.Content("~/Areas/Admin/assets/images/logo.png")" alt="logo" style="padding-top: 7px;padding-bottom: 7px;" />
+                    <div >
+                        <a class="brand" href="@Url.Action("Dashboard","Home")">
+                            <img src="@Url.Content("~/Areas/Admin/assets/images/logo.png")" alt="logo" style="padding-top: 7px;" />
                         </a>
                     </div>
                     <ul class="nav pull-right">

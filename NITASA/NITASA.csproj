@@ -271,6 +271,7 @@
     <Content Include="Areas\Admin\assets\images\bg.png" />
     <Content Include="Areas\Admin\assets\images\blue.png" />
     <Content Include="Areas\Admin\assets\images\delete.png" />
+    <Content Include="Areas\Admin\assets\images\favicon.ico" />
     <Content Include="Areas\Admin\assets\images\ie-spacer.gif" />
     <Content Include="Areas\Admin\assets\images\loader-big.gif" />
     <Content Include="Areas\Admin\assets\images\loading.gif" />
@@ -378,7 +379,6 @@
     <Content Include="Areas\Admin\Views\Authenticate\Login.cshtml" />
     <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\Admin\Views\Home\Index.cshtml" />
     <Content Include="Areas\Admin\assets\font\cJZKeOuBrn4kERxqtaUH3T8E0i7KZn-EPnyo3HZu7kw.woff" />
     <Content Include="Areas\Admin\assets\font\EInbV5DfGHOiMmvb1Xr-hnhCUOGz7vYGh680lGh-uXM.woff" />
     <Content Include="Areas\Admin\assets\font\fontawesome-webfont.ttf" />

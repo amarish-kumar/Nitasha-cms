@@ -14,13 +14,10 @@ namespace NITASA.Areas.Admin.ViewModels
         [StringLength(100, ErrorMessage = "Email address cannot exceed 100 characters")]
         [DataType(DataType.EmailAddress, ErrorMessage = "Please Enter valid Email")]
         [Display(Name = "Email Address")]
-        [RegularExpression("^[a-z0-9_\\+-]+(\\.[a-z0-9_\\+-]+)*@[a-z0-9-]+(\\.[a-z0-9]+)*\\.([a-z]{2,4})$", ErrorMessage = "Please enter valid Email.")]
+        [RegularExpression(@"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$", ErrorMessage = "Invalid Email Address")]
         public string EmailAddress { get; set; }
 
         [Required(ErrorMessage = "Please Enter Password.")]
-        //[MinLength(6, ErrorMessage = "The Password must be 6 characters long.")]
-        //[MaxLength(100)]
-        //[StringLength(1000, MinimumLength = 6, ErrorMessage = "Password must be 6 characters long.")]
         [Display(Name = "Password")]
         [AllowHtml]
         public string Password { get; set; }

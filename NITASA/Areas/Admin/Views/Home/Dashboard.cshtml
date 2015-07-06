@@ -3,6 +3,12 @@
 @model NITASA.Areas.Admin.ViewModels.CustomizedDashboard
 @{
     ViewBag.Title = "Administrator";
+    bool CreateNewPosts = UserRights.HasRights(Rights.CreateNewPosts);
+    bool ViewAllPosts = UserRights.HasRights(Rights.ViewAllPosts);
+    bool ViewAllPages = UserRights.HasRights(Rights.ViewAllPages);
+    bool CreateNewPages = UserRights.HasRights(Rights.CreateNewPages);
+    bool ViewUsers = UserRights.HasRights(Rights.ViewUsers);
+    
 }
 <script src="~/Areas/Admin/assets/js/Chart.js"></script>
 @*<script src="~/Areas/Admin/assets/js/Chart.Doughnut.js"></script>*@
@@ -31,7 +37,7 @@
         <div class="action-nav-normal">
             <div class="row-fluid">
                 <div class="span2 action-nav-button">
-                    <a href="@Url.Action("List", "Page")" title="Pages">
+                    <a href="@(ViewAllPages?Url.Action("List", "Page"):"#")" title="Pages">
                         <i class="icon-file-alt"></i>
                         <span>Pages</span>
                     </a>
@@ -39,7 +45,7 @@
                 </div>
 
                 <div class="span2 action-nav-button">
-                    <a href="@Url.Action("List", "Post")" title="Posts">
+                    <a href="@(ViewAllPosts ? Url.Action("List", "Post") : "#")" title="Posts">
                         <i class="icon-pushpin"></i>
                         <span>Posts</span>
                     </a>
@@ -63,20 +69,22 @@
                 </div>
 
                 <div class="span2 action-nav-button">
-                    <a href="@Url.Action("List", "User")" title="Users">
+                    <a href="@(ViewUsers ? Url.Action("List", "User") : "#")" title="Users">
                         <i class="icon-user"></i>
                         <span>Users</span>
                     </a>
                     <span class="label label-green">@Model.TotalUsers</span>
                 </div>
 
-
+                @if (UserRights.HasRights(Rights.CreateNewPages))
+                {
                 <div class="span2 action-nav-button">
                     <a href="@Url.Action("Add", "Page")" title="New Page">
                         <i class="icon-file-alt"></i>
                         <span>New Page</span>
                     </a><span class="triangle-button red"><i class="icon-plus"></i></span>
                 </div>
+                }
             </div>
         </div>
         <div class="divider"><span></span></div>
@@ -248,6 +256,8 @@
             </div>
         </div>
     </div>
+    @if (CreateNewPosts || ViewAllPosts)
+    { 
     <div class="container-fluid padded" style="padding-top: 0px; padding-bottom: 0px;">
         <div class="row-fluid">
             <div class="span12">
@@ -259,6 +269,8 @@
                     </div>
                     <div class="box-content padded">
                         <div class="row-fluid">
+                            @if (CreateNewPosts)
+                            {
                             <div class="span5">
                                 @using (Html.BeginForm("AddDraft", "Home", FormMethod.Post, new { id = "frmPost" }))
                                 {
@@ -284,6 +296,9 @@
                                     </div>
                                 }
                             </div>
+                            }
+                            @if (ViewAllPosts)
+                            {
                             <div class="span7">
                                 <h6 style="margin-top: 0px;">Top Posts (Last One Week)</h6>
                                 @if (Model.PostList.Count > 0)
@@ -338,13 +353,14 @@
                                     </div>
                                 }
                             </div>
-                            
+                            }
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    }
     <div class="container-fluid padded" style="padding-top: 0px; padding-bottom: 0px;">
         <div class="row-fluid">
             <div class="span12">
@@ -356,11 +372,13 @@
                     </div>
                     <div class="box-content padded">
                         <div class="row-fluid">
-                            <div class="span4">
+                            @if (ViewAllPosts)
+                            {
+                                <div class="span4">
                                 <h6 style="margin-top: 0px;">Recently Published Posts</h6>
                                 @if (Model.RecentPublishedPostList.Count > 0)
                                 {
-                                    <table class="table">
+                                    <table class="table" style="max-height: 235px;">
                                         <tbody>
                                             @for (int postCount = 0; postCount < Model.RecentPublishedPostList.Count; postCount++)
                                             {
@@ -390,11 +408,14 @@
                                     </div>
                                 }
                             </div>
+                            }
+                            @if (ViewAllPages)
+                            {
                             <div class="span4">
                                 <h6 style="margin-top: 0px;">Recent Pages</h6>
                                 @if (Model.RecentPages.Count > 0)
                                 {
-                                    <table class="table">
+                                    <table class="table" style="max-height: 235px;">
                                         <tbody>
                                             @for (int postCount = 0; postCount < Model.RecentPages.Count; postCount++)
                                             {
@@ -424,11 +445,12 @@
                                     </div>
                                 }
                             </div>
+                            }
                             <div class="span4">
                                 <h6 style="margin-top: 0px;">Comments pending moderation</h6>
                                 @if (Model.UnModeratedComments.Count > 0)
                                 {
-                                    <ul class="chat-box timeline" style="height: 150px; overflow-y: auto">
+                                    <ul class="chat-box timeline" style="max-height: 234px; overflow-y: auto">
                                         @foreach (var comment in Model.UnModeratedComments)
                                         {
                                             <li class="arrow-box-left gray">
@@ -448,7 +470,7 @@
                                 }
                                 else
                                 {
-                                    <div class="box-content scrollable" style="height: 150px; overflow-y: auto">
+                                    <div class="box-content scrollable" style="max-height: 235px; overflow-y: auto">
                                         <div class="box-section news with-icons">
                                             <div class="news-content" style="margin-left: 0px; margin-right: 10px;">
                                                 <div class="news-title" style="font-size: 14px;">

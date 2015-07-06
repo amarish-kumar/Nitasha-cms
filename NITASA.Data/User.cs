@@ -24,8 +24,9 @@ namespace NITASA.Data
         public string Email { get; set; }
 
         [MaxLength(100)]
-        [StringLength(100, ErrorMessage = "Password cannot exceed 100 characters.")]
         [Required(ErrorMessage = "Please enter password.")]
+        [StringLength(100, ErrorMessage = "Password must be atleast 8 characters long.", MinimumLength = 8)]
+        [RegularExpression("^(?=.*?[A-Z])(?=.*?[0-9]).{8,}$", ErrorMessage = "Password must contain at least one digit and one upper case letter and must be 8 characters long")]
         [Display(Name = "Password")]
         [AllowHtml]
         public string Password { get; set; }
