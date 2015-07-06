@@ -76,39 +76,28 @@ namespace NITASA.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult ChangePassword(ChangePassword cpassword)
         {
-            if (string.IsNullOrWhiteSpace(cpassword.currentpassword) || string.IsNullOrWhiteSpace(cpassword.newpassword) || string.IsNullOrWhiteSpace(cpassword.confirmpassword))
+            if (ModelState.IsValid)
             {
-                TempData["Error"] = "Please enter all 3 password value to change password";
-            }
-            else
-            {
-                if (cpassword.newpassword != cpassword.confirmpassword)
+                int currentUserID = Functions.CurrentUserID();
+                User userToChange = context.User.Where(m => m.ID == currentUserID).Single();
+                if (userToChange == null)
                 {
-                    TempData["Error"] = "Confirm password does not match with new password";
+                    TempData["Error"] = "Oops, there seemps to be some problem please try again";
+                    return RedirectToAction("ChangePassword");
                 }
                 else
                 {
-                    int currentUserID = Functions.CurrentUserID();
-                    User userToChange = context.User.Where(m => m.ID == currentUserID).Single();
-                    if (userToChange == null)
+                    string passwordHash = CryptoUtility.GetPasswordHash(cpassword.currentpassword, userToChange.SaltKey);
+                    if (string.Compare(userToChange.Password, passwordHash, false) == 0)
                     {
-                        TempData["Error"] = "Oops, there seemps to be some problem please try again";
-                        return RedirectToAction("ChangePassword");
+                        userToChange.SaltKey = CryptoUtility.GetNewSalt();
+                        userToChange.Password = CryptoUtility.GetPasswordHash(cpassword.newpassword, userToChange.SaltKey);
+                        context.SaveChanges();
+                        TempData["Message"] = "Password changed successfully";
                     }
                     else
                     {
-                        string passwordHash = CryptoUtility.GetPasswordHash(cpassword.currentpassword, userToChange.SaltKey);
-                        if (string.Compare(userToChange.Password, passwordHash, false) == 0)
-                        {
-                            userToChange.SaltKey = CryptoUtility.GetNewSalt();
-                            userToChange.Password = CryptoUtility.GetPasswordHash(cpassword.newpassword, userToChange.SaltKey);
-                            context.SaveChanges();
-                            TempData["Message"] = "Password changed successfully";
-                        }
-                        else
-                        {
-                            TempData["Error"] = "Please enter correct current password";
-                        }
+                        TempData["Error"] = "Please enter correct current password";
                     }
                 }
             }

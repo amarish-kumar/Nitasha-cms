@@ -10,6 +10,7 @@ using System.Net;
 using System.Xml;
 using System.IO;
 using NITASA.ViewModels;
+using System.Data.Entity;
 
 namespace NITASA.Controllers
 {
@@ -27,6 +28,11 @@ namespace NITASA.Controllers
             Content indexPage = context.Content.Where(x => x.Title.ToLower() == "index").FirstOrDefault();
 
             string str = HttpUtility.HtmlDecode(indexPage.Description);
+            indexPage.ContentView = indexPage.ContentView + 1;
+            context.Entry(indexPage).State = EntityState.Modified;
+            context.SaveChanges();
+            Functions.IncreaseContentView(indexPage.ID, Request);
+
             HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
 
             doc.OptionFixNestedTags = false;
@@ -84,6 +90,7 @@ namespace NITASA.Controllers
             //HTMLContent = HTMLContent.Replace("<div class=\"divNTS\">", "");
             //HTMLContent =HTMLContent.Substring(0,HTMLContent.LastIndexOf("</div>"));
 
+            
             return View(viewName: activeTheme + "index.cshtml", model: HTMLContent);
         }
 

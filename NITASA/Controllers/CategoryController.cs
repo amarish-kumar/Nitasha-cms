@@ -47,7 +47,7 @@ namespace NITASA.Controllers
             data.URL = category.Slug;
             data.Posts = GetPosts(query,pager);
             data.Pager = pager;
-
+            Functions.IncreaseContentView(0, Request);
             return View(viewName: activeTheme + "category.cshtml", model: data);
         }
 

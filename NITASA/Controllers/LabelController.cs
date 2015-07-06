@@ -47,6 +47,7 @@ namespace NITASA.Controllers
             data.Posts = GetPosts(query, pager);
             data.Pager = pager;
 
+            Functions.IncreaseContentView(0, Request);
             return View(viewName: activeTheme + "label.cshtml", model: data);
         }
         private List<CL_Content> GetPosts(IQueryable<Content> query, Pager pager)
