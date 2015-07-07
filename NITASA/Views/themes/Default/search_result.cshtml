@@ -26,7 +26,7 @@
             @foreach (var item in Model.Posts)
             {
                 <div class="four columns">
-                    <div class="boxblog">
+                    <div class="boxblog" style="word-break: break-all;">
                         <h5>@item.Title</h5>
                         <p class="small date">
                             Posted on:@Functions.FormatDate(item.PublishedOn, "dd MMM yyyy")

@@ -222,6 +222,7 @@ namespace NITASA.Helpers
         public static string RemoveHTMLTags(string sourceString)
         {
             sourceString = Regex.Replace(sourceString, @"<[^>]+>|&nbsp;|\n|\r", string.Empty);
+            //sourceString = sourceString.Replace("&lt;Addon", "").Replace("Addon&gt;", "");
             return sourceString;
         }
         
@@ -252,7 +253,8 @@ namespace NITASA.Helpers
             List<int> labelIds = context.ContentLabel.Where(x => x.ContentID == ContentId).Select(x => x.LabelID).ToList();
             
             List<Content> RelatedContents = context.ContentLabel.Where(x =>labelIds.Contains(x.LabelID))
-                .Select(x => x.Content).Where(x => x.Type.ToLower() == "post" && x.IsDeleted == false && x.isPublished == true).OrderByDescending(x => x.PublishedOn).Take(TotalRecord).ToList();
+                .Select(x => x.Content).Where(x => x.Type.ToLower() == "post" && x.IsDeleted == false && x.isPublished == true)
+                .OrderBy(x => x.ContentOrder).Take(TotalRecord).ToList();
             
             List<CL_Content> data = RelatedContents.Select(x =>
                         new CL_Content
@@ -263,7 +265,7 @@ namespace NITASA.Helpers
                             FeaturedImage = x.FeaturedImage,
                             URL = x.URL,
                             CoverContent = x.CoverContent,
-                            PublishedOn = (DateTime)x.PublishedOn,
+                            PublishedOn = x.AddedOn,
                             AddedBy = x.AddedBy,
                             CommentsCount = context.Comment.Where(c => c.ContentID == c.ID && c.IsModerated == true && c.IsAbused == false).Count()
                         }).ToList();
@@ -273,7 +275,8 @@ namespace NITASA.Helpers
         public static List<CL_Comments> GetRecentComments(int TotalRecord)
         {
             var context = getDbContextObject();
-            List<Comment> RecentComments = context.Comment.Where(x => x.IsModerated == true && x.IsAbused == false).OrderByDescending(x=>x.AddedOn).Take(TotalRecord).ToList();
+            List<Comment> RecentComments = context.Comment.Where(x => x.IsModerated == true && x.IsAbused == false)
+                                            .OrderByDescending(x=>x.AddedOn).Take(TotalRecord).ToList();
             List<CL_Comments> data = RecentComments.Select(x =>
                         new CL_Comments
                         {
@@ -292,7 +295,8 @@ namespace NITASA.Helpers
         public static List<CL_Content> GetPages(int TotalRecord)
         {
             var context = getDbContextObject();
-            List<Content> RelatedContents = context.Content.Where(x => x.Type.ToLower() == "page" && x.IsDeleted == false && x.isPublished == true).OrderBy(x => x.Title).Take(TotalRecord).ToList();
+            List<Content> RelatedContents = context.Content.Where(x => x.Type.ToLower() == "page" && x.Title.ToLower() != "index" && x.IsDeleted == false && x.isPublished == true)
+                                            .OrderBy(x => x.Title).Take(TotalRecord).ToList();
             List<CL_Content> data = RelatedContents.Select(x =>
                         new CL_Content
                         {
@@ -302,7 +306,7 @@ namespace NITASA.Helpers
                             FeaturedImage = x.FeaturedImage,
                             URL = x.URL,
                             CoverContent = x.CoverContent,
-                            PublishedOn = (DateTime)x.PublishedOn,
+                            PublishedOn = x.AddedOn,
                             AddedBy = x.AddedBy
                         }).ToList();
             return data;
@@ -344,7 +348,8 @@ namespace NITASA.Helpers
         public static List<CL_Content> GetMostPopularPosts(int TotalRecord)
         {
             var context = getDbContextObject();
-            List<Content> RelatedContents = context.Content.Where(x => x.Type.ToLower() == "post" && x.IsDeleted == false && x.isPublished == true).OrderByDescending(x => x.ContentView).Take(TotalRecord).ToList();
+            List<Content> RelatedContents = context.Content.Where(x => x.Type.ToLower() == "post" && x.IsDeleted == false && x.isPublished == true)
+                                            .OrderBy(x => x.ContentOrder).Take(TotalRecord).ToList();
             List<CL_Content> data = RelatedContents.Select(x =>
                         new CL_Content
                         {
@@ -354,7 +359,7 @@ namespace NITASA.Helpers
                             FeaturedImage = x.FeaturedImage,
                             URL = x.URL,
                             CoverContent = x.CoverContent,
-                            PublishedOn = (DateTime)x.PublishedOn,
+                            PublishedOn = x.AddedOn,
                             AddedBy = x.AddedBy
                         }).ToList();
             return data;
@@ -364,7 +369,7 @@ namespace NITASA.Helpers
         {
             var context = getDbContextObject();
             List<Content> RelatedContents = context.Content.Where(x => x.Type.ToLower() == "post" && x.IsDeleted == false && x.isPublished == true)
-                .OrderByDescending(x => x.PublishedOn).Take(TotalRecord).ToList();
+                                            .OrderBy(x => x.ContentOrder).Take(TotalRecord).ToList();
             List<CL_Content> data = RelatedContents.Select(x =>
                         new CL_Content
                         {
@@ -374,7 +379,7 @@ namespace NITASA.Helpers
                             FeaturedImage = x.FeaturedImage,
                             URL = x.URL,
                             CoverContent = x.CoverContent,
-                            PublishedOn = (DateTime)x.PublishedOn,
+                            PublishedOn = x.AddedOn,
                             AddedBy = x.AddedBy
                         }).ToList();
             return data;
@@ -422,7 +427,7 @@ namespace NITASA.Helpers
                 noofposts = Convert.ToInt32(ListingPostsPageSize.Value);
             
             List<Content> posts = context.Content.Where(x => x.Type.ToLower() == "post" && x.IsDeleted == false && x.isPublished == true)
-               .OrderByDescending(x => x.PublishedOn).Take(noofposts).ToList();
+                                    .OrderBy(x => x.ContentOrder).Take(noofposts).ToList();
 
             List<CL_Content> data = posts.Select(x =>
                         new CL_Content
@@ -433,9 +438,9 @@ namespace NITASA.Helpers
                             FeaturedImage = x.FeaturedImage,
                             URL = x.URL,
                             CoverContent = x.CoverContent,
-                            PublishedOn = (DateTime)x.PublishedOn,
+                            PublishedOn = x.AddedOn,
                             AddedBy = x.AddedBy,
-                            CommentsCount = x.Comments.Count(),
+                            CommentsCount = x.Comments.Where(c => c.IsModerated == true && c.IsAbused == false).Count(),
                             Category = x.Categories.Select(c => new CL_Category { 
                                 Name = c.Category.Name,
                                 Description = c.Category.Description,

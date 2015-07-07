@@ -106,8 +106,11 @@ namespace NITASA.Areas.Admin.Controllers
             //try
             //{
             Content cont = new Content();
-            cont.Type = Model.Type;
-            cont.Title = Model.Title;
+            cont.Type = Model.Type.Trim();
+            cont.Title = Model.Title.Trim();
+
+            if (string.IsNullOrEmpty(cont.Type))
+                cont.Type = cont.Title;
 
             //var sanitizer = new Html.HtmlSanitizer();
             CQ doc = CQ.Create(Model.Description);

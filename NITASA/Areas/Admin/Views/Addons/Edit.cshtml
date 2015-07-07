@@ -14,14 +14,6 @@
         tinyMCE.init({
             selector: ".edtr",
             theme: "modern",
-            //plugins: [
-            //    "advlist autolink lists link image charmap preview hr anchor",
-            //    "searchreplace wordcount visualblocks visualchars code fullscreen",
-            //    "insertdatetime nonbreaking save table contextmenu directionality",
-            //    "emoticons template paste textcolor colorpicker textpattern "
-            //],
-            //toolbar1: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | Addons",
-            //toolbar2: "preview | forecolor backcolor emoticons",
             menubar: false,
             plugins: [
                 "advlist autolink lists link image charmap preview hr anchor",
@@ -59,6 +51,7 @@
                 @TempData["ErrorMessage"]
             </div>
         }
+        <div id="containerfluid"></div>
         <div class="row-fluid">
             <div class="span12">
                 <div class="box">
@@ -169,17 +162,21 @@
             $('#btnPost').click(function () {
                 $("#UpdateType").val("Publish");
                 tinyMCE.triggerSave();
-                checkCategory();
+                validpost();
             });
 
             $('#btnSaveToDraft').click(function () {
                 $("#UpdateType").val("SaveToDraft");
                 tinyMCE.triggerSave();
-                checkCategory();
+                validpost();
             });
-            function checkCategory() {
+            function validpost() {
                 if ($("#frm1").valid()) {
                     $('#frm1').submit();
+                }
+                else {
+                    var error = '<div class="alert alert-error"><button class="close" data-dismiss="alert" type="button">×</button>Please solve form errors</div>';
+                    $("#containerfluid").html(error);
                 }
             }
             $("body").delegate(".wizard-input-section .media-thumb .imgSelect", "click", function () {

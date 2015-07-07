@@ -134,8 +134,6 @@ namespace NITASA.Controllers
                 }
             }
             HTMLContent = doc.DocumentNode.OuterHtml;
-            //HTMLContent = HTMLContent.Replace("<div class=\"divNTS\">", "");
-            //HTMLContent =HTMLContent.Substring(0,HTMLContent.LastIndexOf("</div>"));
             return HTMLContent;
         }
 

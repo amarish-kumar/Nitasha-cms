@@ -50,8 +50,9 @@ namespace NITASA.Areas.Admin.Controllers
 
             ViewBag.Labellist = new SelectList(context.Label.Where(x=>x.IsDeleted==false).ToList(), "ID", "Name");
             ViewBag.Categorylist = new SelectList(context.Category.Where(m => m.IsDeleted == false).ToList(), "ID", "Name");
-
-            return View();
+            Content content = new Content();
+            content.ContentOrder = context.Content.Where(x => x.Type.ToLower() == "post" && x.IsDeleted == false).Count() + 1;
+            return View(content);
         }
         [HttpPost]
         public ActionResult Add(Content content)
@@ -61,29 +62,25 @@ namespace NITASA.Areas.Admin.Controllers
 
             if (ModelState.IsValid)
             {
-                string postContent = content.Description.Replace("&nbsp;", "").Replace("<p>", "").Replace("</p>", "").Trim();
-                if (!string.IsNullOrEmpty(postContent))
+                if (Request.Form["hdnIsPost"] != null)
                 {
-                    if (Request.Form["hdnIsPost"] != null)
+                    string currOperation = Request.Form["hdnIsPost"];
+                    if (currOperation == "Post")
                     {
-                        string currOperation = Request.Form["hdnIsPost"];
-                        if (currOperation == "Post")
-                        {
-                            SavePostDetails(content, true);
-                            TempData["SuccessMessage"] = "Post published successfully.";
-                        }
-                        else
-                        {
-                            SavePostDetails(content, false);
-                            TempData["SuccessMessage"] = "Post saved to draft successfully.";
-                        }
-                        return RedirectToAction("List", "Post");
+                        SavePostDetails(content, true);
+                        TempData["SuccessMessage"] = "Post published successfully.";
                     }
+                    else
+                    {
+                        SavePostDetails(content, false);
+                        TempData["SuccessMessage"] = "Post saved to draft successfully.";
+                    }
+                    return RedirectToAction("List", "Post");
                 }
-                else
-                {
-                    TempData["ErrorMessage"] = "Please enter post content";
-                }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Please solve form errors";
             }
             ViewBag.Labellist = new SelectList(context.Label.Where(x => x.IsDeleted == false).ToList(), "ID", "Name");
             ViewBag.Categorylist = new SelectList(context.Category.Where(m => m.IsDeleted == false).ToList(), "ID", "Name");

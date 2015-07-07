@@ -16,8 +16,8 @@ namespace NITASA.Data
         public string GUID { get; set; }
 
         [MaxLength(100)]
-        [StringLength(100, ErrorMessage = "Role name cannot exceed 100 characters.")]
-        [Required(ErrorMessage = "Please enter Role Name.")]
+        [StringLength(100, ErrorMessage = "Role name cannot exceed 100 characters")]
+        [Required(ErrorMessage = "Please enter role name")]
         [Display(Name = "Role Name")]
         [AllowHtml]
         public string Name { get; set; }

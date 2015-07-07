@@ -47,7 +47,7 @@ namespace NITASA.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                User User = context.User.Where(m => m.Email == model.EmailAddress && m.IsDeleted == false).FirstOrDefault();
+                User User = context.User.Where(m => m.Email == model.EmailAddress && m.IsActive == true && m.IsDeleted == false).FirstOrDefault();
                 if (User != null)
                 {
                     string passwordHash = CryptoUtility.GetPasswordHash(model.Password, User.SaltKey);

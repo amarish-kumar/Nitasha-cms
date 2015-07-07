@@ -33,6 +33,8 @@ namespace NITASA.Controllers
             context.SaveChanges();
             Functions.IncreaseContentView(indexPage.ID, Request);
 
+            ViewBag.HomePageContentPosition = indexPage.ContentPosition;
+            
             HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
 
             doc.OptionFixNestedTags = false;
@@ -87,10 +89,6 @@ namespace NITASA.Controllers
                 }
             }
             HTMLContent = doc.DocumentNode.OuterHtml;
-            //HTMLContent = HTMLContent.Replace("<div class=\"divNTS\">", "");
-            //HTMLContent =HTMLContent.Substring(0,HTMLContent.LastIndexOf("</div>"));
-
-            
             return View(viewName: activeTheme + "index.cshtml", model: HTMLContent);
         }
 

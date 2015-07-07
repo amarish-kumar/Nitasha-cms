@@ -15,9 +15,9 @@ namespace NITASA.Data
 
         public string GUID { get; set; }
 
-        [Required(ErrorMessage = "Please enter Category name.")]
+        [Required(ErrorMessage = "Please enter category name")]
         [MaxLength(100)]
-        [StringLength(100, ErrorMessage = "Category name cannot exceed 100 characters.")]        
+        [StringLength(100, ErrorMessage = "Category name cannot exceed 100 characters")]
         [RegularExpression(@"^[A-Za-z0-9\ _.#&*+-]*$", ErrorMessage = "Only alpha numeric, space and special characters like '_ , . , # , & , * , + , - '  are allowed")]
         [Display(Name = "Category")]
         public string Name { get; set; }

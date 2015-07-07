@@ -4,7 +4,66 @@
     string currentThemeName = ViewBag.ActiveTheme;
     Layout = currentThemeName + "/master.cshtml";
     ViewBag.Title = Functions.GetSiteTitle();
-    //List<NITASA.ViewModels.CL_Content> posts = Functions.GetHomePagePosts();
+    List<NITASA.ViewModels.CL_Content> posts = Functions.GetHomePagePosts();
+    string ContentPosition = ViewBag.HomePageContentPosition;
+    string HomePageContent = Model;
 }
 
-@Html.Raw(Model)
+
+@if (ContentPosition == "AbovePosts")
+{
+    @Html.Raw(HomePageContent)
+}
+<div id="subheader">
+    <div class="row">
+        <div class="eight columns">
+            <p class="bread leftalign">
+                @*Your Title*@
+            </p>
+        </div>
+        <div class="four columns">
+            @Html.Partial("~" + currentThemeName + "/search_form.cshtml")
+        </div>
+    </div>
+</div>
+<div class="hr">
+</div>
+<div class="row">
+    <div class="twelve columns noleftmargin">
+        <!-- MAIN CONTENT -->
+        <div class="eight columns noleftmargin">
+            @foreach (var item in posts)
+            {
+                <div class="circledate">
+                    <div class="textcircle">
+                        @Html.Raw(Functions.FormatDate(item.PublishedOn, "dd -<br/>MMMM<br/>yyyy"))
+                        @*- 04 -<br />October<br />2013*@
+                    </div>
+                </div>
+                <h4>@(item.Title.Length > 37 ? item.Title.Substring(0, 35) + "..." : item.Title) <span class="comments">@item.CommentsCount comments</span></h4>
+                <div class="dots blogdots">
+                </div>
+                <p>
+                    @{string Description = Functions.RemoveHTMLTags(item.Description);}
+                    @(Description.Length > 1000 ? Description.Substring(0, 1000) + "..." : Description)
+                    <br/><a style="float:right;"  href="/Content/@item.URL" class="saymore">Read more</a>
+                </p>
+                <div class="hr">
+                </div>
+            }
+            @if (posts.Count() == 0)
+            {
+                <h5>No post found...</h5>
+            }
+            <br />
+        </div>
+        <!-- SIDEBAR -->
+        @Html.Partial("~" + currentThemeName + "/sidebar.cshtml")
+    </div>
+</div>
+<div class="hr">
+</div>
+@if (ContentPosition == "BelowPosts")
+{
+    @Html.Raw(HomePageContent)
+}

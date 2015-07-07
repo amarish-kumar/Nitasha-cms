@@ -20,6 +20,8 @@ namespace NITASA.Areas.Admin.Helper
                 int uID = Convert.ToInt32(HttpContext.Current.Session["UserID"]);
                 NTSDBContext context = new NTSDBContext();
                 src = context.User.Where(m => m.ID == uID).Select(x => x.ProfilePicURL).FirstOrDefault();
+                if (string.IsNullOrEmpty(src))
+                    src = "Areas/Admin/assets/images/avatars/noprofile.jpg";
             }
             return src;
         }
@@ -235,7 +237,8 @@ namespace NITASA.Areas.Admin.Helper
             using (NTSDBContext _dbContext = new NTSDBContext())
             {
                 List<string> temp = new List<string> { "page", "post" };
-                List<Content> AllAddons = _dbContext.Content.Where(x => x.isPublished == true && x.IsDeleted == false && !temp.Contains(x.Type)).ToList();
+                List<Content> AllAddons = _dbContext.Content.Where(x => x.isPublished == true && x.IsDeleted == false && !temp.Contains(x.Type))
+                                            .ToList();
 
                 List<string> addontypes = AllAddons.Select(x => x.Type).Distinct().ToList();
 
@@ -245,7 +248,7 @@ namespace NITASA.Areas.Admin.Helper
                                  {
                                      text = at,
                                      SubMenu = (from ad in AllAddons
-                                                where ad.Type == at
+                                                where ad.Type == at orderby ad.ContentOrder
                                                 select new TMenu { id = ad.ID.ToString() + "-addon", text = ad.Title }).ToList()
                                  }
                             ).ToList();

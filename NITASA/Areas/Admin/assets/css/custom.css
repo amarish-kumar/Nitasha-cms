@@ -1327,3 +1327,6 @@ table thead tr th a.desc {
   padding: 5px;
   min-height: 40px;
 }
+.validation-summary-errors {
+    color:red;
+}

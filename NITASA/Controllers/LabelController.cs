@@ -52,7 +52,7 @@ namespace NITASA.Controllers
         }
         private List<CL_Content> GetPosts(IQueryable<Content> query, Pager pager)
         {
-            List<Content> PostList = query.OrderByDescending(content => content.PublishedOn).Skip((int)pager.CurrentPageIndex * (int)pager.PageSize).Take((int)pager.PageSize).ToList();
+            List<Content> PostList = query.OrderBy(x => x.ContentOrder).Skip((int)pager.CurrentPageIndex * (int)pager.PageSize).Take((int)pager.PageSize).ToList();
             List<CL_Content> Posts = PostList.Select(x =>
                        new CL_Content
                        {
@@ -62,9 +62,9 @@ namespace NITASA.Controllers
                            FeaturedImage = x.FeaturedImage,
                            URL = x.URL,
                            CoverContent = x.CoverContent,
-                           PublishedOn = (DateTime)x.PublishedOn,
+                           PublishedOn = x.AddedOn,
                            AddedBy = x.AddedBy,
-                           CommentsCount = context.Comment.Where(c => c.ContentID == c.ID && c.IsModerated == true && c.IsAbused == false).Count()
+                           CommentsCount = x.Comments.Where(c => c.ContentID == c.ID && c.IsModerated == true && c.IsAbused == false).Count()
                        }
                    ).ToList();
             return Posts;

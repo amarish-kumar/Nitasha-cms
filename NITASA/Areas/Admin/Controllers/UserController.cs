@@ -68,6 +68,10 @@ namespace NITASA.Areas.Admin.Controllers
                             ProfilePic.SaveAs(Server.MapPath(relativePath));
                             user.ProfilePicURL = relativePath;
                         }
+                        else
+                        {
+                            user.ProfilePicURL = "/Areas/Admin/assets/images/avatars/noprofile.jpg";
+                        }
                         user.AddedOn = DateTime.UtcNow;
                         user.AddedBy = Functions.CurrentUserID();
                         user.IsDefault = false;
@@ -185,7 +189,8 @@ namespace NITASA.Areas.Admin.Controllers
             User user = context.User.Where(m => m.GUID == GUID && m.IsDeleted == false).FirstOrDefault();
             if (user != null)
             {
-                if (Functions.CurrentUserID() == user.ID)
+                int CurrentUserID = Functions.CurrentUserID();
+                if (CurrentUserID == user.ID)
                 {
                     if (!UserRights.HasRights(Rights.DeleteUserSelf))
                         return RedirectToAction("AccessDenied", "Home");
@@ -195,7 +200,8 @@ namespace NITASA.Areas.Admin.Controllers
                     if (!UserRights.HasRights(Rights.DeleteOtherUsers))
                         return RedirectToAction("AccessDenied", "Home");
                 }
-
+                user.ModifiedOn = DateTime.UtcNow;
+                user.ModifiedBy = CurrentUserID;  
                 user.IsDeleted = true;
                 context.SaveChanges();
 
@@ -220,7 +226,8 @@ namespace NITASA.Areas.Admin.Controllers
             User user = context.User.Where(m => m.GUID == GUID && m.IsDeleted == false).FirstOrDefault();
             if (user != null)
             {
-                if (Functions.CurrentUserID() == user.ID)
+                int CurrentUserID = Functions.CurrentUserID();
+                if (CurrentUserID == user.ID)
                 {
                     if (!UserRights.HasRights(Rights.EditUserSelf))
                         return RedirectToAction("AccessDenied", "Home");
@@ -232,8 +239,15 @@ namespace NITASA.Areas.Admin.Controllers
                 }
 
                 user.IsActive = isActive;
+                user.ModifiedOn = DateTime.UtcNow;
+                user.ModifiedBy = CurrentUserID;                
                 context.SaveChanges();
-
+                if(isActive == false && CurrentUserID == user.ID)
+                {
+                    Session.RemoveAll();
+                    TempData["loginmessage"] = "Your Account De-Activated Successfully";
+                    return RedirectToAction("Login", "Authenticate");
+                }
                 TempData["SuccessMessage"] = "User status changed successfully.";
             }
             else

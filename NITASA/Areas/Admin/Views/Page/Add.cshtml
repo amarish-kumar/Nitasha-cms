@@ -67,14 +67,6 @@
         tinyMCE.init({
             selector: ".edtr",
             theme: "modern",
-            //plugins: [
-            //    "advlist autolink lists link image charmap preview hr anchor",
-            //    "searchreplace wordcount visualblocks visualchars code fullscreen",
-            //    "insertdatetime nonbreaking save table contextmenu directionality",
-            //    "emoticons template paste textcolor colorpicker textpattern "
-            //],
-            //toolbar1: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | Addons",
-            //toolbar2: "preview | forecolor backcolor emoticons",
             menubar: false,
             plugins: [
                 "advlist autolink lists link image charmap preview hr anchor",
@@ -134,6 +126,7 @@
                 @TempData["ErrorMessage"]
             </div>
         }
+        <div id="containerfluid"></div>
         <div class="row-fluid">
             @using (Html.BeginForm("Add", "Page", FormMethod.Post, new { id = "frm1" }))
             {
@@ -163,9 +156,7 @@
                                                 <div>
                                                     <div id="slug-container">
                                                         <strong>Permalink:</strong>
-                                                        <span>
-                                                            /
-                                                            <span class="editable-container">
+                                                        <span>/<span class="editable-container">
                                                                 <span id="editable-slug">@(Model != null ? Model.content.URL : "")</span>
                                                                 <input type="text" value="@(Model != null ? Model.content.URL : "")" id="edit-slug-text" style="display: none;" />
                                                             </span>
@@ -196,28 +187,28 @@
                                         </div>
                                     </div>
                                     <div class="span3">
-                                        <div class="padded" style="padding-top: 0px; padding-left: 0px;">
+                                        <div class="padded" style="padding: 0px 4px 13px 4px; ">
                                             @if (UserRights.HasRights(Rights.PublishOwnPages))
                                             {
-                                                <input type="submit" id="btnPublish" class="btn btn-small btn-green 3" style="text-align: right"
+                                                <input type="button" id="btnPublish" class="btn btn-small btn-green 3" style="text-align: center; width: 60px;"
                                                        value="Publish" />
                                             }
                                             else if (Model != null && Functions.CurrentUserID() == Model.content.AddedBy)
                                             {
-                                                <input type="submit" id="btnPublish" class="btn btn-small btn-green 2" style="text-align: right"
+                                                <input type="button" id="btnPublish" class="btn btn-small btn-green 2" style="text-align: center; width: 60px;"
                                                        value="Publish" />
                                             }
                                             else if (Model != null && Functions.CurrentUserID() != Model.content.AddedBy)
                                             {
-                                                <input type="submit" id="btnPublish" class="btn btn-small btn-green 1" style="text-align: right"
+                                                <input type="button" id="btnPublish" class="btn btn-small btn-green 1" style="text-align: center; width: 60px;"
                                                        value="Publish" />
                                             }
                                             @if (ViewBag.isIndexpage == null)
                                             {
-                                                <input type="submit" id="btnDraft" class="btn btn-small btn-blue" style="text-align: right"
-                                                    value="Save to Draft" />
+                                                <input type="button" id="btnDraft" class="btn btn-small btn-blue" style="text-align: center; width: 90px;"
+                                                       value="Save to Draft" />
                                             }
-                                            &nbsp;<input type="button" class="btn btn-small btn-red" style="text-align: right" value="Back"
+                                            &nbsp;<input type="button" class="btn btn-small btn-red" style="text-align: center; width: 60px;" value="Back"
                                                    onclick="window.location = '/Admin/Page/List';" />
                                         </div>
                                         <div class="box">
@@ -233,7 +224,7 @@
                                             </div>
                                         </div>
                                         
-                                        <div class="box" style="display:@(Model != null && Model.content.Title.ToLower() == "index"?"":"none")">
+                                        <div class="box" style="display:@(ViewBag.isIndexpage != null?"":"none")">
                                             <div class="box-header">
                                                 <span class="title">Layout</span>
                                             </div>
@@ -259,21 +250,25 @@
                                                     <label>
                                                         <b>Content: </b>
                                                     </label>
-                                                    @Html.TextAreaFor(m => m.content.CoverContent, new { style = "height:100px;" })
-                                                    <label style="display:inline;">
-                                                        <b>Image: </b>
-                                                    </label>
-                                                    @Html.HiddenFor(m => m.content.FeaturedImage)
-                                                    <input type="button" id="btnBImage" class="btn btn-small btn-blue" style="text-align: right" value="Select" />
-                                                    <input type="button" id="btnBRemove" class="btn btn-small btn-red" style="text-align: right" value="Remove" />
-                                                    @if(Model != null)
-                                                    { 
-                                                        <img id="uploadedImage" style="height: 100px;max-width: 100px;margin-top:10px;" src="@Model.content.FeaturedImage" />
-                                                    }
-                                                    else
-                                                    {
-                                                        <img id="uploadedImage" style="height: 100px;max-width: 100px;margin-top:10px;"/>                                                       
-                                                    }
+                                                    @Html.TextAreaFor(m => m.content.CoverContent, new { style = "height:100px;width:98%;" })
+                                                    <div style="text-align: center; margin-top:10px;">
+                                                        <label style="display:inline;">
+                                                            <b>Image: </b>
+                                                        </label>
+                                                        @Html.HiddenFor(m => m.content.FeaturedImage)
+                                                        <input type="button" id="btnBImage" class="btn btn-small btn-blue" style="text-align: center; width: 80px;" value="Select" />
+                                                        <input type="button" id="btnBRemove" class="btn btn-small btn-red" style="text-align: center; width: 80px;" value="Remove" />
+                                                    </div>
+                                                    <div style="text-align: center; margin-top:10px;">
+                                                        @if (Model != null)
+                                                        {
+                                                            <img id="uploadedImage" style="max-height: 200px; max-width: 200px; " src="@Model.content.FeaturedImage" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <img id="uploadedImage" style="max-height: 200px; max-width: 200px; " />
+                                                        }
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -358,14 +353,26 @@
             $('#btnPublish').click(function () {
                 $("#SaveType").val("Publish");
                 tinyMCE.triggerSave();
+                validpost();
             });
             $('#btnDraft').click(function () {
                 $("#SaveType").val("SaveToDraft");
                 tinyMCE.triggerSave();
+                validpost();
             });
+            function validpost() {
+                if ($("#frm1").valid()) {
+                    $('#frm1').submit();
+                }
+                else {
+                    var error = '<div class="alert alert-error"><button class="close" data-dismiss="alert" type="button">×</button>Please solve form errors</div>';
+                    $("#containerfluid").html(error);
+                }
+            }
             $('#btnBRemove').click(function () {
                 $('#content_FeaturedImage').val("");                
                 $('#uploadedImage').attr("src", "");
+                $('#uploadedImage').css("display", "none");
             });
             
             $('#btnBImage').click(function (e) {
@@ -379,6 +386,7 @@
                 {
                     $('#content_FeaturedImage').val(imgPath);
                     $('#uploadedImage').attr("src", imgPath);
+                    $('#uploadedImage').css("display", "");
                 }
                 else{   //editor
                     var url = imgPath;

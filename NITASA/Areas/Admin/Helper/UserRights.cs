@@ -164,7 +164,6 @@ namespace NITASA.Areas.Admin.Helper
 
         public static void BindRights()
         {
-            //CMSDBContext db = (CMSDBContext)DependencyResolver.Current.GetService(typeof(CMSDBContext));
             NTSDBContext db = new NTSDBContext();
 
             int UserID = Functions.CurrentUserID();
