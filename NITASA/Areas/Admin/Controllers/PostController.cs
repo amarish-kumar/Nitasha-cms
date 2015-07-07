@@ -180,6 +180,7 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 Label lbl = new Label();
                 lbl.Name = labelName;
+                lbl.GUID = Functions.GetRandomGUID();
                 lbl.Slug = Functions.ToUrlSlug(labelName, "label", 0);
                 lbl.Description = "";
                 lbl.AddedOn = DateTime.UtcNow;
@@ -203,6 +204,7 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 Category cat = new Category();
                 cat.Name = CategoryName;
+                cat.GUID = Functions.GetRandomGUID();
                 cat.Slug = Functions.ToUrlSlug(CategoryName, "category", 0);
                 cat.ParentCategoryID = 0;
                 cat.AddedOn = DateTime.UtcNow;

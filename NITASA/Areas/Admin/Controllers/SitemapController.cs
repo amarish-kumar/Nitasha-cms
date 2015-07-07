@@ -24,9 +24,10 @@ namespace NITASA.Areas.Admin.Controllers
         
         public ActionResult Generate()
         {
+            if (System.IO.File.Exists(Server.MapPath("/Sitemap.xml")))
+                ViewBag.Fileexists = true;
             return View();
         }
-
 
         [HttpPost]
         public ActionResult Generate(Sitemap model)
@@ -42,6 +43,8 @@ namespace NITASA.Areas.Admin.Controllers
             try
             {
                 file.Save(fileName);
+                if (System.IO.File.Exists(Server.MapPath("/Sitemap.xml")))
+                    ViewBag.Fileexists = true;
             }
             catch (Exception)
             {
@@ -52,7 +55,6 @@ namespace NITASA.Areas.Admin.Controllers
 
             return View();
         }
-
 
         public XDocument GetSitemapXML(string siteDomain, Sitemap model)
         {
@@ -107,16 +109,12 @@ namespace NITASA.Areas.Admin.Controllers
             return file;
         }
 
-
-        //public FileStreamResult SitemapResult(XDocument xmlFile)
-        //{
-        //    string name = "Sitemap.xml";
-        //    var str = new MemoryStream();
-        //    xmlFile.Save(str);
-        //    str.Flush();
-        //    str.Position = 0;
-
-        //    return File(str, "text/xml", name);
-        //}
+        [HttpGet]
+        public FileResult Download()
+        {
+            byte[] fileBytes = System.IO.File.ReadAllBytes(Server.MapPath("/Sitemap.xml"));
+            string fileName = "Sitemap.xml";
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+        }
     }
 }

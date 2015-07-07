@@ -42,6 +42,7 @@
                 @TempData["ErrorMessage"]
             </div>
         }
+        <div id="containerfluid"></div>
         <div class="row-fluid">
             <div class="span12">
                 @if (UserRights.HasRights(Rights.AddNewMedias))
@@ -53,7 +54,7 @@
                     <div class="box-content">
                         <div class="padded">
                             
-                                @using (Html.BeginForm("Add", "Media", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+                                @using (Html.BeginForm("Add", "Media", FormMethod.Post, new { @enctype = "multipart/form-data", id = "frm1" }))
                                 {
                                     <div class="span4">
                                         <div class="control-group" style="margin-bottom: 0px">
@@ -86,7 +87,7 @@
                                             <label class="control-label" style="text-align: left;">
                                             </label>
                                             <div class="controls">
-                                                <input type="submit" value="Upload Media" class="btn btn-blue" />
+                                                <input type="button" id="addmedia" value="Upload Media" class="btn btn-blue" />
                                             </div>
                                         </div>
                                     </div>
@@ -138,6 +139,7 @@
                 minLength: 1
             });
         });
+        
         var loading = false;
         $(document).ready(function () {
             var TotalPage = @ViewBag.TotalPage;
@@ -149,6 +151,16 @@
                         loadmedias();
                     }
                 }
+            });
+            $('#addmedia').click(function () {
+                if ($("#MediaFiles").get(0).files.length>0) {
+                    $('#frm1').submit();
+                }
+                else {
+                    var error = '<div class="alert alert-error"><button class="close" data-dismiss="alert" type="button">×</button>Please select atlease one media</div>';
+                    $("#containerfluid").html(error);
+                }
+                return false;
             });
         });
         function loadmedias() {

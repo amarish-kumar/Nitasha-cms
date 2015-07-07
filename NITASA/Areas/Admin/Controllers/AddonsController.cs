@@ -48,13 +48,16 @@ namespace NITASA.Areas.Admin.Controllers
             //{
             if (!UserRights.HasRights(Rights.CreateNewAddons))
                 return RedirectToAction("AccessDenied", "Home");
-            ViewBag.Addonlist = new SelectList(context.Content.Where(m => m.Type.ToLower() != "post" && m.Type.ToLower() != "page").ToList(), "ID", "Name");
+            var addons =context.Content.Where(m => m.Type.ToLower() != "post" && m.Type.ToLower() != "page").ToList();
+            ViewBag.Addonlist = new SelectList(addons, "ID", "Name");
             //}
             //catch (Exception es)
             //{
             //    LogSector.LogError(es);
             //}
-            return View();
+            Content content = new Content();
+            content.ContentOrder = addons.Count() + 1;
+            return View(content);
         }
 
         [HttpPost]
