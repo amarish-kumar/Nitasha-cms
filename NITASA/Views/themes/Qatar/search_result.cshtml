@@ -1,0 +1,57 @@
+@model NITASA.ViewModels.CL_SearchResult
+@using NITASA.Helpers
+@{
+    string currentThemeName = ViewBag.ActiveTheme;
+    Layout = currentThemeName + "/master.cshtml";
+    ViewBag.Title = (Model.SearchText.Length > 10 ? Model.SearchText.Substring(0, 10) : Model.SearchText);
+}
+<div id="subheader">
+    <div class="row">
+        <div class="eight columns">
+            <p class="bread leftalign">
+                SearchText : @Model.SearchText
+            </p>
+        </div>
+        <div class="four columns">
+            @Html.Partial("~" + currentThemeName + "/search_form.cshtml")
+        </div>
+    </div>
+</div>
+<div class="hr">
+</div>
+@foreach (var item in Model.Posts)
+            {
+<div class="post">
+
+    <!-- Begin Post Info -->
+    <div class="post-info">
+        <!-- Begin Date -->
+        <div class="post-date"> <span class="day">15</span> <span class="month">FEB</span> <span class="year">2011</span>Posted on:@Functions.FormatDate(item.PublishedOn, "dd MMM yyyy") </div>
+        <!-- End Date -->
+        <!-- Begin Title -->
+        <div class="post-title">
+            <h1><a href="post.html">Proin euismod dui rutrum risus</a></h1>
+            <div class="post-meta"> <span class="comments"><a href="#">@item.CommentsCount Comments</a></span> <span class="categories"><a href="#">Web Design</a>, <a href="#">Photography</a></span> </div>
+        </div>
+        <!-- End Title -->
+    </div>
+    <!-- End Post Info -->
+
+    <div class="post-text">
+        <a href="post.html"><img src="images/art/post1.jpg" alt="" /></a> <br />
+        <p>@{string Description = Functions.RemoveHTMLTags(item.Description);}
+@(Description.Length > 156 ? Description.Substring(0, 156) + "..." : Description) <a class="more" href="/Content/@item.URL">Continue Reading ?</a></p>
+    </div>
+    <!-- End Text -->
+    <span class="tags"><a href="#">Black & White</a>, <a href="#">Color</a>, <a href="#">Portfolio</a></span>
+</div>
+}
+            @if (Model.Posts.Count() > 0)
+            {
+                <br class="clear" />
+                @Html.Partial("~" + currentThemeName + "/pager.cshtml", Model.Pager)
+            }
+            else
+            {
+                <h5>No post found...</h5>
+            }

@@ -1,0 +1,63 @@
+﻿@using NITASA.Helpers
+@{
+    string currentTheme = ViewBag.ActiveTheme;
+}
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>404 - Not Found :: @Functions.GetSiteName()</title>
+    <link rel="shortcut icon" type="@currentTheme/image/x-icon" href="@currentTheme/images/favicon.png" />
+    <link rel="stylesheet" type="text/css" href="@currentTheme/css/style.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="@currentTheme/color/red.css" media="all" />
+    <!--[if IE 7]>
+    <link rel="stylesheet" type="text/css" href="@currentTheme/css/ie7.css" media="all" />
+    <![endif]-->
+    <!--[if IE 8]>
+    <link rel="stylesheet" type="text/css" href="@currentTheme/css/ie8.css" media="all" />
+    <![endif]-->
+    <!--[if IE 9]>
+    <link rel="stylesheet" type="text/css" href="@currentTheme/css/ie9.css" media="all" />
+    <![endif]-->
+    <script type="text/javascript" src="@currentTheme/js/jquery-1.6.2.min.js"></script>
+    <script type="text/javascript" src="@currentTheme/js/ddsmoothmenu.js"></script>
+    <script type="text/javascript" src="@currentTheme/js/transify.js"></script>
+</head>
+<body>
+    <!-- Begin Wrapper -->
+    <div id="wrapper">
+        @Html.Partial("~" + currentTheme + "/header.cshtml")
+        @Html.Partial("~" + currentTheme + "/navigation.cshtml")
+
+        <div id="container" class="opacity">
+            <div class="blog">
+                <div class="row">
+                    <br />                    
+                    <h2 style="color:red">
+                        404: Page Not Found.
+                    </h2>
+                    <span>
+                        <i>
+                            It's looking like you may have taken a wrong turn. <br />
+                            Don't Worry..... it happens to best of us!
+                        </i>
+                    </span>
+                </div>
+            </div>
+            <div class="clear"></div>
+            <br /><br />
+<br />
+<br />
+            <br />
+            <br /><br />
+            <br />
+            <br />
+        </div>
+        @Html.Partial("~" + currentTheme + "/footer.cshtml")
+    </div>
+    <!-- End Wrapper -->
+    <script type="text/javascript" src="@currentTheme/js/scripts.js"></script>
+    @Html.Raw(Functions.GetCustomJavaScript())
+    @Html.Raw(Functions.GetGoogleAnalytics())
+</body>
+</html>
