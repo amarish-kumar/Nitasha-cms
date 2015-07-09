@@ -10,7 +10,7 @@ namespace NITASA.Core.Caching
     {
         T Get<T>(string key);
 
-        T Set<T>(string key, object data, int cacheTime);
+        void Set(string key, object data, int cacheTime);
 
         bool IsSet(string key);
 
