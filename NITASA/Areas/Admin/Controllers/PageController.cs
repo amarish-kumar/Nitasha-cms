@@ -145,6 +145,8 @@ namespace NITASA.Areas.Admin.Controllers
                 contentNew.Description= contentPage.content.Description;
                 contentNew.Title = contentPage.content.Title;
                 contentNew.Type = "page";
+                if (string.IsNullOrEmpty(contentPage.content.URL))
+                    contentPage.content.URL = contentPage.content.Title;
                 contentNew.URL = Functions.ToUrlSlug(contentPage.content.URL, "page", 0);
                 contentNew.CoverContent = contentPage.content.CoverContent;
                 if (!string.IsNullOrEmpty(contentPage.content.FeaturedImage))
@@ -190,7 +192,7 @@ namespace NITASA.Areas.Admin.Controllers
                 //var sanitizer = new Html.HtmlSanitizer();
                 contentUpdate.Description= contentPage.content.Description.Replace("<img src=\"../../../", "<img src=\"../../");
                 contentUpdate.Title = contentPage.content.Title;
-                if (contentUpdate.URL.ToLower() != contentPage.content.URL.ToLower())
+                if (!string.IsNullOrEmpty(contentPage.content.URL) && contentUpdate.URL.ToLower() != contentPage.content.URL.ToLower())
                     contentUpdate.URL = Functions.ToUrlSlug(contentPage.content.URL, "Page", contentUpdate.ID);
                 contentUpdate.CoverContent = contentPage.content.CoverContent;
                 if (!string.IsNullOrEmpty(contentPage.content.FeaturedImage))
@@ -262,6 +264,17 @@ namespace NITASA.Areas.Admin.Controllers
                 TempData["ErrorMessage"] = "Page Not Found.";
             }
             return RedirectToAction("List");
+        }
+
+        [HttpPost]
+        public ActionResult Preview(PageModel model)
+        {
+            Content page = model.content;
+            page.PublishedOn = new DateTime();
+            page.Type = "page";
+            Session["Preview"] = null;
+            Session["Preview"] = page;
+            return Content("success");
         }
     }
 }

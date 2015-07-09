@@ -119,17 +119,16 @@
                                                 <div>
                                                     <div id="slug-container">
                                                         <strong>Permalink:</strong>
-                                                        <span>
-                                                            /<span class="editable-container">
+                                                        <span>/<span class="editable-container">
                                                                 <span id="editable-slug"></span>
                                                                 <input type="text" value="" id="edit-slug-text" style="display: none;" />
                                                             </span>
                                                         </span>&lrm;
                                                         <span class="slug-buttons">
-                                                            <a id="edit-slug" class="button-small"
-                                                               href="#">Edit</a>
+                                                            <a id="edit-slug" class="button-small" href="#">Edit</a>
                                                             <a id="save-slug" class="button-small" href="#" style="display: none;">OK</a>
                                                             <a href="#" id="cancel-slug" class="cancel" style="display: none;">Cancel</a>
+                                                            <a href="#" id="pagePreview" class="button-small">Preview</a>
                                                         </span>
                                                         @Html.HiddenFor(m => m.URL)
                                                         @Html.CheckBoxFor(m => m.IsSlugEdited, new { style = "display:none;" })
@@ -424,21 +423,26 @@
             $('#btnPost').click(function () {
                 $("#hdnIsPost").val("Post");
                 tinyMCE.triggerSave();
-                validpost();
+                if (validpost()) {
+                    $('#frm1').submit();
+                }
             });
 
             $('#btnSaveToDraft').click(function () {
                 $("#hdnIsPost").val("SaveToDraft");
                 tinyMCE.triggerSave();
-                validpost();
+                if (validpost()) {
+                    $('#frm1').submit();
+                }
             });
             function validpost() {
                 if ($("#frm1").valid()) {
-                    $('#frm1').submit();
+                    return true;
                 }
                 else {
                     var error = '<div class="alert alert-error"><button class="close" data-dismiss="alert" type="button">×</button>Please solve form errors</div>';
                     $("#containerfluid").html(error);
+                    return false;
                 }
             }
             $('#btnBRemove').click(function () {
@@ -465,6 +469,28 @@
                     tinyMCE.activeEditor.execCommand('mceInsertContent', false, img);
                 }
                 $("#MediaPopup").modal("hide");
+            });
+            $('#pagePreview').click(function () {
+                tinyMCE.triggerSave();
+                if (validpost()) {
+                    var str = $( "#frm1" ).serialize();    
+                    console.log(str);
+                    var slug = $("#URL").val();
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("Preview", "Post")",
+                        data: str,
+                        success: function (data) {
+                            if (data == "success") {
+                                //alert(data);
+                                window.open('/Content/Details?prv=true&URL='+slug, "_blank");
+                            }
+                        },
+                        error: function (data) {
+                            alert('Sorry. Unable to Preview !!');
+                        }
+                    });
+                }
             });
         });
     </script>

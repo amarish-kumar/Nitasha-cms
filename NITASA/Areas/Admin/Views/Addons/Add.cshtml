@@ -72,17 +72,6 @@
                                 @using (Html.BeginForm("Add", "Addons", FormMethod.Post, new { id = "frm1" }))
                                 {
                                     <div class="span9">
-                                        @*<div class="control-group">
-                                                <div class="controls">
-                                                    @Html.DropDownList("AddonId", (IEnumerable<SelectListItem>)ViewBag.Addonlist, new { @class = "select2-container select2-container-multi chzn-select", multiple = "multiple", id = "ddlAddons" })
-                                                    <input id="txtNewAddon" name="txtNewAddon" type="text" maxlength="40" placeholder="New Label" style="margin-bottom: 0px;
-                                                            width: 84% !important;" />
-                                                        &nbsp;
-                                                        <button title="Add New Addon" id="btnAddAddon" style="border: 0">
-                                                            <i class="icon-plus-sign" style="font-size: 20px"></i>
-                                                        </button>
-                                                </div>
-                                            </div>*@
                                         <div class="control-group">
                                             <div class="controls">
                                                 @Html.TextBoxFor(mbox => mbox.Type, new { placeholder = "Addon Name", @class = "width100per", style = "margin-bottom: 0px;",id="txtAddonName" })
@@ -124,16 +113,13 @@
                                         </div>
                                     </div>
                                     <div class="span3">
-                                        <div class="padded" style="padding-top: 0px; padding-left: 0px;">
+                                        <div class="padded" style="padding: 0px 4px 13px 4px; ">
                                             @if (UserRights.HasRights(Rights.PublishOwnAddons))
                                             {
-                                            <input type="button" class="btn btn-small btn-green" id="btnPost" style="text-align: right"
-                                                   value="Publish" />
+                                            <input type="button" class="btn btn-small btn-green" id="btnPost" style="text-align: center; width: 60px;" value="Publish" />
                                             }&nbsp;
-                                            <input type="button" class="btn btn-small btn-blue" style="text-align: right" value="Save to Draft"
-                                                   id="btnSaveToDraft" />&nbsp;
-                                            <input type="button" class="btn btn-small btn-red" style="text-align: right" value="Back"
-                                                   onclick="window.location = '/Admin/Addons/List';" />
+                                            <input type="button" class="btn btn-small btn-blue" style="text-align: center; width: 90px;" value="Save to Draft" id="btnSaveToDraft" />&nbsp;
+                                            <input type="button" class="btn btn-small btn-red" style="text-align: center; width: 60px;" value="Back" onclick="window.location = '/Admin/Addons/List';" />
                                         </div>                                        
                                         <div class="box">
                                             <div class="box-header">
@@ -141,7 +127,7 @@
                                             </div>
                                             <div class="box-content">
                                                 <div class="padded" style="text-align:left;vertical-align:top">
-                                                    @Html.TextBoxFor(mbox => mbox.ContentOrder, new { Value = "0", placeholder = "Addon Order To Display", style = "margin-bottom: 0px;" })
+                                                    @Html.TextBoxFor(mbox => mbox.ContentOrder, new { placeholder = "Addon Order To Display", style = "margin-bottom: 0px;" })
                                                     <div style="color: red">
                                                         @Html.ValidationMessageFor(m => m.ContentOrder)
                                                     </div>

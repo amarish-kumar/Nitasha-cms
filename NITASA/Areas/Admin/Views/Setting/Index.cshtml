@@ -44,39 +44,39 @@
                         <div class="box-content padded">
                             <div class="tab-content">
                                 <div class="tab-pane active" id="home">
-                                    <div class="span6">
-                                        <div class="box-content">
-                                            <div class="padded">
-                                                <div class="form-horizontal fill-up">
+                                    <div class="box-content">
+                                        <div class="padded">
+                                            <div class="form-horizontal fill-up">
+                                                <div class="span6">
                                                     <div class="control-group" style="margin-bottom: 0px">
-                                                        <label class="control-label" style="text-align: left;">@Html.LabelFor(x => x.LogoPath)</label>
+                                                        <label class="control-label" style="">@Html.LabelFor(x => x.LogoPath)</label>
                                                         <div class="controls">
                                                             <input type="file" name="logopath" id="logopath" />
                                                         </div>
                                                     </div>
                                                     <div class="control-group">
-                                                        <label class="control-label" style="text-align: left;"></label>
+                                                        <label class="control-label" style=""></label>
                                                         <div class="controls">(Only .jpg, .bmp, .jpeg, .png, .gif files are allowed.)</div>
                                                     </div>
                                                     <div class="control-group">
-                                                        <label class="control-label" style="text-align: left;"></label>
+                                                        <label class="control-label" style=""></label>
                                                         <div class="controls">
-                                                            <img title="logo" src="@Model.LogoPath" alt="Logo Image" style="width:50%;" />
+                                                            <img title="logo" src="@Model.LogoPath" alt="Logo Image" style="max-height: 100px; max-width: 200px;" />
                                                         </div>
                                                     </div>
                                                     <div class="control-group" style="margin-bottom: 0px">
-                                                        <label class="control-label" style="text-align: left;">@Html.LabelFor(x => x.FaviconPath)</label>
+                                                        <label class="control-label" style="">@Html.LabelFor(x => x.FaviconPath)</label>
                                                         <div class="controls">
                                                             <input type="file" name="FaviconIcon" id="FaviconIcon" />
                                                             <img title="logo" src="@Model.FaviconPath" alt="" />
                                                         </div>
                                                     </div>
                                                     <div class="control-group">
-                                                        <label class="control-label" style="text-align: left;"></label>
+                                                        <label class="control-label" style=""></label>
                                                         <div class="controls">(Only .ico files are allowed.)</div>
                                                     </div>
                                                     <div class="control-group">
-                                                        <label class="control-label" style="text-align: left;">@Html.LabelFor(x => x.SiteName)</label>
+                                                        <label class="control-label" style="">@Html.LabelFor(x => x.SiteName)</label>
                                                         <div class="controls">
                                                             @Html.TextBoxFor(x => x.SiteName)
                                                             <div style="color: red">
@@ -85,7 +85,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="control-group">
-                                                        <label class="control-label" style="text-align: left;">@Html.LabelFor(x => x.SiteTitle)</label>
+                                                        <label class="control-label" style="">@Html.LabelFor(x => x.SiteTitle)</label>
                                                         <div class="controls">
                                                             @Html.TextBoxFor(x => x.SiteTitle)
                                                             <div style="color: red">
@@ -93,26 +93,26 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="control-group">
-                                                        <label class="control-label" style="text-align: left;">@Html.LabelFor(x => x.ShowNoOfLastPostsAtHome)</label>
+                                                    <div class="control-group" style="margin-bottom: 0px;">
+                                                        <label class="control-label" style="">@Html.LabelFor(x => x.ShowNoOfLastPostsAtHome)</label>
                                                         <div class="controls">
                                                             @Html.DropDownListFor(x => x.ShowNoOfLastPostsAtHome, new List<SelectListItem>()
-                                                                { 
-                                                                    new SelectListItem { Text = "1", Value = "1" }, 
+                                                                {
+                                                                    new SelectListItem { Text = "1", Value = "1" },
                                                                     new SelectListItem { Text = "2", Value = "2" },
                                                                     new SelectListItem { Text = "3", Value = "3" },
-                                                                    new SelectListItem { Text = "4", Value = "4" }, 
+                                                                    new SelectListItem { Text = "4", Value = "4" },
                                                                     new SelectListItem { Text = "5", Value = "5" },
                                                                     new SelectListItem { Text = "6", Value = "6" },
-                                                                    new SelectListItem { Text = "7", Value = "7" }, 
+                                                                    new SelectListItem { Text = "7", Value = "7" },
                                                                     new SelectListItem { Text = "8", Value = "8" },
-                                                                    new SelectListItem { Text = "9", Value = "9" }, 
+                                                                    new SelectListItem { Text = "9", Value = "9" },
                                                                     new SelectListItem { Text = "10", Value = "10" }
-                                                                })
+                                                                }, new { style = "  width: 213px;" })
                                                         </div>
                                                     </div>
                                                     <div class="control-group">
-                                                        <label class="control-label" style="text-align: left;">@Html.LabelFor(x => x.ListingPostsPageSize)</label>
+                                                        <label class="control-label" style="">@Html.LabelFor(x => x.ListingPostsPageSize)</label>
                                                         <div class="controls">
                                                             @Html.TextBoxFor(x => x.ListingPostsPageSize)
                                                             <div style="color: red">
@@ -120,58 +120,62 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                </div>
+
+                                                <div class="span6">
                                                     <div class="control-group">
-                                                        <input type="submit" value="Save Config" class="btn btn-blue" />
+                                                        <label class="control-label" style="">@Html.LabelFor(x => x.CurrentTheme)</label>
+                                                        <div class="controls">
+                                                            @Html.DropDownListFor(x => x.CurrentTheme, (IEnumerable<SelectListItem>)ViewBag.Themes, new { style = "  width: 213px;" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        <label class="control-label" style="">
+                                                            @Html.LabelFor(x => x.TwitterURL)
+                                                        </label>
+                                                        <div class="controls">
+                                                            @Html.TextBoxFor(x => x.TwitterURL)
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        <label class="control-label" style="">
+                                                            @Html.LabelFor(x => x.FacebookURL)
+                                                        </label>
+                                                        <div class="controls">
+                                                            @Html.TextBoxFor(x => x.FacebookURL)
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        <label class="control-label" style="">
+                                                            @Html.LabelFor(x => x.GooglePlusURL)
+                                                        </label>
+                                                        <div class="controls">
+                                                            @Html.TextBoxFor(x => x.GooglePlusURL)
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        <label class="control-label" style="">
+                                                            @Html.LabelFor(x => x.LinkedInURL)
+                                                        </label>
+                                                        <div class="controls">
+                                                            @Html.TextBoxFor(x => x.LinkedInURL)
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        <label class="control-label" style="">
+                                                            @Html.LabelFor(x => x.PinterestURL)
+                                                        </label>
+                                                        <div class="controls">
+                                                            @Html.TextBoxFor(x => x.PinterestURL)
+                                                        </div>
+                                                    </div>
+                                                    <div class="control-group">
+                                                        <label class="control-label" style=""></label>
+                                                        <div class="controls">
+                                                            <input type="submit" value="Save Settings" class="btn btn-blue" />
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="span6">
-                                        <div class="control-group">
-                                            <label class="control-label" style="text-align: left;">@Html.LabelFor(x => x.CurrentTheme)</label>
-                                            <div class="controls">
-                                                @Html.DropDownListFor(x => x.CurrentTheme, (IEnumerable<SelectListItem>)ViewBag.Themes)
-                                            </div>
-                                        </div>
-                                        <div class="control-group">
-                                            <label class="control-label" style="text-align: left;">
-                                                @Html.LabelFor(x => x.TwitterURL)
-                                            </label>
-                                            <div class="controls">
-                                                @Html.TextBoxFor(x => x.TwitterURL)
-                                            </div>
-                                        </div>
-                                        <div class="control-group">
-                                            <label class="control-label" style="text-align: left;">
-                                                @Html.LabelFor(x => x.FacebookURL)
-                                            </label>
-                                            <div class="controls">
-                                                @Html.TextBoxFor(x => x.FacebookURL)
-                                            </div>
-                                        </div>
-                                        <div class="control-group">
-                                            <label class="control-label" style="text-align: left;">
-                                                @Html.LabelFor(x => x.GooglePlusURL)
-                                            </label>
-                                            <div class="controls">
-                                                @Html.TextBoxFor(x => x.GooglePlusURL)
-                                            </div>
-                                        </div>
-                                        <div class="control-group">
-                                            <label class="control-label" style="text-align: left;">
-                                                @Html.LabelFor(x => x.LinkedInURL)
-                                            </label>
-                                            <div class="controls">
-                                                @Html.TextBoxFor(x => x.LinkedInURL)
-                                            </div>
-                                        </div>
-                                        <div class="control-group">
-                                            <label class="control-label" style="text-align: left;">
-                                                @Html.LabelFor(x => x.PinterestURL)
-                                            </label>
-                                            <div class="controls">
-                                                @Html.TextBoxFor(x => x.PinterestURL)
                                             </div>
                                         </div>
                                     </div>
@@ -185,13 +189,13 @@
                                                 <div class="form-horizontal fill-up">
                                                     <div class="control-group">
                                                         @Html.LabelFor(m => m.CustomHeadTag)
-                                                        @*<label class="control-label" style="text-align: left;width:100%;">Add custom code to the HTML Head section </label>*@
+                                                        @*<label class="control-label" style="width:100%;">Add custom code to the HTML Head section </label>*@
                                                         <div class="controls" style="margin-left: 0px">
                                                             @Html.TextAreaFor(m => m.CustomHeadTag, new { style = "width: 100%; max-width: 98%;min-height: 100px; height:200px; margin: 0px; overflow: hidden; word-wrap: break-word;resize:vertical;overflow-y:scroll;", id = "txtHeaderScript" })
                                                         </div>
                                                     </div>
                                                     <div class="control-group">
-                                                        <label class="control-label" style="text-align: left; width: 100%;">Default Meta Tags. (This will be included in head section of the page.)</label>
+                                                        <label class="control-label" style=" width: 100%;">Default Meta Tags. (This will be included in head section of the page.)</label>
                                                         <div class="controls" style="margin-left: 0px">
                                                             @Html.TextAreaFor(m => m.DefaultMetaTags, new { style = "width: 100%; max-width: 98%; height:150px; min-height: 70px; margin: 0px; overflow: hidden; word-wrap: break-word;resize:vertical;overflow-y:scroll;", id = "txtMetaTags", placeholder = "" })
                                                             <div class="hint">
@@ -220,7 +224,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="control-group">
-                                                        <input type="submit" value="Save" class="btn btn-blue" />
+                                                        <input type="submit" value="Save Settings" class="btn btn-blue" />
                                                     </div>
                                                 </div>
                                             </div>

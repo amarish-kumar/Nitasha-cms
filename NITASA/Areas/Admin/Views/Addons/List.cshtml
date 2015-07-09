@@ -5,25 +5,7 @@
     @{
         ViewBag.Title = "Addons";
     }
-    <style>
-        tfoot td {
-            line-height: 3 !important;
-        }
-
-        .custom-pagination td {
-            padding-left: 10px !important;
-        }
-
-        .table-normal tbody td.col2 {
-            width: 50px;
-            text-align: center;
-        }
-
-        .table-normal tbody td.col3 {
-            width: 115px;
-            text-align: center;
-        }
-    </style>
+    
     <div class="main-content">
         <div class="container-fluid padded">
             @if (TempData["SuccessMessage"] != null)
@@ -60,14 +42,14 @@
                             @if (Model != null && Model.Count() > 0)
                             {
                                 @Html.Grid(Model).Columns(columns =>
-                                            {
-                                                columns.Add(x => x.Title).Titled("Addon Title").Sortable(true).Filterable(true);
-                                                columns.Add(x => x.Type).Titled("Addon Name").Sortable(true).Filterable(true);
-                                                columns.Add(x => x.ContentView).Titled("Views").Sortable(true).Filterable(true);
-                                                columns.Add(x => x.user.FullName).Titled("Author").Sortable(true).Filterable(true);
-                                                columns.Add(c => c.isPublished).Sortable(true).Filterable(true).RenderValueAs(x => x.isPublished ? "Published" : "Draft").Titled("Type");
-                                                columns.Add().SetWidth(150).RenderValueAs(x => RenderButtons(x)).Sanitized(false).Encoded(false).Titled("");                                                
-                                            }).WithPaging(25).WithMultipleFilters()
+                                {
+                                    columns.Add(x => x.Title).Titled("Addon Title").Sortable(true).Filterable(true);
+                                    columns.Add(x => x.Type).Titled("Addon Name").Sortable(true).Filterable(true);
+                                    columns.Add(x => x.ContentView).Titled("Views").Sortable(true).Filterable(true);
+                                    columns.Add(x => x.user.FullName).Titled("Author").Sortable(true).Filterable(true);
+                                    columns.Add(c => c.isPublished).Sortable(true).Filterable(true).RenderValueAs(x => x.isPublished ? "Published" : "Draft").Titled("Type");
+                                    columns.Add().SetWidth(150).RenderValueAs(x => RenderButtons(x)).Sanitized(false).Encoded(false).Titled("");
+                                }).WithPaging(10, 5).WithMultipleFilters()
                             }
                             else
                             { <div class="padded">No Addons Found.</div>}

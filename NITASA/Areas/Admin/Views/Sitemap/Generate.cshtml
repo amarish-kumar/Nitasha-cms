@@ -4,6 +4,13 @@
 @{
     ViewBag.Title = "Generate Sitemap";
 }
+@section PageLevelStyles {    
+    <style>
+        .table th, .table td {
+            border:none;
+        }
+    </style>
+}
 <div class="main-content">
     <div class="container-fluid padded">
         @if (TempData["SuccessMessage"] != null)
@@ -123,6 +130,12 @@
                             <div class="row-fluid">
                                 <div class="control-group">
                                     <input type="submit" value="Generate Sitemap" class="btn btn-blue" />
+                                    @if (ViewBag.Fileexists!=null)
+                                    { 
+                                        <a class="" style="height:100px;" href="@Url.Action("Download", "Sitemap")">
+                                            <input type="button" value="Download" class="btn btn-blue" />
+                                        </a>
+                                    }
                                 </div>
                             </div>
                         </div>
