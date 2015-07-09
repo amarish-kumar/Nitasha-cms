@@ -1,0 +1,327 @@
+@model NITASA.ViewModels.CL_Content
+@using NITASA.Helpers
+@{
+    string currentThemeName = ViewBag.ActiveTheme;
+    Layout = currentThemeName + "master.cshtml";
+    ViewBag.Title = Model.Title;
+    bool EnableComments = (Model.PostCommentEnable && DateTime.Now < Model.PublishedOn.AddDays(Model.PostCommentEnabledTill));
+}
+
+
+<!-- Begin Blog -->
+    <div class="blog-post"> 
+      
+      <!-- Begin Posts -->
+      <div class="content"> 
+          @if (Model.Type == "page")
+          {
+              @Html.Raw(Model.Description)
+          }
+          else if(Model.Type=="post")
+{
+        <!-- Begin Post -->
+        <div class="post"> 
+          
+          <!-- Begin Post Info -->
+          <div class="post-info"> 
+            <!-- Begin Date -->
+            <div class="post-date"> <span class="day">@Functions.GetDay(Model.PublishedOn)</span> 
+              <span class="month">@Functions.GetMonthName(Model.PublishedOn)</span> <span class="year">@Functions.GetYear(Model.PublishedOn)</span> </div>
+            <!-- End Date --> 
+            <!-- Begin Title -->
+            <div class="post-title">
+              <h1>@Model.Title</h1>
+                @{
+                    var lastLabel = (Model.Labels != null && Model.Labels.Count > 0) ? Model.Labels.Last() : null;
+                    var lastCategory = (Model.Category != null && Model.Category.Count > 0) ? Model.Category.Last() : null;
+                }
+              <div class="post-meta"> <span class="comments"><a href="#comments">@Model.CommentsCount Comments</a></span> 
+                  @if (Model.Labels != null && Model.Labels.Count > 0) 
+                  {
+                      if (Model.Labels != null && Model.Labels.Count > 0)
+                      {@:<span class="categories">
+                      }
+                  foreach (var itemLabel in Model.Labels)
+                  {
+
+                      if (itemLabel == lastLabel)
+                      {
+                          <a href="/Label/@itemLabel.URL">@itemLabel.Name</a>
+                      }
+                      else
+                      {
+                          <a href="/Label/@itemLabel.URL">@itemLabel.Name</a> <text>, </text>
+                      }
+
+                  }
+                  if (Model.Labels != null && Model.Labels.Count > 0)
+                  {
+                      @: </span>
+                        }   
+                  }
+                </div>
+            </div>
+            <!-- End Title --> 
+          </div>
+          <!-- End Post Info -->
+          
+          <div class="post-text"> 
+              @if (Model.FeaturedImage != null)
+              {
+                  @:<img src="@Model.FeaturedImage" alt="" style="max-width:595px;display:block;margin:0 auto;" />
+                  <br />
+                }
+               
+              @Html.Raw(Model.Description)
+            <br />
+            <br />
+          </div>
+          <!-- End Text --> 
+            @if (Model.Category != null && Model.Category.Count > 0)
+            {
+                if (Model.Category != null && Model.Category.Count > 0)
+                {
+                @:<span class="tags">
+                }
+
+            foreach (var itemCat in Model.Category)
+            {
+                if (itemCat == lastCategory)
+                {
+                    <a href="/Category/@itemCat.URL">@itemCat.Name</a>
+                }
+                else
+                {
+                    <a href="/Category/@itemCat.URL">@itemCat.Name</a>  <text>, </text>
+                }
+            }
+            if (Model.Category != null && Model.Category.Count > 0)
+            {
+                @:</span>
+            }
+            }
+         </div>
+        <!-- End Post -->
+        
+        <div class="hr2"></div>
+        
+       @Html.Partial("~" + currentThemeName + "/commentslist.cshtml", Model.Comments)
+          if (EnableComments)
+          {
+              if (Model.Comments.Count() == 0)
+              {
+                  <h5>No Comments !!! be first to write comment.</h5>
+              }
+              @Html.Partial("~" + currentThemeName + "/commentform.cshtml", Model.ContentID)
+          }
+        <!-- for comments flag -->
+    <div class="flag-black-layer">
+    </div>
+    <div class="flag-reason-popup">
+        <div>
+            <h3>I am flagging this comment because...</h3>
+            <ul class="action-list">
+                <li class="item">
+                    <label>
+                        <input type="radio" name="FlagReason" value="Comment is spam" checked class="flag-radio" />
+                        <span class="action-name">It is spam </span>
+                        <span class="action-desc">This comment is effectively an advertisement/spam. It is not useful or relevant, but promotional.
+                        </span>
+                    </label>
+                </li>
+                <li class="item">
+                    <label>
+                        <input type="radio" name="FlagReason" value="Comment is Offensive, abusive, or hate speech" class="flag-radio" />
+                        <span class="action-name">It is offensive, abusive, or hate speech </span>
+                        <span class="action-desc">This comment contains content that a reasonable person would deem inappropriate for respectful discourse. </span>
+                    </label>
+                </li>
+                <li class="item">
+                    <label>
+                        <input type="radio" name="FlagReason" value="PostOther" class="flag-radio" />
+                        <span class="action-name">Other</span>
+                        <span class="action-desc">Please describe exactly what's wrong. </span>
+                        <div id="otherreasontext" style="margin: 5px 0px; width: auto; display: none;">
+                            <div style="margin-left: 18px;">
+                                <textarea name="FlagReasonText" id="FlagReasonText" cols="40" rows="2" style="margin-bottom: 5px;"></textarea>
+                                <span class="edit-field-overlay">Something not quite right? Let us know about it, and please provide relevant links if possible. </span>
+                            </div>
+                        </div>
+                    </label>
+                </li>
+            </ul>
+            
+            @using (Html.BeginForm("AddFlag", "Content", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.Hidden("CommentID")
+                @Html.Hidden("AbuseReason")
+                @Html.Hidden("AbuseByUserName")
+                <div style="float:left;">
+                    <label style="display: inline;margin-left:20px;">Comment as:</label>
+                    <select id="FlagAs" name="FlagAs" class="five smoothborder" style="display: inline; width: 140px">
+                        <option value="google">Google Account</option>
+                        <option value="anonymous">Anonymous</option>
+                    </select>
+                </div>
+                <div class="control">
+                    <input type="submit" id="flag-submit" value="Flag" class="readmore" />
+                    <input type="button" id="flag-cancel" value="Cancel" class="readmore" />
+                </div>
+            }
+        </div>
+    </div>
+    <!-- end  comments flag -->
+    <div class="displaynone">
+        <div id="sk-flag-signin"></div>
+    </div>
+    @section PageLevelStyles
+    {
+        <style>
+            .displaynone {
+                display: none !important;
+            }
+            .commentflag {
+                font-size: 12px;
+                text-decoration: none;
+            }
+            .flag-black-layer {
+                display: none;
+                background-color: #000;
+                height: 100%;
+                left: 0;
+                opacity: 0.5;
+                position: fixed;
+                top: 0;
+                width: 100%;
+                z-index: 999;
+            }
+            .flag-reason-popup {
+                display:none;
+                background-color: #fff;
+                max-height: 450px;
+                height:auto;
+                left: 50%;
+                margin-left: -250px;
+                position: fixed;
+                top: 100px;
+                width: 500px;
+                z-index: 1000;
+            }
+            .flag-reason-popup h3 {
+                margin: 20px 0 0 20px;
+                font-size:20px;
+            }
+            .flag-reason-popup .action-list {
+                padding: 5px 20px 20px;
+            }
+            .flag-reason-popup .action-list .item {
+                margin-top: 10px;
+            }
+            .flag-reason-popup .action-list li {
+                list-style-type: none;
+            }
+            .flag-reason-popup .action-list .action-name {
+                color: #333;
+                font-weight: bold;
+            }
+            .flag-reason-popup .action-list .action-desc {
+                color: #666;
+                display: block;
+                margin-left: 25px;
+            }
+            .flag-reason-popup .control {
+                float: right;
+                padding: 0 20px;
+                margin-bottom:10px;
+            }
+        </style>
+    }
+    @section PageLevelScripts
+    {
+        <script>
+            var isFlagSubmit = false;
+            $(document).ready(function () {
+                $(".flag-radio").change(function () {
+                    if ($(".flag-radio:checked").val() == "PostOther") {
+                        $("#otherreasontext").show();
+                    }
+                    else {
+                        $("#otherreasontext").hide();
+                    }
+                });
+                $("#flag-cancel,.flag-black-layer").click(function () {
+                    $(".flag-black-layer").hide();
+                    $(".flag-reason-popup").hide();
+                });
+                $(".commentflag").click(function () {
+                    $("#CommentID").val($(this).attr("data-id"));
+                    $("#AbuseReason").val("");
+                    $("#FlagReasonText").val("");
+                    $(".flag-black-layer").show();
+                    $(".flag-reason-popup").show();
+                    $(".flag-radio").trigger("change");
+                });
+                $("#flag-submit").click(function () {
+                    if ($(".flag-radio:checked").val() == "PostOther" && $("#FlagReasonText").val().trim()=="") {
+                        alert("Please specify other reason.");
+                        return false;
+                    }
+                    else {
+                        if ($("#FlagAs").val() == "google") {
+                            if ($("#AbuseByUserName").val().trim() == "") {
+                                isFlagSubmit = true;
+                                $("#sk-flag-signin").find(".abcRioButton").click(); // google authentication
+                                return false;
+                            }
+                        }
+                        else if ($("#FlagAs").val() == "anonymous") {
+                            $("#AbuseByUserName").val("Anonymous");
+                        }
+                        if ($(".flag-radio:checked").val() == "PostOther")
+                            $("#AbuseReason").val($("#FlagReasonText").val());
+                        else
+                            $("#AbuseReason").val($(".flag-radio:checked").val());
+                        return true;
+                    }
+                });
+            });
+            function onFlagSuccess(googleUser) {
+                $("#AbuseByUserName").val(googleUser.getBasicProfile().getName());
+                if (isFlagSubmit == true) {
+                    isFlagSubmit = false;
+                    $("#flag-submit").trigger("click");
+                }
+            }
+            function onFlagFailure(error) {
+                alert(error);
+            }
+            function renderFlagGoogleButton() {
+                gapi.signin2.render('sk-flag-signin', {
+                    'scope': 'https://www.googleapis.com/auth/plus.login',
+                    'width': 200,
+                    'height': 50,
+                    'longtitle': true,
+                    'theme': 'dark',
+                    'onsuccess': onFlagSuccess,
+                    'onfailure': onFlagFailure
+                });
+            }
+        </script>
+        <script src="https://apis.google.com/js/platform.js?onload=renderFlagGoogleButton" async defer></script>
+        <script>
+            @if (TempData["flag-added"] != null)
+            {
+                @: alert("Comment is Flagged. We will review. :)");
+            }
+            @if (TempData["flag-error"] != null)
+            {
+                @: alert("@((String)TempData["flag-error"])");
+            }
+        </script>
+    }
+}
+      </div>
+        @Html.Partial("~" + currentThemeName + "/sidebar.cshtml")
+      <!-- End Posts --> 
+</div>

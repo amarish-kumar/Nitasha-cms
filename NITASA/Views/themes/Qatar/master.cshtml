@@ -1,0 +1,109 @@
+﻿@using NITASA.Helpers
+@{
+    string currentTheme = ViewBag.ActiveTheme;
+}
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+    @Html.Raw(Functions.GetMetaData(Request))
+    <title>@ViewBag.Title :: @Functions.GetSiteName()</title>
+    <link rel="shortcut icon" type="@currentTheme/image/x-icon" href="@currentTheme/images/favicon.png" />
+    <link rel="stylesheet" type="text/css" href="@currentTheme/css/style.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="@currentTheme/color/green.css" media="all" />
+    <link rel="stylesheet" type="text/css" media="screen" href="@currentTheme/css/prettyPhoto.css" />
+    <link rel="stylesheet" type="text/css" href="@currentTheme/type/museo.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="@currentTheme/type/ptsans.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="@currentTheme/type/charis.css" media="all" />
+<!--[if IE 7]>
+<link rel="stylesheet" type="text/css" href="@currentTheme/css/ie7.css" media="all" />
+<![endif]-->
+<!--[if IE 8]>
+<link rel="stylesheet" type="text/css" href="@currentTheme/css/ie8.css" media="all" />
+<![endif]-->
+<!--[if IE 9]>
+<link rel="stylesheet" type="text/css" href="@currentTheme/css/ie9.css" media="all" />
+<![endif]-->
+    <script type="text/javascript" src="@currentTheme/js/jquery-1.6.2.min.js"></script>
+    <script type="text/javascript" src="@currentTheme/js/ddsmoothmenu.js"></script>
+    <script type="text/javascript" src="@currentTheme/js/transify.js"></script>
+    <script type="text/javascript" src="@currentTheme/js/jquery.aw-showcase.js"></script>
+    <script type="text/javascript" src="@currentTheme/js/jquery.jcarousel.js"></script>
+    <script type="text/javascript" src="@currentTheme/js/carousel.js"></script>
+    <script type="text/javascript" src="@currentTheme/js/jquery.prettyPhoto.js"></script>
+    <script type="text/javascript" src="@currentTheme/js/jquery.superbgimage.min.js"></script>
+    <script type="text/javascript" src="@currentTheme/js/jquery.slickforms.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function()
+{
+	$("#showcase").awShowcase(
+	{
+		content_width:			900,
+		content_height:			300,
+		auto:					true,
+		interval:				3000,
+		continuous:				true,
+		arrows:					true,
+		buttons:				true,
+		btn_numbers:			false,
+		keybord_keys:			true,
+		mousetrace:				false, /* Trace x and y coordinates for the mouse */
+		pauseonover:			true,
+		stoponclick:			false,
+		transition:				'hslide', /* hslide/vslide/fade */
+		transition_delay:		50,
+		transition_speed:		700,
+		show_caption:			'onload' /* onload/onhover/show */
+	});
+});
+
+</script>
+    @Html.Raw(Functions.GetFaviconURL())
+    @Html.Raw(Functions.GetHeaderCustomCode())
+    @Html.Raw(Functions.GetCustomCSS())
+    @RenderSection("PageLevelStyles", false)
+</head>
+<body>
+<!-- Begin Wrapper -->
+<div id="wrapper">
+ 
+    @Html.Partial("~" + currentTheme + "/header.cshtml")
+    @Html.Partial("~" + currentTheme + "/navigation.cshtml")
+  <!-- Begin Container -->
+  <div id="container" class="opacity"> 
+    
+    <!-- Slider -->
+    @*@Html.Partial("~" + currentTheme + "/slider.cshtml")*@
+   
+    <!-- Divider --> 
+  
+	<!-- Begin Blog -->
+      <div class="blog">
+          <div class="row">             
+                  @RenderBody()
+          </div>
+      </div>
+    <!-- End Blog -->
+	
+    
+    <div class="clear"></div>
+    <br />
+    <br />
+    <br />
+  
+    <!-- Divider --> 
+    
+  </div>
+  <!-- End Container -->
+  
+@Html.Partial("~" + currentTheme + "/footer.cshtml")
+</div>
+<!-- End Wrapper --> 
+
+    <script type="text/javascript" src="@currentTheme/js/scripts.js"></script>
+    @RenderSection("PageLevelScripts", false)
+    @Html.Raw(Functions.GetCustomJavaScript())
+    @Html.Raw(Functions.GetGoogleAnalytics())
+</body>
+</html>

@@ -18,16 +18,25 @@ namespace NITASA.Controllers
         {
             this.context = new NTSDBContext();                
         }
-        public ActionResult Details(string URL)
+        public ActionResult Details(string URL, string prv)
         {
-            Content content = context.Content.Where(x => x.URL.ToLower() == URL.ToLower() && x.IsDeleted == false && x.isPublished == true).FirstOrDefault();
-
-            if (string.IsNullOrEmpty(URL) || content == null)
+            Content content;
+            bool isPreview = false;
+            if (Session["Preview"] != null && prv=="true")
             {
-                return RedirectToAction("NotFound", "Home"); 
+                content = (Content)Session["Preview"];
+                isPreview = true;
             }
-            ViewBag.ContentID = content.ID;
+            else
+            {
+                content = context.Content.Where(x => x.URL.ToLower() == URL.ToLower() && x.IsDeleted == false && x.isPublished == true).FirstOrDefault();
 
+                if (string.IsNullOrEmpty(URL) || content == null)
+                {
+                    return RedirectToAction("NotFound", "Home");
+                }
+                ViewBag.ContentID = content.ID;
+            }
             CL_Content data = new CL_Content();
             data.ContentID = content.ID;
             data.URL = content.URL;
@@ -39,7 +48,7 @@ namespace NITASA.Controllers
             
             if (content.Type.ToLower() == "page")
             {
-                data.Description = ReplaceSliderAndAddons(content.Description);
+                data.Description = Functions.ReplaceSliderAndAddons(this.ControllerContext, activeTheme, content.Description);
                 data.Type = "page";
             }
             else
@@ -63,80 +72,22 @@ namespace NITASA.Controllers
                         AddedOn = x.AddedOn
                     }).ToList();
             }
-            
-            int ContentView = content.ContentView;
-            if (ContentView == 0)
-                ContentView = 1;
-            else
-                ContentView++;
-            content.ContentView = ContentView;
-            context.Entry(content).State = EntityState.Modified; 
-            context.SaveChanges();
+            if (!isPreview)
+            {
+                int ContentView = content.ContentView;
+                if (ContentView == 0)
+                    ContentView = 1;
+                else
+                    ContentView++;
+                content.ContentView = ContentView;
+                context.Entry(content).State = EntityState.Modified;
+                context.SaveChanges();
 
-            Functions.IncreaseContentView(content.ID, Request);
-
+                Functions.IncreaseContentView(content.ID, Request);
+            }
             return View(viewName: activeTheme + "content.cshtml", model: data); 
         }
-
-        private string ReplaceSliderAndAddons(string ContentText)
-        {
-            string HTMLContent = HttpUtility.HtmlDecode(ContentText);
-            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-
-            doc.OptionFixNestedTags = false;
-            doc.OptionCheckSyntax = false;
-            doc.LoadHtml(HTMLContent);
-
-            var Sliders = doc.DocumentNode.SelectNodes("//slider");
-            if (Sliders != null)
-            {
-                foreach (var item in Sliders)
-                {
-                    var HTMLSlider = "";
-                    int sliderid = 0;
-                    if (Int32.TryParse(item.InnerText, out sliderid))
-                    {
-                        List<CL_Slide> slides = context.Slides.Where(x => x.SliderId == sliderid).Select(x =>
-                            new CL_Slide { Image = x.Image, Link = x.Link, Text = x.Text, Title = x.Title, DisplayOrder = x.DisplayOrder }
-                            ).ToList();
-                        HTMLSlider = Functions.RenderRazorViewToString(this.ControllerContext, activeTheme + "slider.cshtml", slides);
-                    }
-                    //HtmlAgilityPack.HtmlNode newNode = HtmlAgilityPack.HtmlNode.CreateNode(HTMLSlider);
-                    //item.ParentNode.ReplaceChild(newNode, item);
-
-                    HtmlAgilityPack.HtmlNode newNode = doc.CreateElement("div");
-                    newNode.Attributes.Add("class", "divNTS");
-                    newNode.InnerHtml = HTMLSlider;
-                    item.ParentNode.ReplaceChild(newNode, item);
-                }
-            }
-            var Addons = doc.DocumentNode.SelectNodes("//addon");
-            if (Addons != null)
-            {
-                foreach (var item in Addons)
-                {
-                    var HTMLAddon = "";
-                    int addonid = 0;
-                    if (Int32.TryParse(item.InnerText, out addonid))
-                    {
-                        Content addon = context.Content.Where(x => x.ID == addonid && x.isPublished == true && x.IsDeleted == false).FirstOrDefault();
-                        if (addon != null)
-                        {
-                            //string MasterLayout = addon.AddonMasterLayout;
-                            HTMLAddon = addon.AddonSubLayout;
-                            HTMLAddon = HTMLAddon.Replace("{{Title}}", addon.Title);
-                            HTMLAddon = HTMLAddon.Replace("{{URL}}", (string.IsNullOrEmpty(addon.URL) ? "#" : addon.URL));
-                            HTMLAddon = HTMLAddon.Replace("{{Description}}", addon.Description);
-                        }
-                    }
-                    var newNode = HtmlAgilityPack.HtmlNode.CreateNode(HTMLAddon);
-                    item.ParentNode.ReplaceChild(newNode, item);
-                }
-            }
-            HTMLContent = doc.DocumentNode.OuterHtml;
-            return HTMLContent;
-        }
-
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult AddComment(string CommentDescription, string UserName, string ProfilePicUrl, string Website, string CommentAs, int ContentID)

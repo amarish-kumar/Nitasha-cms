@@ -1,0 +1,32 @@
+@using NITASA.Helpers
+@{
+    string currentThemeName = ViewBag.ActiveTheme;
+}
+  <div id="header">
+    <div class="logo opacity"><a href="@Functions.GetSiteURL()"><img src="@Functions.GetLogoPath()" alt="@Functions.GetSiteName()" /></a></div>
+    <div class="social">
+      <ul>
+          @if(!string.IsNullOrWhiteSpace(Functions.GetFacebookURL()))
+          {
+                <li><a href="@Functions.GetFacebookURL()"><img src="@currentThemeName/images/icon-facebook.png" alt="Facebook" style="padding-right:3px" /></a></li>    
+          }
+          @if (!string.IsNullOrWhiteSpace(Functions.GetTwitterURL()))
+          {
+              <li><a href="@Functions.GetTwitterURL()"><img src="@currentThemeName/images/icon-twitter.png" alt="Twitter" style="padding-right:3px" /></a></li>
+          }
+          @if (!string.IsNullOrWhiteSpace(Functions.GetGooglePlusURL()))
+          {
+              <li><a href="@Functions.GetGooglePlusURL()"><img src="@currentThemeName/images/icon-googleplus.png" alt="Google+" style="padding-right:3px" /></a></li>
+          }
+          @if (!string.IsNullOrWhiteSpace(Functions.GetLinkedInURL()))
+          {
+              <li><a href="@Functions.GetLinkedInURL()"><img src="@currentThemeName/images/icon-linkedIn.png" alt="LinkedIn" style="padding-right:3px" /></a></li>
+          }
+          @if (!string.IsNullOrWhiteSpace(Functions.GetPinterestURL()))
+          {
+              <li><a href="@Functions.GetPinterestURL()"><img src="@currentThemeName/images/icon-pinterest.png" alt="Pinterest" style="padding-right:3px" /></a></li>
+          }
+      </ul>
+    </div>
+  </div>
+  <div class="clear"></div>

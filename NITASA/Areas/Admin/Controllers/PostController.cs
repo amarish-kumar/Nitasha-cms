@@ -102,6 +102,8 @@ namespace NITASA.Areas.Admin.Controllers
 
             cont.Description = Model.Description;
             cont.GUID = Functions.GetRandomGUID();
+            if (string.IsNullOrEmpty(Model.URL))
+                Model.URL = Model.Title;
             cont.URL = Functions.ToUrlSlug(Model.URL, "post", 0);
             cont.IsSlugEdited = Model.IsSlugEdited;
             cont.IsFeatured = Model.IsFeatured;
@@ -346,7 +348,7 @@ namespace NITASA.Areas.Admin.Controllers
                     {
                         content.Title = Model.Title;
                         content.Description= Model.Description.Replace("<img src=\"../../../", "<img src=\"../../");
-                        if (content.URL.ToLower() != Model.URL.ToLower())
+                        if (!string.IsNullOrEmpty(Model.URL) && content.URL.ToLower() != Model.URL.ToLower())
                             content.URL = Functions.ToUrlSlug(Model.URL, "post", content.ID);
                         content.IsSlugEdited = Model.IsSlugEdited;
                         content.IsFeatured = Model.IsFeatured;
@@ -460,6 +462,16 @@ namespace NITASA.Areas.Admin.Controllers
                 TempData["ErrorMessage"] = "Post Not Found.";
             }
             return RedirectToAction("List", "Post");
+        }
+
+        [HttpPost]
+        public ActionResult Preview(Content post)
+        {
+            post.PublishedOn = new DateTime();
+            post.Type = "post";
+            Session["Preview"] = null;
+            Session["Preview"] = post;
+            return Content("success");
         }
     }
 }
