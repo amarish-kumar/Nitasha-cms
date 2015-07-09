@@ -1,0 +1,33 @@
+@using NITASA.ViewModels
+@{
+    List<CL_Menu> Menus = NITASA.Helpers.Functions.GetMenu();
+}
+<!-- Begin Menu -->
+  <div id="menu" class="menu opacity">
+    <ul>
+        @{List<CL_Menu> ParentMenus = Menus.Where(m => m.ParentMenuID == 0).ToList();}
+        @foreach (CL_Menu parentMenu in ParentMenus)// parent menus
+        {
+            <li>
+                <a href="@(string.IsNullOrEmpty(parentMenu.URL)?"#":parentMenu.URL)">@parentMenu.Title</a>
+                @{List<CL_Menu> SubMenus = Menus.Where(m => m.ParentMenuID == parentMenu.MenuID && m.ParentMenuID != 0).ToList();}
+                @if (SubMenus.Count() > 0)
+                {
+                    @:<ul>
+                    }
+                @foreach (CL_Menu submenu in SubMenus)// sub menus
+                {
+                    <li><a href="@(string.IsNullOrEmpty(submenu.URL)?"#":submenu.URL)">@submenu.Title</a></li>
+                }
+                @if (SubMenus.Count() > 0)
+                {
+                    @:</ul>
+                    }
+            </li>
+        }
+     
+    </ul>
+    <br style="clear: left" />
+  </div>
+  <!-- End Menu --> 
+  
