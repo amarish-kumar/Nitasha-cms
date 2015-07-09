@@ -208,6 +208,7 @@
     <Compile Include="Areas\Admin\Helper\Sitemap\SitemapChangeFrequency.cs" />
     <Compile Include="Areas\Admin\Helper\Sitemap\SitemapGenerator.cs" />
     <Compile Include="Areas\Admin\Helper\Sitemap\SitemapItem.cs" />
+    <Compile Include="Areas\Admin\Helper\UserRights.cs" />
     <Compile Include="Areas\Admin\ViewModels\ChangePassword.cs" />
     <Compile Include="Areas\Admin\ViewModels\Dashboard.cs" />
     <Compile Include="Areas\Admin\ViewModels\Login.cs" />
@@ -227,7 +228,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\AllAction.cs" />
-    <Compile Include="Areas\Admin\Helper\UserRights.cs" />
     <Compile Include="Helpers\Functions.cs" />
     <Compile Include="Helpers\Imager.cs" />
     <Compile Include="Helpers\SortingPaging.cs" />
@@ -743,7 +743,9 @@
     <Content Include="Views\themes\Qatar\type\titillium\TitilliumText22L600wt-demo.html" />
     <Content Include="Views\themes\Qatar\type\vegur.css" />
     <Content Include="Views\themes\Qatar\type\vegur\vegur-r_0.602-webfont.svg" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -892,8 +894,6 @@
     <Content Include="Views\themes\Qatar\type\vegur\vegur-r_0.602-webfont.woff" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Code\" />
-    <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\assets\js\tinymce\examples\css\" />
     <Folder Include="Areas\Admin\assets\js\tinymce\examples\lists\" />
     <Folder Include="Areas\Admin\assets\js\tinymce\examples\media\" />
@@ -995,6 +995,10 @@
     <ProjectReference Include="..\NITASA.Data\NITASA.Data.csproj">
       <Project>{2700f7f0-9e34-4de6-9efe-95d95513792d}</Project>
       <Name>NITASA.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NITASA.Services\NITASA.Services.csproj">
+      <Project>{125b11dc-f6e6-4082-a2a4-480745e841b1}</Project>
+      <Name>NITASA.Services</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

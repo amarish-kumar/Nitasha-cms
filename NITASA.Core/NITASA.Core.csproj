@@ -77,8 +77,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Caching\CacheExtensions.cs" />
     <Compile Include="Caching\ICacheManager.cs" />
-    <Compile Include="Caching\MemoryCacheManager.cs" />
+    <Compile Include="Caching\UserRoleCacheManager.cs" />
     <Compile Include="Configuration\CmsConfig.cs" />
     <Compile Include="Infrastructure\AppDomainTypeFinder.cs" />
     <Compile Include="Infrastructure\DependencyManagement\IDependencyRegistrar.cs" />
