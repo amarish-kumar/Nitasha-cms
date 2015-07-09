@@ -2,6 +2,7 @@
 using NITASA.Areas.Admin.Helper;
 using NITASA.Areas.Admin.ViewModels;
 using NITASA.Data;
+using NITASA.Services.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,17 +15,19 @@ namespace NITASA.Areas.Admin.Controllers
     public class HomeController : Controller
     {
         public NTSDBContext context;
+        IAclService aclService;
 
-        public HomeController()
+        public HomeController(IAclService aclService)
         {
             this.context = new NTSDBContext();
+            this.aclService = aclService;
         }
 
         public ActionResult Dashboard()
         {
-            if (!UserRights.HasRights(Rights.ShowDashboard))
+            if (!aclService.HasRights(Rights.ShowDashboard))
                 return RedirectToAction("Details", "Profile");
-                
+
             CustomizedDashboard dBoard = new CustomizedDashboard();
 
             dBoard.TotalPage = context.Content.Where(x => x.Type == "page" && x.IsDeleted == false).Count();
@@ -232,35 +235,41 @@ namespace NITASA.Areas.Admin.Controllers
             dBoard.UnModeratedComments = context.Comment.Where(comment => comment.IsModerated == false).OrderByDescending(x => x.AddedOn).Take(5).ToList();
             //dBoard.ActivityLogs = context.ActivityLog.OrderByDescending(log => log.AddedOn).Take(5).ToList();
             var pageView = context.ContentView.OrderByDescending(m => m.ViewedOn).ToList();
-            var pageView1 = from r in pageView
-                            group r by Convert.ToDateTime(r.ViewedOn).ToString("MMM-dd") into g
-                            select new ChartData { x = g.Key, y = g.Count() };
-            string chartData = JsonConvert.SerializeObject(pageView1.ToList());
-            //JsonSerializerSettings js = new JsonSerializerSettings();
-            //js.
-            //JsonConvert.SerializeObject(
+
+            string chartData = string.Empty;
+
+            DateTime minDate = (DateTime)pageView.Min(x => x.ViewedOn);
+            DateTime maxDate = (DateTime)pageView.Max(x => x.ViewedOn);
+            int totalMonths = ((maxDate.Year - minDate.Year) * 12) + maxDate.Month - minDate.Month;
+
+            string query = string.Empty;
+            List<ChartData> dataList = new List<ChartData>();
+            if (totalMonths <= 4) // day wise
+            {
+                query = @"SELECT	YEAR(ViewedOn) AS 'Year',
+		                        MONTH(ViewedOn) AS 'Month',
+		                        day(ViewedOn)  AS 'Day',
+		                        count(id) AS 'Count'
+                        FROM [dbo].[ContentViews]
+                        GROUP BY YEAR(ViewedOn) , MONTH(ViewedOn)  ,day(ViewedOn) 
+                        order by 1,2,3;";
+                var data = context.Database.SqlQuery<MonthlyData>(query).ToList();
+                dataList = data.Select(m => new ChartData { x = (m.Year + "-" + m.Month + "-" + m.Day), y = m.Count }).ToList();
+            }
+            else // month wise
+            {
+                ViewBag.ismonthlychart = true;
+                query = @"SELECT	YEAR(ViewedOn)  AS 'Year',
+		                        MONTH(ViewedOn)  AS 'Month',
+		                        count(id) AS 'Count'
+                        FROM [dbo].[ContentViews]
+                        GROUP BY YEAR(ViewedOn) ,MONTH(ViewedOn) 
+                        order by 1,2";
+                var data = context.Database.SqlQuery<MonthlyData>(query).ToList();
+                dataList = data.Select(m => new ChartData { x = (m.Year + "-" + m.Month + "-1"), y = m.Count }).ToList();
+            }
+            chartData = JsonConvert.SerializeObject(dataList);
             dBoard.chartData = chartData;
-
-            //dBoard.chartData = context.ContentView.OrderByDescending(x => x.ViewedOn)
-            //    .Select( g => new  ChartData { x = Convert.ToString(g.ViewedOn),y = g.ViewID.CompareTo})
-            //    .GroupBy(content => content.ViewedOn)
-            //    .Select().Take(7)
-            //    .ToList();
-            //dBoard.TotalComments = context.cmsadminco.Where(x => x.IsDeleted == false).Count();
-
-
-            //Dashboard dBoard = new Dashboard();
-            //// context.Content.Where(x => x.IsDeleted == false).OrderBy(x => x.CategoryName).ToList();
-            //dBoard.TotalPost = context.Content.Where(x => x.Type == "post").Count();
-            //dBoard.TotalPages = context.Content.Where(x => x.Type == "page").Count();
-            //dBoard.TotalCategory = context.Category.Where(x => x.IsDeleted == false).Count();
-            //dBoard.TotalLabels = context.Label.Count();
-            //dBoard.TotalPageView = context.Config.FirstOrDefault().TotalPageView;
-            //dBoard.TotalMedia = context.Media.Where(x=>x.IsDeleted==false).Count();
-            //dBoard.PostDrafted = context.Content.Where(x => x.Type == "post" && x.isPublished==false && x.IsDeleted==false).Count();
-            //dBoard.PostPublished = context.Content.Where(x => x.Type == "post" && x.isPublished == true && x.IsDeleted == false).Count();
-            //dBoard.PageDrafted = context.Content.Where(x => x.Type == "page" && x.isPublished == false && x.IsDeleted == false).Count(); 
-            //dBoard.PagePublished = context.Content.Where(x => x.Type == "page" && x.isPublished == true && x.IsDeleted == false).Count(); 
             return View(dBoard);
         }
 
@@ -274,11 +283,6 @@ namespace NITASA.Areas.Admin.Controllers
             cont.Description = sanitizer.Sanitize(dboard.PostDescription);
             cont.GUID = Functions.GetRandomGUID();
             cont.URL = Functions.ToUrlSlug(dboard.PostTitle, "post", 0);
-
-            //cont.EnableComment = Convert.ToBoolean(Request.Form["ckhCommentEnabled"]);
-            //int commentEnabledDays = Convert.ToInt32(Request.Form["ddlEnableTill"]);
-            //cont.CommentEnabledTill = commentEnabledDays;
-
             cont.EnableComment = false;
             cont.CommentEnabledTill = 0;
             cont.AddedBy = Functions.CurrentUserID();
