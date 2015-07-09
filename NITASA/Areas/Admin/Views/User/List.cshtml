@@ -1,37 +1,10 @@
 ﻿@model List<Tuple<User, string>>
-        @using NITASA.Data
-        @using NITASA.Areas.Admin.Helper
-        @using GridMvc.Html
-        @{
-            ViewBag.Title = "Users";
-        }
-        @section PageLevelStyles
-{
-            <style>
-                tfoot td {
-                    line-height: 3 !important;
-                }
-
-                .custom-pagination td {
-                    padding-left: 10px !important;
-                }
-
-                .table-normal tbody td.col1 {
-                    width: 100px;
-                    text-align: center;
-                }
-
-                .table-normal tbody td.col2 {
-                    width: 100px;
-                    text-align: center;
-                }
-
-                .table-normal tbody td.col3 {
-                    width: 115px;
-                    text-align: center;
-                }
-            </style>
-        }
+@using NITASA.Data
+@using NITASA.Areas.Admin.Helper
+@using GridMvc.Html
+@{
+    ViewBag.Title = "Users";
+}
         <div class="main-content">
             <div class="container-fluid padded">
                 @if (TempData["SuccessMessage"] != null)
@@ -75,7 +48,7 @@
                                                 columns.Add(x => x.Item1.IsActive).Titled("Status").RenderValueAs(x => x.Item1.IsActive ? "Active" : "In Active").Sortable(true).Filterable(true);
                                                 columns.Add().SetWidth(110).Titled("Change Status").RenderValueAs(x => RenderStatusButton(x)).Sanitized(false).Encoded(false);
                                                 columns.Add().SetWidth(110).Titled("").RenderValueAs(x => RenderActions(x)).Sanitized(false).Encoded(false);
-                                            }).WithPaging(25).WithMultipleFilters()
+                                            }).WithPaging(10, 5).WithMultipleFilters()
                                 }
                                 else
                                 {

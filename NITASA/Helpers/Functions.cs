@@ -102,8 +102,8 @@ namespace NITASA.Helpers
             if (strController == "content")
             {
                 var dbContext = getDbContextObject();
-                Content contentEdit = dbContext.Content.Where(content =>
-                       content.URL.ToLower() == url && content.IsDeleted == false && content.isPublished == true).FirstOrDefault();
+                Content content = dbContext.Content.Where(x =>
+                       x.URL.ToLower() == url && x.IsDeleted == false && x.isPublished == true).FirstOrDefault();
 
                 List<Meta> meta = (from mt in dbContext.Meta
                                    join cont in dbContext.Content on mt.ContentID equals cont.ID
@@ -112,6 +112,8 @@ namespace NITASA.Helpers
 
                 if (meta.Count() > 0)
                 {
+                    //string Title =string.IsNullOrEmpty(meta[0].Title)?:
+                    strMeta = "<meta name=\"title\" content=\"" + meta[0].Title + "\">";
                     strMeta = "<meta name=\"description\" content=\"" + meta[0].Description + "\">";
                     strMeta += "<meta name=\"author\" content=\"" + meta[0].Author + "\">";
                     strMeta += "<meta name=\"keywords\" content=\"" + meta[0].Keyword + "\">";
@@ -156,8 +158,86 @@ namespace NITASA.Helpers
             return strURL + "/" + type + "/" + slug;
             //return strURL + "/" + type + "/Index/" + slug;
         }
-        
-        public static String RenderRazorViewToString(ControllerContext controllerContext, String viewName, Object model)
+
+        public static string ReplaceSliderAndAddons(ControllerContext controllerContext, string activeThemePath, string ContentText)
+        {
+            var context = getDbContextObject();
+
+            string HTMLContent = HttpUtility.HtmlDecode(ContentText);
+            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+
+            doc.OptionFixNestedTags = false;
+            doc.OptionCheckSyntax = false;
+            doc.LoadHtml(HTMLContent);
+
+            var Sliders = doc.DocumentNode.SelectNodes("//slider");
+            if (Sliders != null)
+            {
+                foreach (var item in Sliders)
+                {
+                    var HTMLSlider = "";
+                    int sliderid = 0;
+                    if (Int32.TryParse(item.InnerText, out sliderid))
+                    {
+                        List<CL_Slide> slides = context.Slides.Where(x => x.SliderId == sliderid).Select(x =>
+                            new CL_Slide { Image = x.Image, Link = x.Link, Text = x.Text, Title = x.Title, DisplayOrder = x.DisplayOrder }
+                            ).ToList();
+                        HTMLSlider = RenderRazorViewToString(controllerContext, activeThemePath + "slider.cshtml", slides);
+                    }
+                    //HtmlAgilityPack.HtmlNode newNode = HtmlAgilityPack.HtmlNode.CreateNode(HTMLSlider);
+                    //item.ParentNode.ReplaceChild(newNode, item);
+
+                    HtmlAgilityPack.HtmlNode newNode = doc.CreateElement("div");
+                    newNode.Attributes.Add("class", "divNTS");
+                    newNode.InnerHtml = HTMLSlider;
+                    item.ParentNode.ReplaceChild(newNode, item);
+                }
+            }
+            var Addons = doc.DocumentNode.SelectNodes("//addon");
+            if (Addons != null)
+            {
+                foreach (var addonTag in Addons)
+                {
+                    var HTMLAddon = "";
+                    string strAddonId = addonTag.InnerText.ToLower();
+                    List<Content> addonsList = new List<Content>();
+                    if (strAddonId == "all")
+                    {
+                        string addonType = addonTag.Attributes["name"].Value.ToLower();
+                        addonsList = context.Content.Where(x => x.Type.ToLower() == addonType && x.isPublished == true && x.IsDeleted == false).OrderBy(x=>x.ContentOrder).ToList();
+                    }
+                    else
+                    {
+                        int addonid = 0;
+                        if (Int32.TryParse(strAddonId, out addonid))
+                        {
+                            Content addon = context.Content.Where(x => x.ID == addonid && x.isPublished == true && x.IsDeleted == false).FirstOrDefault();
+                            if (addon != null)
+                                addonsList.Add(addon);
+                        }
+                    }
+                    foreach (var item in addonsList)
+                    {
+                        string itemHTMLAddon = item.AddonSubLayout;
+                        itemHTMLAddon = itemHTMLAddon.Replace("{{Title}}", item.Title);
+                        itemHTMLAddon = itemHTMLAddon.Replace("{{URL}}", (string.IsNullOrEmpty(item.URL) ? "#" : item.URL));
+                        itemHTMLAddon = itemHTMLAddon.Replace("{{Description}}", item.Description);
+
+                        HTMLAddon += itemHTMLAddon;
+                    }
+
+                    //var newNode = HtmlAgilityPack.HtmlNode.CreateNode(HTMLAddon);
+                    //addonTag.ParentNode.ReplaceChild(newNode, addonTag);
+                    HtmlAgilityPack.HtmlNode newNode = doc.CreateElement("div");
+                    newNode.Attributes.Add("class", "divNTS");
+                    newNode.InnerHtml = HTMLAddon;
+                    addonTag.ParentNode.ReplaceChild(newNode, addonTag);
+                }
+            }
+            HTMLContent = doc.DocumentNode.OuterHtml;
+            return HTMLContent;
+        }
+        public static String RenderRazorViewToString(ControllerContext controllerContext, string viewName, Object model)
         {
             if (!string.IsNullOrEmpty(viewName))
             {

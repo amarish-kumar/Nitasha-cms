@@ -12,6 +12,11 @@ namespace NITASA.Data
         [Key]
         public int ID { get; set; }
         public int ContentID { get; set; }
+
+        [AllowHtml]
+        [Display(Name = "Title")]
+        public string Title { get; set; }
+
         [AllowHtml]
         [Display(Name="Keyword")]
         public string Keyword { get; set; }

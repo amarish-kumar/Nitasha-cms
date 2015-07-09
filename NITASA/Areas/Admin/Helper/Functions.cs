@@ -242,20 +242,33 @@ namespace NITASA.Areas.Admin.Helper
 
                 List<string> addontypes = AllAddons.Select(x => x.Type).Distinct().ToList();
 
+                Random r = new Random();
                 itemList = (from at in addontypes
-                            select
-                                 new TMenu
-                                 {
+                            select new TMenu
+                                {
+                                     id = string.Concat("All", r.Next(), "-addon"),
                                      text = at,
                                      SubMenu = (from ad in AllAddons
-                                                where ad.Type == at orderby ad.ContentOrder
+                                                where ad.Type == at
+                                                orderby ad.ContentOrder
                                                 select new TMenu { id = ad.ID.ToString() + "-addon", text = ad.Title }).ToList()
                                  }
                             ).ToList();
-                Random r = new Random();
-                itemList.ForEach(x =>
-                    x.SubMenu.InsertRange(0, new List<TMenu> { new TMenu { id = string.Concat("tinyAll", r.Next()), text = "All" } })
-                );
+
+                //itemList = (from at in addontypes
+                //            select
+                //                 new TMenu
+                //                 {
+                //                     text = at,
+                //                     SubMenu = (from ad in AllAddons
+                //                                where ad.Type == at orderby ad.ContentOrder
+                //                                select new TMenu { id = ad.ID.ToString() + "-addon", text = ad.Title }).ToList()
+                //                 }
+                //            ).ToList();
+                //Random r = new Random();
+                //itemList.ForEach(x =>
+                //    x.SubMenu.InsertRange(0, new List<TMenu> { new TMenu { id = string.Concat("AllAddons", r.Next()), text = "All" } })
+                //);
             }
             string json = JsonConvert.SerializeObject(itemList);
 

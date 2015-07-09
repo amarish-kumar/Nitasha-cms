@@ -58,8 +58,8 @@ else
 {
     if (Model.EnablePaging && Model.Pager != null)
     {
-    <div class="grid-footer">
-        @Html.Partial(Model.Pager.TemplateName, Model.Pager)
-    </div>
+        <div class="grid-footer table-footer">
+            @Html.Partial(Model.Pager.TemplateName, Model.Pager)
+        </div>
     }
 }

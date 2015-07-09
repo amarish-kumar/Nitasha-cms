@@ -5,30 +5,6 @@
     @{
         ViewBag.Title = "Pages";
     }
-    <style>
-        tfoot td {
-            line-height: 3 !important;
-        }
-
-        .custom-pagination td {
-            padding-left: 10px !important;
-        }
-
-        .table-normal tbody td.col2 {
-            width: 50px;
-            text-align: center;
-        }
-
-        .table-normal tbody td.col3 {
-            width: 115px;
-            text-align: center;
-        }
-
-        .table-normal tbody td.col4 {
-            width: 80px;
-            text-align: center;
-        }
-    </style>
     <div class="main-content">
         <div class="container-fluid padded">
             @if (TempData["SuccessMessage"] != null)
@@ -66,7 +42,7 @@
                                                 columns.Add(x => x.user.FullName).Titled("Author").Sortable(true).Filterable(true);
                                                 columns.Add(c => c.isPublished).Sortable(true).Filterable(true).RenderValueAs(x => x.isPublished ? "Published" : "Draft").Titled("Type");
                                                 columns.Add().SetWidth(110).RenderValueAs(x => RenderButtons(x)).Sanitized(false).Encoded(false).Titled("");
-                                            }).WithPaging(25).WithMultipleFilters()
+                                            }).WithPaging(10,5).WithMultipleFilters()
                         }
                         else
                         {
