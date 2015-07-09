@@ -158,7 +158,8 @@
                                                 <div>
                                                     <div id="slug-container">
                                                         <strong>Permalink:</strong>
-                                                        <span>/<span class="editable-container">
+                                                        <span>@(Request.Url.AbsoluteUri.Replace(Request.Url.AbsolutePath,""))/Content/
+                                                            <span class="editable-container" style=" margin-left: -3px;">
                                                                 <span id="editable-slug">@(Model != null ? Model.content.URL : "")</span>
                                                                 <input type="text" value="@(Model != null ? Model.content.URL : "")" id="edit-slug-text" style="display: none;" />
                                                             </span>
@@ -221,6 +222,7 @@
                                             </div>
                                             <div class="box-content">
                                                 <div class="padded">
+                                                    @Html.TextBoxFor(m => m.meta.Title, new { placeholder = "Title", @class = "width100per", id = "txtMetaTitle" })
                                                     @Html.TextBoxFor(m => m.meta.Keyword, new { placeholder = "Keyword", @class = "width100per", id = "txtMetaKeyword" })
                                                     @Html.TextBoxFor(m => m.meta.Description, new { placeholder = "Description", @class = "width100per", id = "txtMetaDescription" })
                                                     @Html.TextBoxFor(m => m.meta.Author, new { placeholder = "Author Name", @class = "width100per", id = "txtMetaAuthor" })

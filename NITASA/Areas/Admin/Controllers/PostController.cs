@@ -1,6 +1,7 @@
 ﻿using CsQuery;
 using NITASA.Areas.Admin.Helper;
 using NITASA.Data;
+using NITASA.Services.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -120,7 +121,7 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 cont.FeaturedImage = null;
             }
-            cont.AddedOn = DateTime.Now;
+            cont.AddedOn = DateTime.UtcNow;
             cont.AddedBy = Functions.CurrentUserID();
             if (isPublished)
             {
@@ -142,7 +143,7 @@ namespace NITASA.Areas.Admin.Controllers
                     ContentLabel contLabel = new ContentLabel();
                     contLabel.ContentID = cont.ID;
                     contLabel.LabelID = Convert.ToInt32(currLblID);
-                    contLabel.AddedOn = DateTime.Now;
+                    contLabel.AddedOn = DateTime.UtcNow;
                     contLabel.AddedBy = Functions.CurrentUserID();
                     context.ContentLabel.Add(contLabel);
                     context.SaveChanges();
@@ -156,20 +157,21 @@ namespace NITASA.Areas.Admin.Controllers
                     ContentCategory contentCategory = new ContentCategory();
                     contentCategory.ContentID = cont.ID;
                     contentCategory.CategoryID = Convert.ToInt32(currCatID);
-                    contentCategory.AddedOn = DateTime.Now;
+                    contentCategory.AddedOn = DateTime.UtcNow;
                     contentCategory.AddedBy = Functions.CurrentUserID();
                     context.ContentCategory.Add(contentCategory);
                     context.SaveChanges();
                 }
             }
-            if (!string.IsNullOrWhiteSpace(Request.Form["txtMetaKeyword"]) || !string.IsNullOrWhiteSpace(Request.Form["txtMetaDescription"]) || !string.IsNullOrWhiteSpace(Request.Form["txtMetaAuthor"]))
+            if (!string.IsNullOrWhiteSpace(Request.Form["txtMetaTitle"]) || !string.IsNullOrWhiteSpace(Request.Form["txtMetaKeyword"]) || !string.IsNullOrWhiteSpace(Request.Form["txtMetaDescription"]) || !string.IsNullOrWhiteSpace(Request.Form["txtMetaAuthor"]))
             {
                 Meta metaData = new Meta();
                 metaData.ContentID = cont.ID;
+                metaData.Title = Request.Form["txtMetaTitle"].ToString();
                 metaData.Keyword = Request.Form["txtMetaKeyword"].ToString();
                 metaData.Description = Request.Form["txtMetaDescription"].ToString();
                 metaData.Author = Request.Form["txtMetaAuthor"].ToString();
-                metaData.CreatedOn = DateTime.Now;
+                metaData.CreatedOn = DateTime.UtcNow;
                 context.Meta.Add(metaData);
                 context.SaveChanges();
             }
@@ -299,14 +301,9 @@ namespace NITASA.Areas.Admin.Controllers
                 }
                 ViewBag.Categorylist = Categorylist;
 
-                List<Meta> metaList = context.Meta.Where(m => m.ContentID == curCont.ID).ToList();
-                Meta meta = new Meta();
-                if (metaList.Count() == 1)
-                {
-                    meta.Keyword = metaList[0].Keyword;
-                    meta.Description = metaList[0].Description;
-                    meta.Author = metaList[0].Author;
-                }
+                Meta meta  = context.Meta.FirstOrDefault(m => m.ContentID == curCont.ID);
+                if (meta == null)
+                    meta = new Meta();
                 ViewBag.meta = meta;
 
                 return View(curCont);
@@ -353,7 +350,7 @@ namespace NITASA.Areas.Admin.Controllers
                         content.IsSlugEdited = Model.IsSlugEdited;
                         content.IsFeatured = Model.IsFeatured;
                         content.ContentOrder = Model.ContentOrder;
-                        content.ModifiedOn = DateTime.Now;
+                        content.ModifiedOn = DateTime.UtcNow;
                         content.ModifiedBy = Functions.CurrentUserID();
 
                         content.EnableComment = Model.EnableComment;
@@ -391,7 +388,7 @@ namespace NITASA.Areas.Admin.Controllers
                                 ContentLabel contLabel = new ContentLabel();
                                 contLabel.ContentID = content.ID;
                                 contLabel.LabelID = Convert.ToInt32(currLblID);
-                                contLabel.AddedOn = DateTime.Now;
+                                contLabel.AddedOn = DateTime.UtcNow;
                                 contLabel.AddedBy = Functions.CurrentUserID();
                                 context.ContentLabel.Add(contLabel);
                                 context.SaveChanges();
@@ -410,7 +407,7 @@ namespace NITASA.Areas.Admin.Controllers
                                 ContentCategory contentCategory = new ContentCategory();
                                 contentCategory.ContentID = content.ID;
                                 contentCategory.CategoryID = Convert.ToInt32(currCatID);
-                                contentCategory.AddedOn = DateTime.Now;
+                                contentCategory.AddedOn = DateTime.UtcNow;
                                 contentCategory.AddedBy = Functions.CurrentUserID();
                                 context.ContentCategory.Add(contentCategory);
                                 context.SaveChanges();
@@ -418,31 +415,26 @@ namespace NITASA.Areas.Admin.Controllers
                         }
                         #endregion
                         #region update meta
-                        if (!string.IsNullOrWhiteSpace(Request.Form["txtMetaKeyword"]) ||
-                            !string.IsNullOrWhiteSpace(Request.Form["txtMetaDescription"]) ||
-                            !string.IsNullOrWhiteSpace(Request.Form["txtMetaAuthor"]))
+                        Meta meta = context.Meta.FirstOrDefault(m => m.ContentID == content.ID);
+                        if (meta == null)
                         {
-                            Meta metaData = new Meta();
-                            metaData.ContentID = content.ID;
-                            metaData.Keyword = Request.Form["txtMetaKeyword"].ToString();
-                            metaData.Description = Request.Form["txtMetaDescription"].ToString();
-                            metaData.Author = Request.Form["txtMetaAuthor"].ToString();
-                            metaData.CreatedOn = DateTime.Now;
-
-                            if (context.Meta.Where(m => m.ContentID == content.ID).Count() == 1)
-                            {
-                                Meta metaDataUpdate = context.Meta.Where(m => m.ContentID == content.ID).FirstOrDefault();
-                                metaDataUpdate.Keyword = metaData.Keyword;
-                                metaDataUpdate.Description = metaData.Description;
-                                metaDataUpdate.Author = metaData.Author;
-                                context.SaveChanges();
-                            }
-                            else
-                            {
-                                context.Meta.Add(metaData);
-                                context.SaveChanges();
-                            }
+                            meta = new Meta();
+                            meta.ContentID = content.ID;
+                            meta.CreatedOn = DateTime.UtcNow;
+                            meta.Title = Request.Form["txtMetaTitle"].ToString();
+                            meta.Keyword = Request.Form["txtMetaKeyword"].ToString();
+                            meta.Description = Request.Form["txtMetaDescription"].ToString();
+                            meta.Author = Request.Form["txtMetaAuthor"].ToString();
+                            context.Meta.Add(meta);
                         }
+                        else
+                        {
+                            meta.Title = Request.Form["txtMetaTitle"].ToString();
+                            meta.Keyword = Request.Form["txtMetaKeyword"].ToString();
+                            meta.Description = Request.Form["txtMetaDescription"].ToString();
+                            meta.Author = Request.Form["txtMetaAuthor"].ToString();
+                        }
+                        context.SaveChanges();
                         #endregion
                         TempData["SuccessMessage"] = "Post updated successfully.";
                     }

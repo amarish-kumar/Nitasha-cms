@@ -40,7 +40,12 @@
                         @*- 04 -<br />October<br />2013*@
                     </div>
                 </div>
-                <h4>@(item.Title.Length > 37 ? item.Title.Substring(0, 35) + "..." : item.Title) <span class="comments">@item.CommentsCount comments</span></h4>
+                <h4>
+                    <a href="/Content/@item.URL">
+                        @(item.Title.Length > 37 ? item.Title.Substring(0, 35) + "..." : item.Title)
+                    </a>
+                    <span class="comments">@item.CommentsCount comments</span>
+                </h4>
                 <div class="dots blogdots">
                 </div>
                 <p>
