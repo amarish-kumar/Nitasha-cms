@@ -25,6 +25,7 @@ namespace NITASA
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             //Database.SetInitializer<NTSDBContext>(new CreateDatabaseIfNotExists<NTSDBContext>());
             SetGlobleVariables();
+            NITASA.Core.Infrastructure.EngineContext.Initialize(false);
         }
         private void SetGlobleVariables()
         {

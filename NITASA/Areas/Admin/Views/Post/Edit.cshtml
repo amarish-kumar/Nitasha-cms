@@ -122,8 +122,8 @@
                                                 <div>
                                                     <div id="slug-container">
                                                         <strong>Permalink:</strong>
-                                                        <span>
-                                                            /<span class="editable-container">
+                                                        <span>@(Request.Url.AbsoluteUri.Replace(Request.Url.AbsolutePath, ""))/Content/
+                                                            <span class="editable-container" style=" margin-left: -3px;">
                                                                 <span id="editable-slug">@Model.URL</span>
                                                                 <input type="text" value="@Model.URL" id="edit-slug-text" style="display: none;" />
                                                             </span>
@@ -226,7 +226,7 @@
                                             </div>
                                             <div class="box-content">
                                                 <div class="padded">
-                                                    @*<textarea class="tags" placeholder="Meta with comma separated"></textarea>*@
+                                                    <input type="text" id="txtMetaTitle" name="txtMetaTitle" placeholder="Title" class="width100per" value="@meta.Title" />
                                                     <input type="text" id="txtMetaKeyword" name="txtMetaKeyword" placeholder="Keyword" class="width100per" value="@meta.Keyword" />
                                                     <input type="text" id="txtMetaDescription" name="txtMetaDescription" placeholder="Description" class="width100per" value="@meta.Description" />
                                                     <input type="text" id="txtMetaAuthor" name="txtMetaAuthor" placeholder="Author Name" class="width100per" value="@meta.Author" />

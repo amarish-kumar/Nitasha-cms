@@ -27,14 +27,14 @@
                 {
                 <div class="four columns">
                     <div class="boxblog" style="word-break: break-all;">
-                        <h5>@item.Title</h5>
+                        <h5><a href="/Content/@item.URL">@item.Title</a></h5>
                         <p class="small date">
                             Posted on:@Functions.FormatDate(item.PublishedOn, "dd MMM yyyy")
                             <span class="has-tip tip-top" data-width="90" title="@item.CommentsCount comments"><img src="@currentThemeName/images/comments.png" alt=""></span>
                         </p>
                         <p>
                             @{string Description = Functions.RemoveHTMLTags(item.Description);}
-                            @(Description.Length > 156 ? Description.Substring(0, 156) + "..." : Description)
+                            @(Description.Length > 156 ? Description.Substring(0, 153) + "..." : Description)
                         </p>
                         <p>
                             <a href="/Content/@item.URL" class="small continue">Continue reading</a>

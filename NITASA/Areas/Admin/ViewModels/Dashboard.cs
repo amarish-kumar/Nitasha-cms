@@ -79,4 +79,12 @@ namespace NITASA.Areas.Admin.ViewModels
         public string x { get; set; }
         public int y { get; set; }
     }
+    class MonthlyData
+    {
+        public int Year { get; set; }
+        public int Month { get; set; }
+        public int Day { get; set; }
+        public int Count { get; set; }
+    }
+
 }

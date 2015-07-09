@@ -81,7 +81,7 @@ namespace NITASA.Areas.Admin.Controllers
             var comment = context.Comment.Find(id);
             comment.IsModerated = status;
             comment.ModeratedBy = Functions.CurrentUserID();
-            comment.ModeratedOn = DateTime.Now;
+            comment.ModeratedOn = DateTime.UtcNow;
             context.SaveChanges();
             return Json(comment.IsModerated, JsonRequestBehavior.AllowGet);
         }

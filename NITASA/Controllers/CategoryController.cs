@@ -27,7 +27,8 @@ namespace NITASA.Controllers
 
             if (category == null)
             {
-                return RedirectToAction("NotFound", "Home");
+                ActionResult actionResult = View(viewName: activeTheme + "404.cshtml");
+                return actionResult;
             }
 
             IQueryable<Content> query = context.ContentCategory.Include("Content").Where(x => x.CategoryID == category.ID)

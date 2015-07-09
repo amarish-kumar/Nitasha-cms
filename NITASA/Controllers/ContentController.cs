@@ -33,7 +33,8 @@ namespace NITASA.Controllers
 
                 if (string.IsNullOrEmpty(URL) || content == null)
                 {
-                    return RedirectToAction("NotFound", "Home");
+                    ActionResult actionResult = View(viewName: activeTheme + "404.cshtml");
+                    return actionResult;
                 }
                 ViewBag.ContentID = content.ID;
             }
@@ -135,7 +136,7 @@ namespace NITASA.Controllers
                 comment.Website = Website;
                 comment.CommentAs = CommentAs;
                 comment.ContentID = ContentID;
-                comment.AddedOn = DateTime.Now;
+                comment.AddedOn = DateTime.UtcNow;
                 comment.ProfilePicUrl = ProfilePicUrl;
                 context.Comment.Add(comment);
                 context.SaveChanges();
