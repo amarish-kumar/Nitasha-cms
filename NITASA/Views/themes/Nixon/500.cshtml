@@ -1,0 +1,47 @@
+﻿@using NITASA.Helpers
+@{
+    string currentTheme = ViewBag.ActiveTheme;
+}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    @Html.Raw(Functions.GetMetaData(Request))
+    <title>500 Internal Server Error :: @Functions.GetSiteName()</title>
+    <link href="@currentTheme/css_pirobox/templatemo_style.css" rel="stylesheet" type="text/css" />
+    <link href="@currentTheme/css_pirobox/s3slider.css" rel="stylesheet" type="text/css" />
+    @Html.Raw(Functions.GetFaviconURL())
+    @Html.Raw(Functions.GetHeaderCustomCode())
+    @Html.Raw(Functions.GetCustomCSS())
+</head>
+<body>
+    <div id="templatemo_wrapper">
+        @Html.Partial("~" + currentTheme + "/navigation.cshtml")
+        @Html.Partial("~" + currentTheme + "/sidebar.cshtml")
+        <div id="templatemo_right_column">
+            <div id="templatemo_main">
+                <div class="row">
+                    <br />
+                    <h2 style="color:red">
+                        500: Internal Server Error.
+                    </h2>
+                    <span>
+                        <i>
+                            Something went Wrong!!
+                        </i>
+                    </span>
+                </div>
+            </div>
+            <div class="clear"></div>
+            <br /><br />
+            <br />
+            <br />
+            <br />
+            <br /><br />
+            <br />
+            <br />
+        </div>
+        @Html.Partial("~" + currentTheme + "/footer.cshtml")
+    </div> <!-- end of warpper -->
+</body>
+</html>
