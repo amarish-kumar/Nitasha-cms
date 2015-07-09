@@ -5,14 +5,12 @@
     Layout = currentThemeName + "/master.cshtml";
     ViewBag.Title = (Model.SearchText.Length > 10 ? Model.SearchText.Substring(0, 10) : Model.SearchText);
 }
-<div id="subheader">
-    <div class="row">
-        <div class="eight columns">
-            <p class="bread leftalign">
-                SearchText : @Model.SearchText
-            </p>
+<div id="subheader" style="height:110px;">
+    <div class="row">                
+        <div class="content" style="width:550px;">
+            <h1>Search Result for <b>'@Model.SearchText'</b></>
         </div>
-        <div class="four columns">
+        <div class="sidebar" style="width:330px;">
             @Html.Partial("~" + currentThemeName + "/search_form.cshtml")
         </div>
     </div>
@@ -20,30 +18,76 @@
 <div class="hr">
 </div>
 @foreach (var item in Model.Posts)
-            {
+{
+    var lastLabel = (item.Labels != null && item.Labels.Count > 0) ? item.Labels.Last() : null;
+    var lastCategory = (item.Category != null && item.Category.Count > 0) ? item.Category.Last() : null;
 <div class="post">
 
     <!-- Begin Post Info -->
     <div class="post-info">
         <!-- Begin Date -->
-        <div class="post-date"> <span class="day">15</span> <span class="month">FEB</span> <span class="year">2011</span>Posted on:@Functions.FormatDate(item.PublishedOn, "dd MMM yyyy") </div>
+        <div class="post-date"> <span class="day">@Functions.GetDay(item.PublishedOn)</span> <span class="month">@Functions.GetMonthName(item.PublishedOn)</span> <span class="year">@Functions.GetYear(item.PublishedOn)</span></div>
         <!-- End Date -->
         <!-- Begin Title -->
-        <div class="post-title">
-            <h1><a href="post.html">Proin euismod dui rutrum risus</a></h1>
-            <div class="post-meta"> <span class="comments"><a href="#">@item.CommentsCount Comments</a></span> <span class="categories"><a href="#">Web Design</a>, <a href="#">Photography</a></span> </div>
+        <div class="post-title" style="float:left;padding-left:10px;">
+            <h1><a href="/Content/@item.URL">@item.Title</a></h1>
+            <div class="post-meta"> <span class="comments"><a href="/Content/@item.URL#comments">@item.CommentsCount Comments</a></span> 
+
+                @if (item.Labels != null && item.Labels.Count > 0)
+                {
+                    @:<span class="categories">
+            }
+@if (item.Labels != null && item.Labels.Count > 0)
+{
+    foreach (var itemCat in item.Labels)
+{
+    if (itemCat == lastLabel)
+    {
+        <a href="/Label/@itemCat.URL">@itemCat.Name</a>
+    }
+    else
+    {
+        <a href="/Label/@itemCat.URL">@itemCat.Name</a>  <text>, </text>
+    }
+}
+}
+@if (item.Labels != null && item.Labels.Count > 0)
+{
+    @:</span>
+}
+            
+            </div>
         </div>
         <!-- End Title -->
     </div>
     <!-- End Post Info -->
 
-    <div class="post-text">
-        <a href="post.html"><img src="images/art/post1.jpg" alt="" /></a> <br />
+    <div class="post-text">        
         <p>@{string Description = Functions.RemoveHTMLTags(item.Description);}
 @(Description.Length > 156 ? Description.Substring(0, 156) + "..." : Description) <a class="more" href="/Content/@item.URL">Continue Reading ?</a></p>
     </div>
     <!-- End Text -->
-    <span class="tags"><a href="#">Black & White</a>, <a href="#">Color</a>, <a href="#">Portfolio</a></span>
+    
+    @if (item.Category != null && item.Category.Count > 0)
+    {@:<span class="tags">
+    }
+    @if (item.Category != null && item.Category.Count > 0)
+    {
+        foreach (var itemCat in item.Category)
+        {
+            if (itemCat == lastCategory)
+            {
+                <a href="/Category/@itemCat.URL">@itemCat.Name</a>
+            }
+            else
+            {
+                <a href="/Category/@itemCat.URL">@itemCat.Name</a>  <text>, </text>
+            }
+        }
+    }
+    @if (item.Category != null && item.Category.Count > 0)
+    {@:</span>
+    }
 </div>
 }
             @if (Model.Posts.Count() > 0)
