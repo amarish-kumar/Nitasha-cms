@@ -16,13 +16,13 @@ namespace NITASA.Controllers
         public NTSDBContext context;
         public ContentController()
         {
-            this.context = new NTSDBContext();                
+            this.context = new NTSDBContext();
         }
         public ActionResult Details(string URL, string prv)
         {
             Content content;
             bool isPreview = false;
-            if (Session["Preview"] != null && prv=="true")
+            if (Session["Preview"] != null && prv == "true")
             {
                 content = (Content)Session["Preview"];
                 isPreview = true;
@@ -44,8 +44,8 @@ namespace NITASA.Controllers
             data.FeaturedImage = content.FeaturedImage;
             data.CoverContent = content.CoverContent;
             data.AddedBy = content.AddedBy;
-            data.PublishedOn = (DateTime)content.PublishedOn;
-            
+            data.PublishedOn = content.AddedOn;
+
             if (content.Type.ToLower() == "page")
             {
                 data.Description = Functions.ReplaceSliderAndAddons(this.ControllerContext, activeTheme, content.Description);
@@ -57,8 +57,20 @@ namespace NITASA.Controllers
                 data.Type = "post";
                 data.PostCommentEnable = content.EnableComment;
                 data.PostCommentEnabledTill = content.CommentEnabledTill;
-                var comments = context.Comment.Where(x => x.ContentID == content.ID && x.IsModerated == true && x.IsAbused == false).OrderBy(x=>x.AddedOn).ToList();
+                var comments = context.Comment.Where(x => x.ContentID == content.ID && x.IsModerated == true && x.IsAbused == false).OrderBy(x => x.AddedOn).ToList();
                 data.CommentsCount = comments.Count();
+                data.Category = content.Categories.Select(c => new CL_Category
+                            {
+                                Name = c.Category.Name,
+                                Description = c.Category.Description,
+                                URL = c.Category.Slug
+                            }).ToList();
+                data.Labels = content.Labels.Select(c => new CL_Label
+                {
+                    Name = c.Label.Name,
+                    Description = c.Label.Description,
+                    URL = c.Label.Slug
+                }).ToList();
                 data.Comments = comments.Select(x =>
                     new CL_Comments
                     {
@@ -85,24 +97,24 @@ namespace NITASA.Controllers
 
                 Functions.IncreaseContentView(content.ID, Request);
             }
-            return View(viewName: activeTheme + "content.cshtml", model: data); 
+            return View(viewName: activeTheme + "content.cshtml", model: data);
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult AddComment(string CommentDescription, string UserName, string ProfilePicUrl, string Website, string CommentAs, int ContentID)
         {
-            if(string.IsNullOrEmpty(CommentDescription) && ContentID != 0)
+            if (string.IsNullOrEmpty(CommentDescription) && ContentID != 0)
             {
-                TempData["comment-error"] ="Comment is required";
+                TempData["comment-error"] = "Comment is required";
             }
             else if (CommentAs == "google" && string.IsNullOrEmpty(UserName))
             {
-                TempData["comment-error"] ="Google login required";
+                TempData["comment-error"] = "Google login required";
             }
             else if (CommentAs == "nameurl" && (string.IsNullOrEmpty(UserName)))
             {
-                TempData["comment-error"] ="Name required";
+                TempData["comment-error"] = "Name required";
             }
             else
             {
@@ -150,5 +162,5 @@ namespace NITASA.Controllers
             }
             return Redirect(Request.UrlReferrer.AbsolutePath);
         }
-	}
+    }
 }

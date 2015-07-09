@@ -6,13 +6,12 @@
     ViewBag.Title = Model.Name;
 }
 <!-- Begin Post -->
-<div class="post">
-
+<div class="post" style="padding-bottom:10px;">
     <div id="subheader">
         <div class="row">
             <div class="eight columns">
                 <p class="bread leftalign">
-                    @Model.Name
+                    <h3>Tag Archives: <b>@Model.Name</b></h3>
                 </p>
             </div>
 
@@ -25,25 +24,24 @@
             @foreach (var item in Model.Posts)
             {
                 <div class="post">
-
                     <!-- Begin Post Info -->
                     <div class="post-info">
-                        <div class="post-date"> <span class="day">@Functions.GetDay(item.PublishedOn)</span> <span class="month">@Functions.GetMonthName(item.PublishedOn)</span> <span class="year">@Functions.GetYear(item.PublishedOn)</span></div>
+                        <div class="post-date"><span class="day">@Functions.GetDay(item.PublishedOn)</span> <span class="month">@Functions.GetMonthName(item.PublishedOn)</span> <span class="year">@Functions.GetYear(item.PublishedOn)</span></div>
                         <!-- End Date -->
                         <!-- Begin Title -->
                         <div class="post-title">
-                            <h1><a href="@item.URL">@item.Title</a></h1>
-                            <div class="post-meta"> <span class="comments"><a href="#">@item.CommentsCount Comments</a></span>  </div>
+                            <h1><a href="/Content/@item.URL">@item.Title</a></h1>
+                            <div class="post-meta"> <span class="comments"><a href="/Content/@item.URL#comments">@item.CommentsCount Comments</a></span>  </div>
                         </div>
                         <!-- End Title -->
                     </div>
                     <!-- End Post Info -->
 
                     <div class="post-text">
-                        @if (item.FeaturedImage != null)
+                        @*@if (item.FeaturedImage != null)
 {
     @:<img src="@item.FeaturedImage" alt="" />
-                } <br />
+                } <br />*@
                         <p>
                             @{string Description = Functions.RemoveHTMLTags(item.Description);}
                             @(Description.Length > 156 ? Description.Substring(0, 156) + "..." : Description)

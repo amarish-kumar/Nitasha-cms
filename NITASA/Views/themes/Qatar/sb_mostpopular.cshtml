@@ -10,15 +10,15 @@
         <h4 class="sidebartitle">@wOption.Title</h4>
         <ul class="latest-posts">
             @foreach (var item in MostPopularPosts)
-            {
-            <li>                
-                <span class="date">
-                    <em class="day">@NITASA.Helpers.Functions.GetDay(item.PublishedOn)</em>
-                    <em class="month" style="vertical-align:top">@NITASA.Helpers.Functions.GetMonthName(item.PublishedOn)</em>
-                </span>                
-                <a href="/Content/@item.URL">@item.Title</a> 
-            </li>
-            }
+{
+    <li style="min-height:35px;">
+        <span class="date">
+            <em class="day">@NITASA.Helpers.Functions.GetDay(item.PublishedOn)</em>
+            <em class="month" style="vertical-align:top">@NITASA.Helpers.Functions.GetMonthName(item.PublishedOn)</em>
+        </span>
+        <a href="/Content/@item.URL">@item.Title</a>
+    </li>
+}
         </ul>
 </div>
 }
