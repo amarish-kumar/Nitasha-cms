@@ -102,21 +102,22 @@ namespace NITASA.Helpers
             if (strController == "content")
             {
                 var dbContext = getDbContextObject();
-                Content content = dbContext.Content.Where(x =>
-                       x.URL.ToLower() == url && x.IsDeleted == false && x.isPublished == true).FirstOrDefault();
-
-                List<Meta> meta = (from mt in dbContext.Meta
-                                   join cont in dbContext.Content on mt.ContentID equals cont.ID
-                                   where cont.URL.ToLower() == url && cont.IsDeleted == false && cont.isPublished == true && cont.IsDeleted == false
-                                   select mt).ToList();
-
-                if (meta.Count() > 0)
+                Content content = dbContext.Content.Where(x => x.URL.ToLower() == url && x.IsDeleted == false && x.isPublished == true).FirstOrDefault();
+                if (content != null)
                 {
-                    //string Title =string.IsNullOrEmpty(meta[0].Title)?:
-                    strMeta = "<meta name=\"title\" content=\"" + meta[0].Title + "\">";
-                    strMeta = "<meta name=\"description\" content=\"" + meta[0].Description + "\">";
-                    strMeta += "<meta name=\"author\" content=\"" + meta[0].Author + "\">";
-                    strMeta += "<meta name=\"keywords\" content=\"" + meta[0].Keyword + "\">";
+                    Meta meta = dbContext.Meta.FirstOrDefault(x => x.ContentID == content.ID);
+                    if (meta != null)
+                    {
+                        string metaTitle = !string.IsNullOrEmpty(meta.Title) ? meta.Title : content.Title;
+                        strMeta = "<meta name=\"title\" content=\"" + metaTitle + "\">";
+                        strMeta += "<meta name=\"description\" content=\"" + meta.Description + "\">";
+                        strMeta += "<meta name=\"author\" content=\"" + meta.Author + "\">";
+                        strMeta += "<meta name=\"keywords\" content=\"" + meta.Keyword + "\">";
+                    }
+                }
+                else
+                {
+                    strMeta = GetDefaultMetaData();
                 }
             }
             else
@@ -476,7 +477,7 @@ namespace NITASA.Helpers
             contentView.IPAddress = Request.ServerVariables["REMOTE_ADDR"];
             contentView.OSName = br.Platform;
             contentView.Resolution = br.ScreenPixelsWidth + "x" + br.ScreenPixelsHeight;
-            contentView.ViewedOn = DateTime.Now;
+            contentView.ViewedOn = DateTime.UtcNow;
             context.ContentView.Add(contentView);
             context.SaveChanges();
 

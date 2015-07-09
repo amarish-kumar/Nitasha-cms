@@ -222,12 +222,12 @@ namespace NITASA.Areas.Admin.Helper
         public static string CurrentTimeStamp()
         {
             StringBuilder sbTimeStamp = new StringBuilder();
-            sbTimeStamp.Append(DateTime.Now.Year.ToString());
-            sbTimeStamp.Append(DateTime.Now.Month.ToString());
-            sbTimeStamp.Append(DateTime.Now.Day.ToString());
-            sbTimeStamp.Append(DateTime.Now.Hour.ToString());
-            sbTimeStamp.Append(DateTime.Now.Minute.ToString());
-            sbTimeStamp.Append(DateTime.Now.Second.ToString());
+            sbTimeStamp.Append(DateTime.UtcNow.Year.ToString());
+            sbTimeStamp.Append(DateTime.UtcNow.Month.ToString());
+            sbTimeStamp.Append(DateTime.UtcNow.Day.ToString());
+            sbTimeStamp.Append(DateTime.UtcNow.Hour.ToString());
+            sbTimeStamp.Append(DateTime.UtcNow.Minute.ToString());
+            sbTimeStamp.Append(DateTime.UtcNow.Second.ToString());
             return sbTimeStamp.ToString();
         }
 

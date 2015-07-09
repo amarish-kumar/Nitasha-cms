@@ -131,7 +131,7 @@ namespace NITASA.Areas.Admin.Controllers
             cont.EnableComment = false;
             cont.CommentEnabledTill = 1;
 
-            cont.AddedOn = DateTime.Now;
+            cont.AddedOn = DateTime.UtcNow;
             cont.AddedBy = Functions.CurrentUserID();
             if (isPublished)
             {
@@ -219,7 +219,7 @@ namespace NITASA.Areas.Admin.Controllers
                         content.URL = Model.URL;
                         content.Description = Model.Description.Replace("<img src=\"../../../", "<img src=\"../../");
                         content.ContentOrder = Model.ContentOrder;
-                        content.ModifiedOn = DateTime.Now;
+                        content.ModifiedOn = DateTime.UtcNow;
                         content.ModifiedBy = Functions.CurrentUserID();
                         if (UpdateType == "Publish")
                         {

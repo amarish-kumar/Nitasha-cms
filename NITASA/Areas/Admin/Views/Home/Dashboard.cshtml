@@ -246,7 +246,7 @@
                                 </div>*@
                             @*<div class="span8" style="margin-left: 0px;">*@
                             <div class="span12">
-                                <div id="chartexample1" style="width: 100%; height: 355px">
+                                <div id="pageviewchart" style="width: 100%; height: 355px">
                                 </div>
                                 @*<div class="xcharts-line-dotted" style="width: 100%; height: 180px"></div>*@
                             </div>
@@ -564,7 +564,7 @@
     tt.className = 'ex-tooltip';
     document.body.appendChild(tt);
 
-    var data = {
+    var pageViewdata = {
         "xScale": "ordinal",
         "yScale": "linear",
         "main": [
@@ -575,21 +575,22 @@
         ]
     };
 
-    var myChart = new xChart('line-dotted', data, '#chartexample1',
- {
-     axisPaddingTop: 5,
-     mouseover: function (d, i) {
-         var pos = $(this).offset();
-         $(tt).text((d.x) + ': ' + d.y + ' Page view(s)')
-             .css({ color: '#FFFF', top: topOffset + pos.top, left: pos.left + leftOffset })
-             .show();
-     },
-     mouseout: function (x) {
-         $(tt).hide();
-     }
- });
+    var xFormat = '@(ViewBag.ismonthlychart != null ? "%m-%Y" : "%d-%m-%Y")';    
+    var ChartOption = {
+        dataFormatX: function (x) { return d3.time.format('%Y-%m-%d').parse(x); },
+        tickFormatX: function (x) { return d3.time.format(xFormat)(x); },
+        mouseover: function (d, i) {
+            var pos = $(this).offset();
+            $(tt).text(d3.time.format(xFormat)(d.x) + ': ' + d.y + ' Page view(s)').css({ color: '#FFFF', top: topOffset + pos.top, left: pos.left + leftOffset }).show();            
+        },
+        mouseout: function (x) { $(tt).hide(); },
+        paddingRight: 30,
+        paddingLeft: 40,
+        paddingTop: 10
+    };
 
-
+    var myChart = new xChart('line-dotted', pageViewdata, '#pageviewchart', ChartOption);
+    
     var doughnutData = [
              {
                  value: @Model.TotalPage,
