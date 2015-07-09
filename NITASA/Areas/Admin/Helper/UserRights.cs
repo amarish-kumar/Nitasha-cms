@@ -1,4 +1,5 @@
 ﻿using NITASA.Data;
+using NITASA.Services.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,67 +7,6 @@ using System.Web;
 
 namespace NITASA.Areas.Admin.Helper
 {
-    public class AccessPermission
-    {
-        public string Name { get; set; }
-        public bool IsChecked { get; set; }
-        public string Group { get; set; }
-    }
-    public enum Rights
-    {
-        ShowDashboard,
-        ManageWidgets,
-        ManageSettings,
-
-        AddNewMedias,
-        DeleteMedias,
-
-        ViewAllPosts,
-        ViewUnPublishedPosts,
-        CreateNewPosts,
-        EditOwnPosts,
-        EditOtherUsersPosts,
-        DeleteOwnPosts,
-        DeleteOtherUsersPosts,
-        PublishOwnPosts,
-        PublishOtherUsersPosts,
-
-        ViewAllPages,
-        ViewUnPublishedPages,
-        CreateNewPages,
-        EditOwnPages,
-        EditOtherUsersPage,
-        DeleteOwnPages,
-        DeleteOtherUsersPages,
-        PublishOwnPages,
-        PublishOtherUsersPages,
-
-        ViewAllAddons,
-        ViewUnPublishedAddons,
-        CreateNewAddons,
-        EditOwnAddons,
-        EditOtherUsersAddons,
-        DeleteOwnAddons,
-        DeleteOtherUsersAddons,
-        PublishOwnAddons,
-        PublishOtherUsersAddons,
-
-        ViewRoles,
-        CreateNewRoles,
-        EditOwnRoles,
-        EditOtherUsersRoles,
-        DeleteRoles,
-
-        ViewUsers,
-        CreateNewUsers,
-        EditUserSelf,
-        EditOtherUsers,
-        DeleteUserSelf,
-        DeleteOtherUsers,
-
-        ManageTemplates
-    };
-
     public static class UserRights
     {
         public static Dictionary<string, string> GetAll()

@@ -1,6 +1,7 @@
 ﻿@using Newtonsoft.Json;
 @using NITASA.Areas.Admin.Helper;
 @model NITASA.Areas.Admin.ViewModels.CustomizedDashboard
+@using NITASA.Services.Security
 @{
     ViewBag.Title = "Administrator";
     bool CreateNewPosts = UserRights.HasRights(Rights.CreateNewPosts);

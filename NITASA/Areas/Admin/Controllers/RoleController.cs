@@ -1,5 +1,7 @@
 ﻿using NITASA.Areas.Admin.Helper;
+using NITASA.Core.Caching;
 using NITASA.Data;
+using NITASA.Services.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +15,12 @@ namespace NITASA.Areas.Admin.Controllers
     {
         public NTSDBContext context;
         List<AccessPermission> AllRightsList = UserRights.GetAllAccessPermission();
+        ICacheManager cacheManager;
 
-        public RoleController()
+        public RoleController(ICacheManager cacheManager)
         {
             this.context = new NTSDBContext();
+            this.cacheManager = cacheManager;
         }
 
         [HttpGet]
