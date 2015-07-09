@@ -35,24 +35,24 @@ namespace NITASA.Helpers
             Setting SiteTitle = dbContext.Settings.FirstOrDefault(m => m.Name == "SiteTitle");
             return ((SiteTitle == null) ? string.Empty : Convert.ToString(SiteTitle.Value));
         }
-        
+
         public static bool HasLogo()
         {
             var dbContext = getDbContextObject();
             Setting logopath = dbContext.Settings.FirstOrDefault(m => m.Name == "LogoPath");
-            if ( logopath !=null && !String.IsNullOrWhiteSpace(logopath.Value))
+            if (logopath != null && !String.IsNullOrWhiteSpace(logopath.Value))
                 return true;
             else
                 return false;
         }
-        
+
         public static string GetLogoPath()
         {
             var dbContext = getDbContextObject();
             Setting LogoPath = dbContext.Settings.FirstOrDefault(m => m.Name == "LogoPath");
             return ((LogoPath == null) ? string.Empty : Convert.ToString(LogoPath.Value));
         }
-        
+
         public static string GetFaviconURL()
         {
             var dbContext = getDbContextObject();
@@ -125,28 +125,29 @@ namespace NITASA.Helpers
             }
             return strMeta;
         }
-        
+
         public static List<CL_Menu> GetMenu()
         {
             var dbContext = getDbContextObject();
-            List<Menu> AllMenuList= dbContext.Menu.Where(m => m.IsDeleted == false).ToList();
-            List<CL_Menu> Menus= (from m in AllMenuList select new CL_Menu()
-                                 {
-                                     MenuID = m.ID,
-                                     ParentMenuID = m.ParentMenuID,
-                                     Title = m.Title,
-                                     Type = m.Type,
-                                     DisplayOrder = m.DisplayOrder,
-                                     URL = (m.Type == "Link" ? m.Slug : getURLSlug(m.Type, m.Slug) +
-                                               (m.Type == "Category" ? dbContext.Category.Where(c => c.ID == m.RefID).Select(s => s.Slug).FirstOrDefault() :
-                                               (m.Type == "Label" ? dbContext.Label.Where(c => c.ID == m.RefID).Select(s => s.Slug).FirstOrDefault() :
-                                               (m.Type == "Page" ? dbContext.Content.Where(c => c.ID == m.RefID).Select(s => s.URL).FirstOrDefault() : "")
-                                               )))
-                                 }
+            List<Menu> AllMenuList = dbContext.Menu.Where(m => m.IsDeleted == false).ToList();
+            List<CL_Menu> Menus = (from m in AllMenuList
+                                   select new CL_Menu()
+                                       {
+                                           MenuID = m.ID,
+                                           ParentMenuID = m.ParentMenuID,
+                                           Title = m.Title,
+                                           Type = m.Type,
+                                           DisplayOrder = m.DisplayOrder,
+                                           URL = (m.Type == "Link" ? m.Slug : getURLSlug(m.Type, m.Slug) +
+                                                     (m.Type == "Category" ? dbContext.Category.Where(c => c.ID == m.RefID).Select(s => s.Slug).FirstOrDefault() :
+                                                     (m.Type == "Label" ? dbContext.Label.Where(c => c.ID == m.RefID).Select(s => s.Slug).FirstOrDefault() :
+                                                     (m.Type == "Page" ? dbContext.Content.Where(c => c.ID == m.RefID).Select(s => s.URL).FirstOrDefault() : "")
+                                                     )))
+                                       }
                     ).ToList();
             return Menus;
         }
-        
+
         private static string getURLSlug(string type, string slug)
         {
             if (type == "Page")
@@ -204,7 +205,7 @@ namespace NITASA.Helpers
                     if (strAddonId == "all")
                     {
                         string addonType = addonTag.Attributes["name"].Value.ToLower();
-                        addonsList = context.Content.Where(x => x.Type.ToLower() == addonType && x.isPublished == true && x.IsDeleted == false).OrderBy(x=>x.ContentOrder).ToList();
+                        addonsList = context.Content.Where(x => x.Type.ToLower() == addonType && x.isPublished == true && x.IsDeleted == false).OrderBy(x => x.ContentOrder).ToList();
                     }
                     else
                     {
@@ -254,7 +255,7 @@ namespace NITASA.Helpers
             }
             return "";
         }
-        
+
         public static List<CL_Category> GetCategories(int TotalRecord)
         {
             var dbContext = getDbContextObject();
@@ -264,17 +265,17 @@ namespace NITASA.Helpers
                 .OrderBy(x => x.Name).ToList();
             return Categories;
         }
-        
+
         public static List<CL_Label> GetLabels(int TotalRecord)
         {
             var dbContext = getDbContextObject();
-            List<Label> AllLabels = dbContext.Label.Where(x => x.IsDeleted == false).OrderByDescending(x=>x.AddedOn).Take(TotalRecord).ToList();
+            List<Label> AllLabels = dbContext.Label.Where(x => x.IsDeleted == false).OrderByDescending(x => x.AddedOn).Take(TotalRecord).ToList();
             List<CL_Label> Labels = AllLabels.Select(x =>
-                new CL_Label { Name = x.Name, Description = x.Description, URL = x.Slug})
+                new CL_Label { Name = x.Name, Description = x.Description, URL = x.Slug })
                 .OrderBy(x => x.Name).ToList();
             return Labels;
         }
-        
+
         public static string GetUserNameByID(int? userID)
         {
             var context = getDbContextObject();
@@ -288,8 +289,8 @@ namespace NITASA.Helpers
             }
             return contentAuthor;
         }
-        
-        public static string FormatDate(DateTime? date,string formate)
+
+        public static string FormatDate(DateTime? date, string formate)
         {
             string convertedDate = string.Empty;
             if (date != null)
@@ -298,14 +299,14 @@ namespace NITASA.Helpers
             }
             return convertedDate;
         }
-        
+
         public static string RemoveHTMLTags(string sourceString)
         {
             sourceString = Regex.Replace(sourceString, @"<[^>]+>|&nbsp;|\n|\r", string.Empty);
             //sourceString = sourceString.Replace("&lt;Addon", "").Replace("Addon&gt;", "");
             return sourceString;
         }
-        
+
         public static bool HasImage(string content)
         {
             bool hasImg = false;
@@ -317,7 +318,7 @@ namespace NITASA.Helpers
             }
             return hasImg;
         }
-        
+
         public static string GetImage(string content)
         {
             string link = string.Empty;
@@ -326,16 +327,16 @@ namespace NITASA.Helpers
             link = matchesImgSrc[0].Groups[1].Value;
             return link;
         }
-        
-        public static List<CL_Content> GetRelatedPosts(int ContentId,int TotalRecord)
+
+        public static List<CL_Content> GetRelatedPosts(int ContentId, int TotalRecord)
         {
             var context = getDbContextObject();
             List<int> labelIds = context.ContentLabel.Where(x => x.ContentID == ContentId).Select(x => x.LabelID).ToList();
-            
-            List<Content> RelatedContents = context.ContentLabel.Where(x =>labelIds.Contains(x.LabelID))
+
+            List<Content> RelatedContents = context.ContentLabel.Where(x => labelIds.Contains(x.LabelID))
                 .Select(x => x.Content).Where(x => x.Type.ToLower() == "post" && x.IsDeleted == false && x.isPublished == true)
                 .OrderBy(x => x.ContentOrder).Take(TotalRecord).ToList();
-            
+
             List<CL_Content> data = RelatedContents.Select(x =>
                         new CL_Content
                         {
@@ -351,19 +352,19 @@ namespace NITASA.Helpers
                         }).ToList();
             return data;
         }
-        
+
         public static List<CL_Comments> GetRecentComments(int TotalRecord)
         {
             var context = getDbContextObject();
             List<Comment> RecentComments = context.Comment.Where(x => x.IsModerated == true && x.IsAbused == false)
-                                            .OrderByDescending(x=>x.AddedOn).Take(TotalRecord).ToList();
+                                            .OrderByDescending(x => x.AddedOn).Take(TotalRecord).ToList();
             List<CL_Comments> data = RecentComments.Select(x =>
                         new CL_Comments
                         {
                             CommentID = x.ID,
                             ContentID = x.ContentID,
                             Website = x.Website,
-                            CommentAs =x.CommentAs,
+                            CommentAs = x.CommentAs,
                             Description = x.Description,
                             UserName = x.UserName,
                             ProfilePicUrl = x.ProfilePicUrl,
@@ -371,7 +372,7 @@ namespace NITASA.Helpers
                         }).ToList();
             return data;
         }
-        
+
         public static List<CL_Content> GetPages(int TotalRecord)
         {
             var context = getDbContextObject();
@@ -391,30 +392,30 @@ namespace NITASA.Helpers
                         }).ToList();
             return data;
         }
-        
+
         public static List<CL_Widget> GetWidgets()
         {
             var context = getDbContextObject();
- 
-             List<Widget> Widgets = context.Widget.Where(x => x.IsActive == true).OrderBy(x => x.DisplayOrder).ToList();
-             List<CL_Widget> data = Widgets.Select(x =>
-                        new CL_Widget
-                        {
-                            WidgetID = x.ID,
-                            Title = x.Title,
-                            Name = x.Name,
-                            Option = x.Option,
-                            DisplayOrder = x.DisplayOrder
-                        }).ToList();
+
+            List<Widget> Widgets = context.Widget.Where(x => x.IsActive == true).OrderBy(x => x.DisplayOrder).ToList();
+            List<CL_Widget> data = Widgets.Select(x =>
+                       new CL_Widget
+                       {
+                           WidgetID = x.ID,
+                           Title = x.Title,
+                           Name = x.Name,
+                           Option = x.Option,
+                           DisplayOrder = x.DisplayOrder
+                       }).ToList();
             return data;
-            
+
         }
-        
+
         public static T ParseJson<T>(string jsonString)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(jsonString);
         }
-        
+
         public static int PagesView()
         {
             var context = getDbContextObject();
@@ -424,7 +425,7 @@ namespace NITASA.Helpers
             else
                 return 0;
         }
-        
+
         public static List<CL_Content> GetMostPopularPosts(int TotalRecord)
         {
             var context = getDbContextObject();
@@ -444,7 +445,7 @@ namespace NITASA.Helpers
                         }).ToList();
             return data;
         }
-        
+
         public static List<CL_Content> GetRecentViewPosts(int TotalRecord)
         {
             var context = getDbContextObject();
@@ -464,7 +465,7 @@ namespace NITASA.Helpers
                         }).ToList();
             return data;
         }
-        
+
         public static void IncreaseContentView(int contentID, HttpRequestBase Request)
         {
             var context = getDbContextObject();
@@ -486,7 +487,7 @@ namespace NITASA.Helpers
             if (TotalPageView != null)
             {
                 count = Convert.ToInt32(TotalPageView.Value) + 1;
-                TotalPageView.Value = count.ToString();                
+                TotalPageView.Value = count.ToString();
             }
             else
             {
@@ -505,7 +506,7 @@ namespace NITASA.Helpers
             int noofposts = 0;
             if (ListingPostsPageSize != null)
                 noofposts = Convert.ToInt32(ListingPostsPageSize.Value);
-            
+
             List<Content> posts = context.Content.Where(x => x.Type.ToLower() == "post" && x.IsDeleted == false && x.isPublished == true)
                                     .OrderBy(x => x.ContentOrder).Take(noofposts).ToList();
 
@@ -521,7 +522,8 @@ namespace NITASA.Helpers
                             PublishedOn = x.AddedOn,
                             AddedBy = x.AddedBy,
                             CommentsCount = x.Comments.Where(c => c.IsModerated == true && c.IsAbused == false).Count(),
-                            Category = x.Categories.Select(c => new CL_Category { 
+                            Category = x.Categories.Select(c => new CL_Category
+                            {
                                 Name = c.Category.Name,
                                 Description = c.Category.Description,
                                 URL = c.Category.Slug
@@ -531,6 +533,17 @@ namespace NITASA.Helpers
                                 Name = c.Label.Name,
                                 Description = c.Label.Description,
                                 URL = c.Label.Slug
+                            }).ToList(),
+                            Comments = x.Comments.Select(c => new CL_Comments
+                            {
+                                UserName = c.UserName,
+                                AddedOn = c.AddedOn,
+                                CommentAs = c.CommentAs,
+                                CommentID = c.ID,
+                                Description = c.Description,
+                                ContentID = c.ContentID,
+                                Website = c.Website,
+                                ProfilePicUrl = c.ProfilePicUrl
                             }).ToList()
                         }).ToList();
             return data;
@@ -543,9 +556,9 @@ namespace NITASA.Helpers
             if (ListingPostsPageSize != null)
                 return Convert.ToInt32(ListingPostsPageSize.Value);
             else
-                return 0;                
+                return 0;
         }
-        
+
         public static bool HasThumbnail(int contentID)
         {
             bool hasThumb = false;

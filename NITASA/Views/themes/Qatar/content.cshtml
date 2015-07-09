@@ -6,7 +6,9 @@
     ViewBag.Title = Model.Title;
     bool EnableComments = (Model.PostCommentEnable && DateTime.Now < Model.PublishedOn.AddDays(Model.PostCommentEnabledTill));
 }
-
+<style>
+    .post-text img {max-width:595px;}
+</style>
 
 <!-- Begin Blog -->
     <div class="blog-post"> 
@@ -26,7 +28,7 @@
           <div class="post-info"> 
             <!-- Begin Date -->
             <div class="post-date"> <span class="day">@Functions.GetDay(Model.PublishedOn)</span> 
-              <span class="month">@Functions.GetMonthName(Model.PublishedOn)</span> <span class="year">@Functions.GetYear(Model.PublishedOn)</span> </div>
+              <span class="month">@Functions.GetMonthName(Model.PublishedOn)</span> <span class="year">@Functions.GetYear(Model.PublishedOn)</span></div>
             <!-- End Date --> 
             <!-- Begin Title -->
             <div class="post-title">

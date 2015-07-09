@@ -7,13 +7,11 @@
 }
 
 <!-- Begin Post -->
-        <div class="post">
+        <div class="post" style="padding-bottom:10px;">
             <div id="subheader">
                 <div class="row">
                     <div class="eight columns">
-                        <p class="bread leftalign">
-                            @Model.Name
-                        </p>
+                        <h3>Category Archives: <b>@Model.Name</b></h3>
                     </div>
                 </div>
             </div>
@@ -40,10 +38,10 @@
             <!-- End Post Info -->
 
             <div class="post-text">
-                @if (item.FeaturedImage != null)
+                @*@if (item.FeaturedImage != null)
                 {
                     @:<img src="@item.FeaturedImage" alt="" style="max-width:595px;display:block;margin:0 auto;" />
-                } <br />
+                } <br />*@
                 <p>
                     @{string Description = Functions.RemoveHTMLTags(item.Description);}
                     @(Description.Length > 156 ? Description.Substring(0, 156) + "..." : Description)

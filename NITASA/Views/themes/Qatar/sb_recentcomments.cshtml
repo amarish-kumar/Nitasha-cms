@@ -7,4 +7,4 @@
 @if (Comments.Count() > 0)
 {
 <div class="sidebar-box">      <h4>@wOption.Title</h4>      <ul class="latest-posts">          @foreach (var item in Comments)
-          {          <li><span class="date"><em class="day">@NITASA.Helpers.Functions.GetDay(item.AddedOn)</em><em class="month">@NITASA.Helpers.Functions.GetMonthName(item.AddedOn)</em></span>@(item.Description.Length > 95 ? item.Description.Substring(0, 95) + "..." : item.Description) </li>         }        </ul>              </div> }
+          {          <li style="min-height:35px;"><span class="date"><em class="day">@NITASA.Helpers.Functions.GetDay(item.AddedOn)</em><em class="month">@NITASA.Helpers.Functions.GetMonthName(item.AddedOn)</em></span>@(item.Description.Length > 95 ? item.Description.Substring(0, 95) + "..." : item.Description) </li>         }        </ul>              </div> }

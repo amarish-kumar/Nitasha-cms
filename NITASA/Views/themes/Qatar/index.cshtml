@@ -19,12 +19,12 @@
             <!-- Begin Post Info -->
             <div class="post-info">
                 <!-- Begin Date -->
-                <div class="post-date"> <span class="day">@Functions.GetDay(item.PublishedOn)</span> <span class="month">@Functions.GetMonthName(item.PublishedOn)</span> <span class="year">@Functions.GetYear(item.PublishedOn)</span> </div>
+                <div class="post-date"><span class="day">@Functions.GetDay(item.PublishedOn)</span> <span class="month">@Functions.GetMonthName(item.PublishedOn)</span> <span class="year">@Functions.GetYear(item.PublishedOn)</span> </div>
                 <!-- End Date -->
                 <!-- Begin Title -->
                 <div class="post-title">
                     <h1><a href="/Content/@item.URL">@item.Title</a></h1>
-                    <div class="post-meta"> <span class="comments"><a href="/Content/@item.URL">@item.CommentsCount Comments</a></span> 
+                    <div class="post-meta"> <span class="comments"><a href="/Content/@item.URL#comments">@item.CommentsCount Comments</a></span> 
                    @if (item.Labels != null && item.Labels.Count > 0)
                     {
                         @:<span class="categories">
@@ -61,7 +61,7 @@
                  <br />*@
                 <p>
                     @{string Description = Functions.RemoveHTMLTags(item.Description);}
-                    @(Description.Length > 156 ? Description.Substring(0, 156) + "..." : Description)<a class="more">Continue Reading ?</a>
+                    @(Description.Length > 156 ? Description.Substring(0, 156) + "..." : Description)<a class="more" href="/Content/@item.URL">Continue Reading ?</a>
                 </p>
             </div>
             <!-- End Text -->
