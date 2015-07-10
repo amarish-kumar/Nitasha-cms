@@ -1,0 +1,37 @@
+@model NITASA.ViewModels.CL_Label
+@using NITASA.Helpers
+@{
+    string currentThemeName = ViewBag.ActiveTheme;
+    Layout = currentThemeName + "/master.cshtml";
+    ViewBag.Title = Model.Name;
+}
+<!-- Begin Post -->
+<div id="templatemo_right_column">
+    <div id="templatemo_main">
+        <h3>Tag Archives: <b>@Model.Name</b></h3>
+        @foreach (var item in Model.Posts)
+        {
+            <div class="post_section">
+                <span class="comment"><a href="/Content/@item.URL#comments">@item.CommentsCount</a></span>
+                <h2><a href="/Content/@item.URL">@item.Title</a></h2>
+                @Functions.GetMonthName(item.PublishedOn) @Functions.GetDay(item.PublishedOn), @Functions.GetYear(item.PublishedOn)
+                @*@if (item.FeaturedImage != null)
+                    {<img alt="@item.Title" src="@item.FeaturedImage" style="max-width:520px;">
+                    }*@
+                <p>
+                    @{string Description = Functions.RemoveHTMLTags(item.Description);}
+                    @(Description.Length > 156 ? Description.Substring(0, 156) + "..." : Description)
+                </p>
+                <a href="/Content/@item.URL">Continue reading...</a>
+            </div>
+        }
+        @if (Model.Posts.Count() > 0)
+        {
+            @Html.Partial("~" + currentThemeName + "/pager.cshtml", Model.Pager)
+        }
+        else
+        {
+            <h5>No post found...</h5>
+        }
+    </div>
+</div>

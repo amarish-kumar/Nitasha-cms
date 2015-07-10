@@ -1,0 +1,17 @@
+@model string
+@using NITASA.ViewModels
+@{
+    CL_WidgetOption wOption = NITASA.Helpers.Functions.ParseJson<CL_WidgetOption>(Model);
+    List<CL_Category> Categories = NITASA.Helpers.Functions.GetCategories(wOption.Count);
+}
+@if (Categories.Count() > 0)
+{
+    <div class="cleaner_h40"></div>
+    <h4>@wOption.Title</h4>
+    <ul class="templatemo_list">
+        @foreach (var item in Categories)
+        {
+            <li><a href="@(string.IsNullOrEmpty(item.URL) ? "#" : "/Category/" + item.URL)">@item.Name</a></li>
+        }
+    </ul>
+}

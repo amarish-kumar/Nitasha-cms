@@ -1,0 +1,16 @@
+@model string
+@using NITASA.ViewModels
+@{
+    CL_WidgetOption wOption = NITASA.Helpers.Functions.ParseJson<CL_WidgetOption>(Model);
+    List<CL_Comments> Comments = NITASA.Helpers.Functions.GetRecentComments(wOption.Count);
+}
+@if (Comments.Count() > 0)
+{
+<div class="cleaner_h40"></div>      <h4>@wOption.Title</h4>
+    <ul class="templatemo_list">
+        @foreach (var item in Comments)
+        {
+            <li><span style="padding-right:10px;"><em class="day">@NITASA.Helpers.Functions.GetDay(item.AddedOn)</em> <em class="month">@NITASA.Helpers.Functions.GetMonthName(item.AddedOn)</em> </span>@(item.Description.Length > 95 ? item.Description.Substring(0, 95) + "..." : item.Description) </li>
+        }
+    </ul>
+}

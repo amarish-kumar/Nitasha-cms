@@ -1,0 +1,123 @@
+@model int
+<div id="comment_form" class="comment-form">
+    <h3>Leave a comment</h3>
+    <div class="form-container">
+        @using (Html.BeginForm("AddComment", "Content", new { ContentID = Model }, FormMethod.Post, new { id = "comment-form" }))
+        {
+            @Html.AntiForgeryToken()
+
+
+    <input type="text" id="username" name="username" class="text-input wd100per padtop20 displaynone" placeholder="Your name *" />
+            <br />
+    <input type="text" id="Website" name="Website" class="text-input wd100per padtop20 email displaynone" placeholder="URL" />    
+            <br />
+            <textarea id="CommentDescription" name="CommentDescription" class="text-area padtop20 wd100per " rows="7" placeholder="Comments *"></textarea>
+            <br />
+            <div style="width:73%;padding-top:10px;">
+                <div style="float:left;">
+                    <label style="display: inline;margin-left:20px;">Comment as:</label>
+                </div>
+                <div style="float:left;padding-left:10px">
+                    <select id="CommentAs" name="CommentAs" class="five smoothborder" style="display: inline; width: 140px">
+                        <option value="google">Google Account</option>
+                        <option value="nameurl">Name/URL</option>
+                        <option value="anonymous">Anonymous</option>
+                    </select>
+                </div>
+                @Html.Hidden("ProfilePicUrl")
+                <div style="float:right;">
+                    <button type="submit" class="readmore" id="postcomment">Publish</button>
+                </div>
+            </div>
+        }
+
+        <div class="displaynone">
+            <div id="sk-comment-signin"></div>
+        </div>
+
+        <div class="response"></div>
+    </div>
+</div><div class="displaynone">
+    <div id="sk-comment-signin"></div>
+</div>
+<style>
+    .displaynone {
+        display: none !important;
+    }
+</style>
+
+<script>
+    var isCommentSubmit = false;
+    $(document).ready(function () {
+        $("#CommentAs").click(function (evt) {
+            $("#username").addClass("displaynone");
+            $("#Website").addClass("displaynone");
+            $("#username").val("")
+            $("#Website").val("");
+            if ($(this).val() == "nameurl")
+            {
+                $("#username").removeClass("displaynone");
+                $("#Website").removeClass("displaynone");
+            }
+        });
+        $("#postcomment").click(function (e) {
+            var isvalid = true;
+            if ($("#CommentDescription").val().trim() == "") {
+                alert("Comment is required");
+                isvalid = false;
+            }
+            else if ($("#CommentAs").val() == "google") {
+                if ($("#username").val().trim() == "") {
+                    isvalid = false;
+                    isCommentSubmit = true;
+                    $("#sk-comment-signin").find(".abcRioButton").click(); // google authentication
+                }
+            }
+            else if ($("#CommentAs").val() == "nameurl") {
+                if ($("#username").val().trim() == "") {
+                    alert("Name required");
+                    isvalid = false;
+                }
+            }
+            if (isvalid)
+                return true;
+            else
+                return false;
+        });
+    });
+
+    function onCommentSuccess(googleUser) {
+        $("#username").val(googleUser.getBasicProfile().getName());
+        $("#ProfilePicUrl").val(googleUser.getBasicProfile().getImageUrl());
+        if (isCommentSubmit == true) {
+            isCommentSubmit = false;
+            $("#postcomment").trigger("click");
+        }
+    }
+    function onCommentFailure(error) {
+        alert(error);
+    }
+    function renderCommentGoogleButton() {
+        gapi.signin2.render('sk-comment-signin', {
+            'scope': 'https://www.googleapis.com/auth/plus.login',
+            'width': 200,
+            'height': 50,
+            'longtitle': true,
+            'theme': 'dark',
+            'onsuccess': onCommentSuccess,
+            'onfailure': onCommentFailure
+        });
+    }
+</script>
+<script src="https://apis.google.com/js/platform.js?onload=renderCommentGoogleButton" async defer></script>
+
+<script>
+    @if (TempData["comment-added"] != null)
+    {
+        @: alert("Your comment is added. we will review and it add. :)");
+    }
+    @if (TempData["comment-error"] != null)
+    {
+        @: alert("@((String)TempData["comment-error"])");
+    }
+</script>
