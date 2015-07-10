@@ -15,14 +15,17 @@ namespace NITASA.Areas.Admin.Controllers
     public class SettingController : Controller
     {
         public NTSDBContext context;
-        public SettingController()
+        IAclService aclService;
+
+        public SettingController(IAclService aclService)
         {
             context = new NTSDBContext();
+            this.aclService = aclService;
         }
 
         public ActionResult Index()
         {
-            if (!UserRights.HasRights(Rights.ManageSettings))
+            if (!aclService.HasRight(Rights.ManageSettings))
                 return RedirectToAction("AccessDenied", "Home");
 
             SiteSettings siteSettings = new SiteSettings();
@@ -56,7 +59,7 @@ namespace NITASA.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Index(SiteSettings con, HttpPostedFileBase logopath, HttpPostedFileBase FaviconIcon, HttpPostedFileBase CoverImage)
         {
-            if (!UserRights.HasRights(Rights.ManageSettings))
+            if (!aclService.HasRight(Rights.ManageSettings))
                 return RedirectToAction("AccessDenied", "Home");
 
             if (ModelState.IsValid)

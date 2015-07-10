@@ -1,4 +1,5 @@
-﻿@model Content
+﻿@inherits NITASA.Views.AutofacEnabledViewPage<NITASA.Data.Content>
+@using NITASA.Services.Security;
 @using NITASA.Data
 @using NITASA.Areas.Admin.Helper
 @{
@@ -13,7 +14,7 @@
     </style>
     <script src="@Url.Content("~/Areas/Admin/assets/js/tinymce/tinymce.min.js")"></script>
     <script type="text/javascript">
-        
+
         $ext = 'span[id|name|class|style]';
         tinyMCE.init({
             selector: ".edtr",
@@ -74,7 +75,7 @@
                                     <div class="span9">
                                         <div class="control-group">
                                             <div class="controls">
-                                                @Html.TextBoxFor(mbox => mbox.Type, new { placeholder = "Addon Name", @class = "width100per", style = "margin-bottom: 0px;",id="txtAddonName" })
+                                                @Html.TextBoxFor(mbox => mbox.Type, new { placeholder = "Addon Name", @class = "width100per", style = "margin-bottom: 0px;", id = "txtAddonName" })
                                                 <div style="color: red">
                                                     @Html.ValidationMessageFor(m => m.Type)
                                                 </div>
@@ -91,7 +92,7 @@
                                         </div>
                                         <div class="control-group">
                                             <div class="controls">
-                                                @Html.TextBoxFor(m=> m.URL, new { placeholder = "Addon URL", @class = "width100per", style = "margin-bottom: 0px;" })
+                                                @Html.TextBoxFor(m => m.URL, new { placeholder = "Addon URL", @class = "width100per", style = "margin-bottom: 0px;" })
                                                 <div style="color: red">
                                                     @Html.ValidationMessageFor(m => m.URL)
                                                 </div>
@@ -114,13 +115,13 @@
                                     </div>
                                     <div class="span3">
                                         <div class="padded" style="padding: 0px 4px 13px 4px; ">
-                                            @if (UserRights.HasRights(Rights.PublishOwnAddons))
+                                            @if (aclService.HasRight(Rights.PublishOwnAddons))
                                             {
-                                            <input type="button" class="btn btn-small btn-green" id="btnPost" style="text-align: center; width: 60px;" value="Publish" />
+                                                <input type="button" class="btn btn-small btn-green" id="btnPost" style="text-align: center; width: 60px;" value="Publish" />
                                             }&nbsp;
                                             <input type="button" class="btn btn-small btn-blue" style="text-align: center; width: 90px;" value="Save to Draft" id="btnSaveToDraft" />&nbsp;
                                             <input type="button" class="btn btn-small btn-red" style="text-align: center; width: 60px;" value="Back" onclick="window.location = '/Admin/Addons/List';" />
-                                        </div>                                        
+                                        </div>
                                         <div class="box">
                                             <div class="box-header">
                                                 <span class="title">Display Order</span>
@@ -173,7 +174,7 @@
                 }
             }
             $("body").delegate(".wizard-input-section .media-thumb .imgSelect", "click", function () {
-                var imgPath = $(this).attr('src');               
+                var imgPath = $(this).attr('src');
                 var url = imgPath;
                 var img = "<img src=\"" + url + "\"/>";
                 tinyMCE.activeEditor.execCommand('mceInsertContent', false, img);

@@ -14,15 +14,17 @@ namespace NITASA.Areas.Admin.Controllers
     public class PostController : Controller
     {   
         public NTSDBContext context;
+        IAclService aclService;
 
-        public PostController()
+        public PostController(IAclService aclService)
         {
             this.context = new NTSDBContext();
+            this.aclService = aclService;
         }
         public ActionResult List(int cid = 0)
         {
-            bool ViewAllPostsRights = UserRights.HasRights(Rights.ViewAllPosts);
-            bool ViewUnPublishedPostsRights = UserRights.HasRights(Rights.ViewUnPublishedPosts);
+            bool ViewAllPostsRights = aclService.HasRight(Rights.ViewAllPosts);
+            bool ViewUnPublishedPostsRights = aclService.HasRight(Rights.ViewUnPublishedPosts);
 
             if (!ViewAllPostsRights && !ViewUnPublishedPostsRights)
                 return RedirectToAction("AccessDenied", "Home");
@@ -46,7 +48,7 @@ namespace NITASA.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult Add()
         {
-            if (!UserRights.HasRights(Rights.CreateNewPosts))
+            if (!aclService.HasRight(Rights.CreateNewPosts))
                 return RedirectToAction("AccessDenied", "Home");
 
             ViewBag.Labellist = new SelectList(context.Label.Where(x=>x.IsDeleted==false).ToList(), "ID", "Name");
@@ -58,7 +60,7 @@ namespace NITASA.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Add(Content content)
         {
-            if (!UserRights.HasRights(Rights.CreateNewPosts))
+            if (!aclService.HasRight(Rights.CreateNewPosts))
                 return RedirectToAction("AccessDenied", "Home");
 
             if (ModelState.IsValid)
@@ -237,12 +239,12 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 if (Functions.CurrentUserID() == curCon.AddedBy)
                 {
-                    if (!UserRights.HasRights(Rights.DeleteOwnPosts))
+                    if (!aclService.HasRight(Rights.DeleteOwnPosts))
                         return RedirectToAction("AccessDenied", "Home");
                 }
                 else
                 {
-                    if (!UserRights.HasRights(Rights.DeleteOtherUsersPosts))
+                    if (!aclService.HasRight(Rights.DeleteOtherUsersPosts))
                         return RedirectToAction("AccessDenied", "Home");
                 }
 
@@ -265,12 +267,12 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 if (Functions.CurrentUserID() == curCont.AddedBy)
                 {
-                    if (!UserRights.HasRights(Rights.EditOwnPosts))
+                    if (!aclService.HasRight(Rights.EditOwnPosts))
                         return RedirectToAction("AccessDenied", "Home");
                 }
                 else
                 {
-                    if (!UserRights.HasRights(Rights.EditOtherUsersPosts))
+                    if (!aclService.HasRight(Rights.EditOtherUsersPosts))
                         return RedirectToAction("AccessDenied", "Home");
                 }
 
@@ -323,12 +325,12 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 if (Functions.CurrentUserID() == content.AddedBy)
                 {
-                    if (!UserRights.HasRights(Rights.EditOwnPosts))
+                    if (!aclService.HasRight(Rights.EditOwnPosts))
                         return RedirectToAction("AccessDenied", "Home");
                 }
                 else
                 {
-                    if (!UserRights.HasRights(Rights.EditOtherUsersPosts))
+                    if (!aclService.HasRight(Rights.EditOtherUsersPosts))
                         return RedirectToAction("AccessDenied", "Home");
                 }
 

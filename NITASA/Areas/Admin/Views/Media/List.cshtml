@@ -1,4 +1,5 @@
-﻿@model List<Media>
+﻿@inherits NITASA.Views.AutofacEnabledViewPage<List<NITASA.Data.Media>>
+@using NITASA.Services.Security
 @using NITASA.Data
 @using NITASA.Areas.Admin.Helper
 @{
@@ -45,15 +46,15 @@
         <div id="containerfluid"></div>
         <div class="row-fluid">
             <div class="span12">
-                @if (UserRights.HasRights(Rights.AddNewMedias))
+                @if (aclService.HasRight(Rights.AddNewMedias))
                 {
-                <div class="box">
-                    <div class="box-header">
-                        <span class="title">Upload Media</span>
-                    </div>
-                    <div class="box-content">
-                        <div class="padded">
-                            
+                    <div class="box">
+                        <div class="box-header">
+                            <span class="title">Upload Media</span>
+                        </div>
+                        <div class="box-content">
+                            <div class="padded">
+
                                 @using (Html.BeginForm("Add", "Media", FormMethod.Post, new { @enctype = "multipart/form-data", id = "frm1" }))
                                 {
                                     <div class="span4">
@@ -68,7 +69,7 @@
                                                     <span id="nav-url-error" data-valmsg-replace="true" data-valmsg-for="FileName" class="field-validation-valid">
                                                     </span>
                                                 </div>
-                                                (Only .jpg, .bmp, .jpeg, .png, .gif files are allowed,<br/> To upload multiple file press ctr+select file.)
+                                                (Only .jpg, .bmp, .jpeg, .png, .gif files are allowed,<br /> To upload multiple file press ctr+select file.)
                                             </div>
                                         </div>
                                     </div>
@@ -92,11 +93,11 @@
                                         </div>
                                     </div>
                                 }
-                            <div class="clear">
+                                <div class="clear">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 }
                 <div class="box">
                     <div class="box-header">
@@ -104,7 +105,7 @@
                         @Html.Hidden("CurrentPageIndex", 0)
                     </div>
                     <div class="box-content">
-                        <div class="padded" >
+                        <div class="padded">
                             <div id="Images">
                                 @if (Model != null && Model.Count() > 0)
                                 {
@@ -132,18 +133,18 @@
 @section BottomScript{
     <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js" type="text/javascript"></script>
     <script type="text/javascript">
-    
+
         $(function () {
             $("#Attribute").autocomplete({
-               source: '@Url.Action("MediaAttribute", "Media")',
+                source: '@Url.Action("MediaAttribute", "Media")',
                 minLength: 1
             });
         });
-        
+
         var loading = false;
         $(document).ready(function () {
             var TotalPage = @ViewBag.TotalPage;
-            $(window).scroll(function () {            
+            $(window).scroll(function () {
                 if (!loading && ($(window).scrollTop() == $(document).height() - $(window).height())) {
                     var cp = parseInt($("#CurrentPageIndex").val());
                     if(cp < TotalPage){

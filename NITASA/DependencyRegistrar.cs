@@ -23,6 +23,7 @@ namespace NITASA
 
             builder.RegisterControllers(typeFinder.GetAssemblies().ToArray());
             builder.RegisterFilterProvider();
+            builder.RegisterSource(new ViewRegistrationSource());
 
             builder.RegisterType<NTSDBContext>().As<NTSDBContext>().WithParameter("name", dbName).InstancePerLifetimeScope();
 

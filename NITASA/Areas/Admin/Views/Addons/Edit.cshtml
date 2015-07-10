@@ -107,14 +107,14 @@
                                         <div class="padded" style="padding-top: 0px; padding-left: 0px;">
                                             @if (Functions.CurrentUserID() == Model.AddedBy)
                                             {
-                                                if (UserRights.HasRights(Rights.PublishOwnAddons))
+                                                if (aclService.HasRight(Rights.PublishOwnAddons))
                                                 {
                                                     <input type="button" class="btn btn-small btn-green" id="btnPost" style="text-align: center; width: 60px;" value="Publish" />
                                                 }
                                             }
                                             else
                                             {
-                                                if (UserRights.HasRights(Rights.PublishOtherUsersAddons))
+                                                if (aclService.HasRight(Rights.PublishOtherUsersAddons))
                                                 {
                                                     <input type="button" class="btn btn-small btn-green" id="btnPost" style="text-align: center; width: 60px;" value="Publish" />
                                                 }

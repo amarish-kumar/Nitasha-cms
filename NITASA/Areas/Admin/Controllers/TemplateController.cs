@@ -72,7 +72,7 @@ namespace NITASA.Areas.Admin.Controllers
 
         public ActionResult FileDataContent(string filePath)
         {
-            string fileToRead = Server.MapPath("~") + filePath;
+            string fileToRead = Server.MapPath("~") +"Views\\themes\\"+ filePath;
             StringBuilder fileContent = new StringBuilder();
             string[] lines = System.IO.File.ReadAllLines(fileToRead);
             int lineCount = 0;
@@ -92,7 +92,7 @@ namespace NITASA.Areas.Admin.Controllers
             string fileName = hdnfilename;
             string fileContent = txtFileContent;
             string[] lines = fileContent.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-            string fileToWrite = Server.MapPath("~") + fileName;
+            string fileToWrite = Server.MapPath("~") + "Views\\themes\\" + fileName;
 
             System.IO.File.WriteAllLines(fileToWrite, lines);
             ViewData["LastUpdatedFile"] = fileName;
@@ -133,7 +133,7 @@ namespace NITASA.Areas.Admin.Controllers
                     || fileName.EndsWith(".cshtml", StringComparison.OrdinalIgnoreCase))
                 {
                     string removeString = Server.MapPath("~");
-                    string modifiedName = fileName.Remove(0, removeString.Length);
+                    string modifiedName = fileName.Remove(0, removeString.Length).Replace("Views\\themes\\","");
                     SelectListItem selListItem = new SelectListItem() { Value = modifiedName, Text = modifiedName };
                     newList.Add(selListItem);
                 }

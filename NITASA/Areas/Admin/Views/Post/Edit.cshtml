@@ -1,4 +1,5 @@
-﻿@model Content
+﻿@inherits NITASA.Views.AutofacEnabledViewPage<NITASA.Data.Content>
+@using NITASA.Services.Security
 @using NITASA.Data
 @using NITASA.Areas.Admin.Helper
 @{
@@ -160,7 +161,7 @@
                                         <div class="padded" style="padding: 0px 4px 13px 4px; ">
                                             @if (Functions.CurrentUserID() == Model.AddedBy)
                                             {
-                                                if (UserRights.HasRights(Rights.PublishOwnPosts))
+                                                if (aclService.HasRight(Rights.PublishOwnPosts))
                                                 {
                                                     <input type="button" class="btn btn-small btn-green" id="btnPost" style="text-align: center; width: 60px;"
                                                            value="Publish" />
@@ -168,7 +169,7 @@
                                             }
                                             else
                                             {
-                                                if (UserRights.HasRights(Rights.PublishOtherUsersPosts))
+                                                if (aclService.HasRight(Rights.PublishOtherUsersPosts))
                                                 {
                                                     <input type="button" class="btn btn-small btn-green" id="btnPost" style="text-align: center; width: 60px;"
                                                            value="Publish" />

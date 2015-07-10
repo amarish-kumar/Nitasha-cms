@@ -1,5 +1,11 @@
 ﻿@using NITASA.Areas.Admin.Helper
 @using NITASA.Services.Security
+@{
+    IAclService aclService = (IAclService)System.Web.Mvc.DependencyResolver.Current.GetService(typeof(IAclService));
+
+    var temp = aclService.GetAll();
+    int i = 0;
+}
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,7 +33,7 @@
         <div class="navbar navbar-top navbar-inverse">
             <div class="navbar-inner">
                 <div class="container-fluid">
-                    <div >
+                    <div>
                         <a class="brand" href="@Url.Action("Dashboard","Home")">
                             <img src="@Url.Content("~/Areas/Admin/assets/images/logo.png")" alt="logo" style="padding-top: 7px;" />
                         </a>
@@ -82,7 +88,7 @@
     <div class="primary-sidebar">
         <!-- Main nav -->
         <ul class="nav nav-collapse collapse nav-collapse-primary">
-            @if (UserRights.HasRights(Rights.ShowDashboard))
+            @if (aclService.HasRight(Rights.ShowDashboard))
             {
                 <li class="active">
                     <span class="glow"></span>
@@ -92,7 +98,7 @@
                     </a>
                 </li>
             }
-            @if (UserRights.HasRights(Rights.ViewAllPosts) || UserRights.HasRights(Rights.ViewUnPublishedPosts) || UserRights.HasRights(Rights.CreateNewPosts))
+            @if (aclService.HasRight(Rights.ViewAllPosts) || aclService.HasRight(Rights.ViewUnPublishedPosts) || aclService.HasRight(Rights.CreateNewPosts))
             {
                 <li class="dark-nav ">
                     <span class="glow"></span>
@@ -105,7 +111,7 @@
 
                     </a>
                     <ul id="ancPostLink" class="collapse ">
-                        @if (UserRights.HasRights(Rights.ViewAllPosts) || UserRights.HasRights(Rights.ViewUnPublishedPosts))
+                        @if (aclService.HasRight(Rights.ViewAllPosts) || aclService.HasRight(Rights.ViewUnPublishedPosts))
                         {
                             <li class="">
                                 <a href="@Url.Action("List", "Post")">
@@ -113,7 +119,7 @@
                                 </a>
                             </li>
                         }
-                        @if (UserRights.HasRights(Rights.CreateNewPosts))
+                        @if (aclService.HasRight(Rights.CreateNewPosts))
                         {
                             <li class="">
                                 <a href="@Url.Action("Add", "Post")">
@@ -134,7 +140,7 @@
                     </ul>
                 </li>
             }
-            @if (UserRights.HasRights(Rights.ViewAllPages) || UserRights.HasRights(Rights.ViewUnPublishedPages) || UserRights.HasRights(Rights.CreateNewPages))
+            @if (aclService.HasRight(Rights.ViewAllPages) || aclService.HasRight(Rights.ViewUnPublishedPages) || aclService.HasRight(Rights.CreateNewPages))
             {
                 <li class="dark-nav ">
                     <span class="glow"></span>
@@ -147,7 +153,7 @@
 
                     </a>
                     <ul id="ancPageLink" class="collapse ">
-                        @if (UserRights.HasRights(Rights.ViewAllPages) || UserRights.HasRights(Rights.ViewUnPublishedPages))
+                        @if (aclService.HasRight(Rights.ViewAllPages) || aclService.HasRight(Rights.ViewUnPublishedPages))
                         {
                             <li class="">
                                 <a href="@Url.Action("List", "Page")">
@@ -155,7 +161,7 @@
                                 </a>
                             </li>
                         }
-                        @if (UserRights.HasRights(Rights.CreateNewPages))
+                        @if (aclService.HasRight(Rights.CreateNewPages))
                         {
                             <li class="">
                                 <a href="@Url.Action("Add", "Page")">
@@ -166,7 +172,7 @@
                     </ul>
                 </li>
             }
-            @if (UserRights.HasRights(Rights.ViewAllAddons) || UserRights.HasRights(Rights.ViewUnPublishedAddons) || UserRights.HasRights(Rights.CreateNewAddons))
+            @if (aclService.HasRight(Rights.ViewAllAddons) || aclService.HasRight(Rights.ViewUnPublishedAddons) || aclService.HasRight(Rights.CreateNewAddons))
             {
                 <li class="dark-nav ">
                     <span class="glow"></span>
@@ -179,21 +185,21 @@
 
                     </a>
                     <ul id="ancAddOnsLink" class="collapse ">
-                        @if (UserRights.HasRights(Rights.ViewAllAddons) || UserRights.HasRights(Rights.ViewUnPublishedAddons))
+                        @if (aclService.HasRight(Rights.ViewAllAddons) || aclService.HasRight(Rights.ViewUnPublishedAddons))
                         {
-                        <li class="">
-                            <a href="@Url.Action("List", "Addons")">
-                                <i class="icon-folder-open-alt"></i>&nbsp;Browse Addons
-                            </a>
-                        </li>
+                            <li class="">
+                                <a href="@Url.Action("List", "Addons")">
+                                    <i class="icon-folder-open-alt"></i>&nbsp;Browse Addons
+                                </a>
+                            </li>
                         }
-                        @if (UserRights.HasRights(Rights.CreateNewAddons))
+                        @if (aclService.HasRight(Rights.CreateNewAddons))
                         {
-                        <li class="">
-                            <a href="@Url.Action("Add", "Addons")">
-                                <i class="icon-plus-sign-alt"></i>&nbsp;New Addon
-                            </a>
-                        </li>
+                            <li class="">
+                                <a href="@Url.Action("Add", "Addons")">
+                                    <i class="icon-plus-sign-alt"></i>&nbsp;New Addon
+                                </a>
+                            </li>
                         }
                     </ul>
                 </li>
@@ -252,7 +258,7 @@
                     </a>
                 </li>*@
             @*@{ Html.RenderPartial("~/Areas/CMSAdmin/Views/Shared/RenderPluginMenu.cshtml"); }*@
-            @if (UserRights.HasRights(Rights.ViewUsers) || UserRights.HasRights(Rights.CreateNewUsers) || UserRights.HasRights(Rights.ViewRoles) || UserRights.HasRights(Rights.CreateNewRoles))
+            @if (aclService.HasRight(Rights.ViewUsers) || aclService.HasRight(Rights.CreateNewUsers) || aclService.HasRight(Rights.ViewRoles) || aclService.HasRight(Rights.CreateNewRoles))
             {
                 <li class="dark-nav ">
                     <span class="glow"></span>
@@ -264,7 +270,7 @@
                         </span>
                     </a>
                     <ul id="ancSecurityLink" class="collapse ">
-                        @if (UserRights.HasRights(Rights.ViewUsers))
+                        @if (aclService.HasRight(Rights.ViewUsers))
                         {
                             <li class="">
                                 <a href="@Url.Action("List", "User")">
@@ -272,7 +278,7 @@
                                 </a>
                             </li>
                         }
-                        @if (UserRights.HasRights(Rights.CreateNewUsers))
+                        @if (aclService.HasRight(Rights.CreateNewUsers))
                         {
                             <li class="">
                                 <a href="@Url.Action("Add", "User")">
@@ -280,7 +286,7 @@
                                 </a>
                             </li>
                         }
-                        @if (UserRights.HasRights(Rights.ViewRoles))
+                        @if (aclService.HasRight(Rights.ViewRoles))
                         {
                             <li class="">
                                 <a href="@Url.Action("List", "Role")">
@@ -288,7 +294,7 @@
                                 </a>
                             </li>
                         }
-                        @if (UserRights.HasRights(Rights.CreateNewRoles))
+                        @if (aclService.HasRight(Rights.CreateNewRoles))
                         {
                             <li class="">
                                 <a href="@Url.Action("Add", "Role")">
@@ -299,7 +305,7 @@
                     </ul>
                 </li>
             }
-            @if (UserRights.HasRights(Rights.ManageSettings))
+            @if (aclService.HasRight(Rights.ManageSettings))
             {
                 <li class="">
                     <span class="glow"></span>
@@ -309,7 +315,7 @@
                     </a>
                 </li>
             }
-            @if (UserRights.HasRights(Rights.ManageTemplates))
+            @if (aclService.HasRight(Rights.ManageTemplates))
             {
                 <li class="">
                     <span class="glow"></span>

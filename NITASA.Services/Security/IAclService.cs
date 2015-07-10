@@ -12,8 +12,10 @@ namespace NITASA.Services.Security
 
         List<AccessPermission> GetAllAccessPermission();
 
-        bool HasRights(Rights value);
+        bool HasRight(Rights value);
 
-        void BindRights();
+        void SetRights(int UserId,int RoleId);
+
+        List<string> GetRights(int userId);
     }
 }

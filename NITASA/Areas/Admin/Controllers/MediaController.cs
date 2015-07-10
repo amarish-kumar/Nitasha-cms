@@ -15,9 +15,12 @@ namespace NITASA.Areas.Admin.Controllers
     {
         private NTSDBContext context;
         int MediaPageSize = 10; int MediaPopUpPageSize = 10;
-        public MediaController()
+        IAclService aclService;
+
+        public MediaController(IAclService aclService)
         {
             this.context = new NTSDBContext();
+            this.aclService = aclService;
         }
 
         public ActionResult List()
@@ -31,7 +34,7 @@ namespace NITASA.Areas.Admin.Controllers
 
         public ActionResult GetMediaList(int CurrentPageIndex)
         {
-            List<Media> MediaList =  context.Media.Where(c => c.IsDeleted == false && c.Type == "Image")
+            List<Media> MediaList = context.Media.Where(c => c.IsDeleted == false && c.Type == "Image")
                         .OrderByDescending(m => m.ID).Skip(CurrentPageIndex * MediaPageSize).Take(MediaPageSize).ToList();
             return PartialView("~/Areas/Admin/Views/Media/ImageList.cshtml", MediaList);
         }
@@ -40,7 +43,7 @@ namespace NITASA.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Add(string Attribute, List<HttpPostedFileBase> MediaFiles)
         {
-            if (!UserRights.HasRights(Rights.AddNewMedias))
+            if (!aclService.HasRight(Rights.AddNewMedias))
                 return RedirectToAction("AccessDenied", "Home");
 
             if (ModelState.IsValid && MediaFiles != null && MediaFiles.Count() > 0)
@@ -72,7 +75,7 @@ namespace NITASA.Areas.Admin.Controllers
                         successcount++;
                     }
                 }
-                TempData["SuccessMessage"] = successcount+" Media uploaded successfully.";
+                TempData["SuccessMessage"] = successcount + " Media uploaded successfully.";
             }
             else
             {
@@ -84,7 +87,7 @@ namespace NITASA.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult Delete(string GUID)
         {
-            if (!UserRights.HasRights(Rights.DeleteMedias))
+            if (!aclService.HasRight(Rights.DeleteMedias))
                 return RedirectToAction("AccessDenied", "Home");
             Media mediaToDelete = context.Media.Where(m => m.GUID == GUID).Single();
             if (mediaToDelete == null)
@@ -111,7 +114,7 @@ namespace NITASA.Areas.Admin.Controllers
         [HttpGet]
         public JsonResult MediaAttribute(string term)
         {
-            List<string> Attributes = context.Media.Where(m => m.IsDeleted==false && m.Attribute.ToLower().Contains(term)).Select(m => m.Attribute).Distinct().ToList();
+            List<string> Attributes = context.Media.Where(m => m.IsDeleted == false && m.Attribute.ToLower().Contains(term)).Select(m => m.Attribute).Distinct().ToList();
             return Json(Attributes, JsonRequestBehavior.AllowGet);
         }
 
@@ -126,10 +129,10 @@ namespace NITASA.Areas.Admin.Controllers
                 TotalPages = totalPage,
                 Medias = AllMediaList.Take(MediaPopUpPageSize).ToList()
             };
-            
+
             List<MediaPopUp> mediaPopUp = new List<MediaPopUp>();
             mediaPopUp.Add(AllMedias);
-            
+
             List<string> Attributes = AllMediaList.Where(x => !string.IsNullOrEmpty(x.Attribute)).Select(m => m.Attribute).Distinct().ToList();
             foreach (string attribute in Attributes)
             {
@@ -149,7 +152,7 @@ namespace NITASA.Areas.Admin.Controllers
         }
         public ActionResult LoadPopupMedia(string attributename, int CurrentPageIndex)
         {
-            List<Media> MediaList =new List<Media>();
+            List<Media> MediaList = new List<Media>();
             if (attributename == "all")
             {
                 MediaList = context.Media.Where(m => m.Type == "Image" && m.IsDeleted == false)

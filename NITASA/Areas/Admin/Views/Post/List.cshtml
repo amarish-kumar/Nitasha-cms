@@ -1,46 +1,47 @@
-﻿@model List<Content>
-    @using NITASA.Data
-    @using NITASA.Areas.Admin.Helper
-    @using GridMvc.Html
-    @{
-        ViewBag.Title = "Posts";
-    }
-    <div class="main-content">
-        <div class="container-fluid padded">
-            @if (TempData["SuccessMessage"] != null)
-            {
-                <div class="alert alert-success">
-                    <button class="close" data-dismiss="alert" type="button">
-                        ×
-                    </button>
-                    @TempData["SuccessMessage"]
-                </div>
-            }
-            @if (TempData["ErrorMessage"] != null)
-            {
-                <div class="alert alert-error">
-                    <button class="close" data-dismiss="alert" type="button">
-                        ×
-                    </button>
-                    @TempData["ErrorMessage"]
-                </div>
-            }
-            <div class="row-fluid">
-                <div class="span12">
-                    <div class="box">
-                        <div class="box-header">
-                            <span class="title">Browse Posts</span>
-                            @if (UserRights.HasRights(Rights.CreateNewPosts))
-                            {
+﻿@inherits NITASA.Views.AutofacEnabledViewPage<NITASA.Data.Content>
+@using NITASA.Services.Security
+@using NITASA.Data
+@using NITASA.Areas.Admin.Helper
+@using GridMvc.Html
+@{
+    ViewBag.Title = "Posts";
+}
+<div class="main-content">
+    <div class="container-fluid padded">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                <button class="close" data-dismiss="alert" type="button">
+                    ×
+                </button>
+                @TempData["SuccessMessage"]
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-error">
+                <button class="close" data-dismiss="alert" type="button">
+                    ×
+                </button>
+                @TempData["ErrorMessage"]
+            </div>
+        }
+        <div class="row-fluid">
+            <div class="span12">
+                <div class="box">
+                    <div class="box-header">
+                        <span class="title">Browse Posts</span>
+                        @if ((aclService.HasRight(Rights.CreateNewPosts)))
+                        {
                             <ul class="box-toolbar">
                                 <li><a href="@Url.Action("Add")" title="Add New Post"><i class="icon-plus-sign" style="margin-top: 10px"></i></a></li>
                             </ul>
-                            }
-                        </div>
-                        <div class="box-content">
-                            @if (Model.Count() > 0)
-                            {
-                                @Html.Grid(Model).Columns(columns =>
+                        }
+                    </div>
+                    <div class="box-content">
+                        @if (Model.Count() > 0)
+                        {
+                            @Html.Grid(Model).Columns(columns =>
                                             {
                                                 columns.Add(x => x.Title).Titled("Post Title").Sortable(true).Filterable(true);
                                                 columns.Add(x => x.Categories).Titled("Categories").Sortable(true).Filterable(true).RenderValueAs(x => GetCategories(x));
@@ -49,20 +50,20 @@
                                                 columns.Add(x => x.user.FullName).Titled("Author").Sortable(true).Filterable(true);
                                                 columns.Add(c => c.isPublished).Sortable(true).Filterable(true).RenderValueAs(x => x.isPublished ? "Published" : "Draft").Titled("Type");
                                                 columns.Add().SetWidth(110).RenderValueAs(x => RenderButtons(x)).Sanitized(false).Encoded(false).Titled("");
-                                            }).WithPaging(10,5).WithMultipleFilters()
-                            }
-                            else
-                            {
-                                <div class="padded">
-                                    No Posts Found.
-                                </div>
-                            }
-                        </div>
+                                            }).WithPaging(10, 5).WithMultipleFilters()
+                        }
+                        else
+                        {
+                            <div class="padded">
+                                No Posts Found.
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 @helper GetCategories(Content item)
 {
     string cats = "";
@@ -86,28 +87,28 @@
 {
     if (Functions.CurrentUserID() == item.AddedBy)
     {
-        if (UserRights.HasRights(Rights.EditOwnPosts))
+        if ((aclService.HasRight(Rights.EditOwnPosts)))
         {
             @Html.ActionLink("Edit", "Edit", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
         }
     }
     else
     {
-        if (UserRights.HasRights(Rights.EditOtherUsersPosts))
+        if ((aclService.HasRight(Rights.EditOtherUsersPosts)))
         {
             @Html.ActionLink("Edit", "Edit", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
         }
     }
     if (Functions.CurrentUserID() == item.AddedBy)
     {
-        if (UserRights.HasRights(Rights.DeleteOwnPosts))
+        if ((aclService.HasRight(Rights.DeleteOwnPosts)))
         {
             @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Post ?');" })
         }
     }
     else
     {
-        if (UserRights.HasRights(Rights.DeleteOtherUsersPosts))
+        if ((aclService.HasRight(Rights.DeleteOtherUsersPosts)))
         {
             @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Post ?');" })
         }

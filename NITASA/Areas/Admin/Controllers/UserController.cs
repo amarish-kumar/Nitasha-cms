@@ -14,18 +14,20 @@ namespace NITASA.Areas.Admin.Controllers
     public class UserController : Controller
     {
         public NTSDBContext context;
-
-        public UserController()
+        IAclService aclService;
+        public UserController(IAclService aclService)
         {
             this.context = new NTSDBContext();
+             this.aclService = aclService;
         }
 
         [HttpGet]
         public ActionResult List(string userName = "")
         {
-            if (!UserRights.HasRights(Rights.ViewUsers))
+            //if (!aclService.HasRight(Rights.ViewUsers))
+            if (!aclService.HasRight(Rights.ViewUsers))
                 return RedirectToAction("AccessDenied", "Home");
-
+            ViewBag.aclService = aclService;
             List<User> Users = context.User.Where(m => (m.FirstName.Contains(userName) || m.LastName.Contains(userName)) && m.IsDeleted != true).ToList();
             List<Tuple<User, string>> UserList = 
             (from role in Users select new Tuple<User, string>(role, String.Join(",", (from rl in context.Role where role.RoleID == rl.ID select rl.Name).ToArray()))).ToList();
@@ -35,7 +37,8 @@ namespace NITASA.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult Add()
         {
-            if (!UserRights.HasRights(Rights.CreateNewUsers))
+            //if (!aclService.HasRight(Rights.CreateNewUsers))
+            if (!aclService.HasRight(Rights.CreateNewUsers))
                 return RedirectToAction("AccessDenied", "Home");
 
             ViewBag.RoleList = new SelectList(context.Role.Where(m => m.IsDeleted != true).ToList(), "ID", "Name");
@@ -45,7 +48,8 @@ namespace NITASA.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Add(User user, HttpPostedFileBase ProfilePic)
         {
-            if (!UserRights.HasRights(Rights.CreateNewUsers))
+            //if (!aclService.HasRight(Rights.CreateNewUsers))
+            if (!aclService.HasRight(Rights.CreateNewUsers))
                 return RedirectToAction("AccessDenied", "Home");
 
             if (ModelState.IsValid)
@@ -102,12 +106,14 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 if (Functions.CurrentUserID() == user.ID)
                 {
-                    if (!UserRights.HasRights(Rights.EditUserSelf))
+                    //if (!aclService.HasRight(Rights.EditUserSelf))
+                    if (!aclService.HasRight(Rights.EditUserSelf))
                         return RedirectToAction("AccessDenied", "Home");
                 }
                 else
                 {
-                    if (!UserRights.HasRights(Rights.EditOtherUsers))
+                    //if (!aclService.HasRight(Rights.EditOtherUsers))
+                    if (!aclService.HasRight(Rights.EditOtherUsers))
                         return RedirectToAction("AccessDenied", "Home");
                 }
 
@@ -127,12 +133,14 @@ namespace NITASA.Areas.Admin.Controllers
         {
             if (Functions.CurrentUserID() == user.ID)
             {
-                if (!UserRights.HasRights(Rights.EditUserSelf))
+                //if (!aclService.HasRight(Rights.EditUserSelf))
+                if (!aclService.HasRight(Rights.EditUserSelf))
                     return RedirectToAction("AccessDenied", "Home");
             }
             else
             {
-                if (!UserRights.HasRights(Rights.EditOtherUsers))
+                //if (!aclService.HasRight(Rights.EditOtherUsers))
+                if (!aclService.HasRight(Rights.EditOtherUsers))
                     return RedirectToAction("AccessDenied", "Home");
             }
             if (!user.IsChangePassword)
@@ -193,12 +201,14 @@ namespace NITASA.Areas.Admin.Controllers
                 int CurrentUserID = Functions.CurrentUserID();
                 if (CurrentUserID == user.ID)
                 {
-                    if (!UserRights.HasRights(Rights.DeleteUserSelf))
+                    //if (!aclService.HasRight(Rights.DeleteUserSelf))
+                    if (!aclService.HasRight(Rights.DeleteUserSelf))
                         return RedirectToAction("AccessDenied", "Home");
                 }
                 else
                 {
-                    if (!UserRights.HasRights(Rights.DeleteOtherUsers))
+                    //if (!aclService.HasRight(Rights.DeleteOtherUsers))
+                    if (!aclService.HasRight(Rights.DeleteOtherUsers))
                         return RedirectToAction("AccessDenied", "Home");
                 }
                 user.ModifiedOn = DateTime.UtcNow;
@@ -230,12 +240,14 @@ namespace NITASA.Areas.Admin.Controllers
                 int CurrentUserID = Functions.CurrentUserID();
                 if (CurrentUserID == user.ID)
                 {
-                    if (!UserRights.HasRights(Rights.EditUserSelf))
+                    //if (!aclService.HasRight(Rights.EditUserSelf))
+                    if (!aclService.HasRight(Rights.EditUserSelf))
                         return RedirectToAction("AccessDenied", "Home");
                 }
                 else
                 {
-                    if (!UserRights.HasRights(Rights.EditOtherUsers))
+                    //if (!aclService.HasRight(Rights.EditOtherUsers))
+                    if (!aclService.HasRight(Rights.EditOtherUsers))
                         return RedirectToAction("AccessDenied", "Home");
                 }
 

@@ -1,29 +1,30 @@
-﻿@model  List<Media>
+﻿@inherits NITASA.Views.AutofacEnabledViewPage<List<NITASA.Data.Media>>
+@using NITASA.Services.Security
 @using NITASA.Data
 @using NITASA.Areas.Admin.Helper
 
-    @foreach (var item in Model)
-    {
-        <div class="media-thumb">
-            <div style="background: url('@item.FileName?ver=@item.GUID') no-repeat;background-position:center center; background-size:cover; width:200px;height:150px;"></div>
-            <div class="mediadesc padleft5" style="margin-top: 5px;">
-                <div class="span10" style="height: 40px; display: table;">
-                    <span style="color: White; display: table-cell; vertical-align: middle; height: 100%; word-break: break-all;">
-                        @GetShortString(item.FileName, 30)
-                    </span>
-                </div>
-                <div class="span2">
-                    @if (UserRights.HasRights(Rights.DeleteMedias))
-                    {
-                        <a href="/Admin/Media/Delete/@item.GUID" onclick="return confirm('Are you sure you want to delete this media?');"
-                           style="color: White;cursor:pointer;display: table-cell;vertical-align: middle;height: 40px;">
-                            <i class="icon-remove"></i>
-                        </a>
-                    }
-                </div>
+@foreach (var item in Model)
+{
+    <div class="media-thumb">
+        <div style="background: url('@item.FileName?ver=@item.GUID') no-repeat;background-position:center center; background-size:cover; width:200px;height:150px;"></div>
+        <div class="mediadesc padleft5" style="margin-top: 5px;">
+            <div class="span10" style="height: 40px; display: table;">
+                <span style="color: White; display: table-cell; vertical-align: middle; height: 100%; word-break: break-all;">
+                    @GetShortString(item.FileName, 30)
+                </span>
+            </div>
+            <div class="span2">
+                @if (aclService.HasRight(Rights.DeleteMedias))
+                {
+                    <a href="/Admin/Media/Delete/@item.GUID" onclick="return confirm('Are you sure you want to delete this media?');"
+                       style="color: White;cursor:pointer;display: table-cell;vertical-align: middle;height: 40px;">
+                        <i class="icon-remove"></i>
+                    </a>
+                }
             </div>
         </div>
-    }
+    </div>
+}
 
 @helper GetShortString(string fullString, int length = 200)
 {
