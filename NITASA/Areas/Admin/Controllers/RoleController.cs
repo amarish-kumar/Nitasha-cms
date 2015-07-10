@@ -14,21 +14,23 @@ namespace NITASA.Areas.Admin.Controllers
     public class RoleController : Controller
     {
         public NTSDBContext context;
-        List<AccessPermission> AllRightsList = UserRights.GetAllAccessPermission();
-        ICacheManager cacheManager;
+        List<AccessPermission> AllRightsList;// = UserRights.GetAllAccessPermission();
+        IAclService aclService;
 
-        public RoleController(ICacheManager cacheManager)
+        public RoleController(IAclService aclService)
         {
             this.context = new NTSDBContext();
-            this.cacheManager = cacheManager;
+            this.aclService = aclService;
+            AllRightsList = aclService.GetAllAccessPermission();
         }
 
         [HttpGet]
         public ActionResult List(string roleName = "")
         {
-            if (!UserRights.HasRights(Rights.ViewRoles))
+            //if (!aclService.HasRight(Rights.ViewRoles))
+            if (!aclService.HasRight(Rights.ViewRoles))
                 return RedirectToAction("AccessDenied", "Home");
-
+            ViewBag.aclService = aclService;
             List<Role> Roles = context.Role.Where(m => m.Name.Contains(roleName) && m.IsDeleted == false).ToList();
             List<Tuple<Role, int>> RoleList = (from role in Roles
                                                select new Tuple<Role, int>(role, (from ur in context.User where ur.RoleID == role.ID select ur.ID).Count())).ToList();
@@ -39,17 +41,18 @@ namespace NITASA.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult Add()
         {
-            if (!UserRights.HasRights(Rights.CreateNewRoles))
+            //if (!aclService.HasRight(Rights.CreateNewRoles))
+            if (!aclService.HasRight(Rights.CreateNewRoles))
                 return RedirectToAction("AccessDenied", "Home");
-
+            ViewBag.aclService = aclService;
             return View();
-
         }
 
         [HttpPost]
         public ActionResult Add(Role role, FormCollection f)
         {
-            if (!UserRights.HasRights(Rights.CreateNewRoles))
+            //if (!aclService.HasRight(Rights.CreateNewRoles))
+            if (!aclService.HasRight(Rights.CreateNewRoles))
                 return RedirectToAction("AccessDenied", "Home");
 
             if (ModelState.IsValid)
@@ -90,6 +93,7 @@ namespace NITASA.Areas.Admin.Controllers
                     TempData["ErrorMessage"] = "Role is already exist with this name. Please enter different role name.";
                 }
             }
+            ViewBag.aclService = aclService;
             return View(role);
         }
         [HttpGet]
@@ -100,12 +104,14 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 if (Functions.CurrentUserID() == role.AddedBy)
                 {
-                    if (!UserRights.HasRights(Rights.EditOwnRoles))
+                    //if (!aclService.HasRight(Rights.EditOwnRoles))
+                    if (!aclService.HasRight(Rights.EditOwnRoles))
                         return RedirectToAction("AccessDenied", "Home");
                 }
                 else
                 {
-                    if (!UserRights.HasRights(Rights.EditOtherUsersRoles))
+                    //if (!aclService.HasRight(Rights.EditOtherUsersRoles))
+                    if (!aclService.HasRight(Rights.EditOtherUsersRoles))
                         return RedirectToAction("AccessDenied", "Home");
                 }
                 List<RightsInRole> RightsInRoleList = context.RightsInRole.Where(m => m.RoleID == role.ID).ToList();
@@ -115,7 +121,7 @@ namespace NITASA.Areas.Admin.Controllers
                                  select new AccessPermission() { Name = r.Name, Group = r.Group, IsChecked = RightsInRoleList.Exists(rir => rir.RightsName == r.Name) }).ToList();
 
                 ViewBag.AllRightsList = AllRightsList;
-
+                ViewBag.aclService = aclService;
                 return View(role);
             }
             else
@@ -130,12 +136,14 @@ namespace NITASA.Areas.Admin.Controllers
         {
             if (Functions.CurrentUserID() == role.AddedBy)
             {
-                if (!UserRights.HasRights(Rights.EditOwnRoles))
+                //if (!aclService.HasRight(Rights.EditOwnRoles))
+                if (!aclService.HasRight(Rights.EditOwnRoles))
                     return RedirectToAction("AccessDenied", "Home");
             }
             else
             {
-                if (!UserRights.HasRights(Rights.EditOtherUsersRoles))
+                //if (!aclService.HasRight(Rights.EditOtherUsersRoles))
+                if (!aclService.HasRight(Rights.EditOtherUsersRoles))
                     return RedirectToAction("AccessDenied", "Home");
             }
 
@@ -172,6 +180,11 @@ namespace NITASA.Areas.Admin.Controllers
                                 }
                             }
                         }
+
+                        var users = context.User.Where(x => x.RoleID == role.ID).ToList();
+                        foreach (var user in users)
+                            aclService.SetRights(user.ID, role.ID);
+
                         TempData["SuccessMessage"] = "Role updated successfully.";
                     }
                     else
@@ -185,12 +198,14 @@ namespace NITASA.Areas.Admin.Controllers
                     TempData["ErrorMessage"] = "Role is already exist with this name. Please enter different role name.";
                 }
             }
+            ViewBag.aclService = aclService;
             return RedirectToAction("Edit");
         }
         [HttpGet]
         public ActionResult Delete(string GUID)
         {
-            if (!UserRights.HasRights(Rights.DeleteRoles))
+            //if (!aclService.HasRight(Rights.DeleteRoles))
+            if (!aclService.HasRight(Rights.DeleteRoles))
                 return RedirectToAction("AccessDenied", "Home");
 
             Role role = context.Role.Where(m => m.GUID == GUID).FirstOrDefault();

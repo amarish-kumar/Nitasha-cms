@@ -29,7 +29,16 @@ namespace NITASA.Core.Caching
 
             var policy = new CacheItemPolicy();
             policy.AbsoluteExpiration = DateTime.Now + TimeSpan.FromMinutes(cacheTime);
-            Cache.Add(new CacheItem(userName, rights), policy);
+
+            if (!IsSet(userName))
+            {
+                Cache.Add(userName, rights, policy);
+            }
+            else
+            {
+                Cache.Remove(userName);
+                Cache.Set(userName, rights, policy);
+            }
         }
 
         public bool IsSet(string key)

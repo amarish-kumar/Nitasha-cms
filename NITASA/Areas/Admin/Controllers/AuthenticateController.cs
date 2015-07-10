@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using NITASA.Services.Security;
 
 namespace NITASA.Areas.Admin.Controllers
 {
@@ -14,10 +15,11 @@ namespace NITASA.Areas.Admin.Controllers
     {
         string returnURL;
         public NTSDBContext context;
-
-        public AuthenticateController()
+        IAclService aclService;
+        public AuthenticateController(IAclService aclService)
         {
             this.context = new NTSDBContext();
+            this.aclService = aclService;
         }
 
         public ActionResult Login()
@@ -55,7 +57,8 @@ namespace NITASA.Areas.Admin.Controllers
                     {
                         HttpContext.Session["UserID"] = User.ID;
                         HttpContext.Session["UserRole"] = context.Role.Where(m => m.ID == User.RoleID && m.IsDeleted == false).Select(m => m.Name).FirstOrDefault();
-                        UserRights.BindRights();
+                        //UserRights.BindRights();
+                        aclService.SetRights(User.ID,User.RoleID);
 
                         if (Request.QueryString["retUrl"] != null)
                             returnURL = Request.QueryString["retUrl"];

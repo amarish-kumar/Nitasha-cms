@@ -25,7 +25,7 @@ namespace NITASA.Areas.Admin.Controllers
 
         public ActionResult Dashboard()
         {
-            if (!aclService.HasRights(Rights.ShowDashboard))
+            if (!aclService.HasRight(Rights.ShowDashboard))
                 return RedirectToAction("Details", "Profile");
 
             CustomizedDashboard dBoard = new CustomizedDashboard();

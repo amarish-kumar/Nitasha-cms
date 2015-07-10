@@ -14,21 +14,24 @@ namespace NITASA.Areas.Admin.Controllers
     public class PageController : Controller
     {
         private NTSDBContext dbContext;
-        public PageController()
+        IAclService aclService;
+
+        public PageController(IAclService aclService)
         {
             this.dbContext = new NTSDBContext();
+            this.aclService = aclService;
         }
 
         public ActionResult List()
         {
             List<Content> pages;
-            if (UserRights.HasRights(Rights.ViewAllPages))
+            if (aclService.HasRight(Rights.ViewAllPages))
                 pages = dbContext.Content
                     .Include("user")
                     .Where(m => m.Type == "page" && m.IsDeleted == false)
                     .OrderByDescending(m => m.AddedOn)
                     .ToList();
-            else if (UserRights.HasRights(Rights.ViewUnPublishedPages))
+            else if (aclService.HasRight(Rights.ViewUnPublishedPages))
                 pages = dbContext.Content
                     .Include("user")
                     .Where(m => m.Type == "page" && m.IsDeleted == false && m.isPublished == false)
@@ -45,7 +48,7 @@ namespace NITASA.Areas.Admin.Controllers
         {
             if (guid.Trim() == string.Empty)
             {
-                if (!UserRights.HasRights(Rights.CreateNewPages))
+                if (!aclService.HasRight(Rights.CreateNewPages))
                     return RedirectToAction("AccessDenied", "Home");
                 return View();
             }
@@ -56,12 +59,12 @@ namespace NITASA.Areas.Admin.Controllers
                 {
                     if (cont.AddedBy == Functions.CurrentUserID())
                     {
-                        if (!UserRights.HasRights(Rights.EditOwnPages))
+                        if (!aclService.HasRight(Rights.EditOwnPages))
                             return RedirectToAction("AccessDenied", "Home");
                     }
                     else
                     {
-                        if (!UserRights.HasRights(Rights.EditOtherUsersPage))
+                        if (!aclService.HasRight(Rights.EditOtherUsersPage))
                             return RedirectToAction("AccessDenied", "Home");
                     }
 
@@ -246,12 +249,12 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 if (contentToDelete.AddedBy == Functions.CurrentUserID())
                 {
-                    if (!UserRights.HasRights(Rights.DeleteOwnPages))
+                    if (!aclService.HasRight(Rights.DeleteOwnPages))
                         return RedirectToAction("AccessDenied", "Home");
                 }
                 else
                 {
-                    if (!UserRights.HasRights(Rights.DeleteOtherUsersPages))
+                    if (!aclService.HasRight(Rights.DeleteOtherUsersPages))
                         return RedirectToAction("AccessDenied", "Home");
                 }
                 contentToDelete.IsDeleted = true;

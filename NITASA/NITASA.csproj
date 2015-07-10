@@ -34,12 +34,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Antlr3.Runtime, Version=3.4.1.9004, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
@@ -208,7 +209,6 @@
     <Compile Include="Areas\Admin\Helper\Sitemap\SitemapChangeFrequency.cs" />
     <Compile Include="Areas\Admin\Helper\Sitemap\SitemapGenerator.cs" />
     <Compile Include="Areas\Admin\Helper\Sitemap\SitemapItem.cs" />
-    <Compile Include="Areas\Admin\Helper\UserRights.cs" />
     <Compile Include="Areas\Admin\ViewModels\ChangePassword.cs" />
     <Compile Include="Areas\Admin\ViewModels\Dashboard.cs" />
     <Compile Include="Areas\Admin\ViewModels\Login.cs" />
@@ -242,6 +242,7 @@
     <Compile Include="ViewModels\CL_Widget.cs" />
     <Compile Include="ViewModels\Install.cs" />
     <Compile Include="ViewModels\Register.cs" />
+    <Compile Include="Views\AutofacEnabledViewPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\assets\css\application.css" />

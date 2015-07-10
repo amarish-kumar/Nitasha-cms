@@ -13,8 +13,11 @@ namespace NITASA.Areas.Admin.Controllers
     public class AddonsController : Controller
     {
         public NTSDBContext context;
-        public AddonsController()
+        IAclService aclService;
+
+        public AddonsController(IAclService aclService)
         {
+            this.aclService = aclService;
             this.context = new NTSDBContext();
         }
 
@@ -23,8 +26,8 @@ namespace NITASA.Areas.Admin.Controllers
             List<Content> ContentList = null;
             //try
             //{
-            bool ViewAllAddonsRights = UserRights.HasRights(Rights.ViewAllAddons);
-            bool ViewUnPublishedAddonsRights = UserRights.HasRights(Rights.ViewUnPublishedAddons);
+            bool ViewAllAddonsRights = aclService.HasRight(Rights.ViewAllAddons);
+            bool ViewUnPublishedAddonsRights = aclService.HasRight(Rights.ViewUnPublishedAddons);
 
             if (!ViewAllAddonsRights && !ViewUnPublishedAddonsRights)
                 return RedirectToAction("AccessDenied", "Home");
@@ -47,9 +50,9 @@ namespace NITASA.Areas.Admin.Controllers
         {
             //try
             //{
-            if (!UserRights.HasRights(Rights.CreateNewAddons))
+            if (!aclService.HasRight(Rights.CreateNewAddons))
                 return RedirectToAction("AccessDenied", "Home");
-            var addons =context.Content.Where(m => m.Type.ToLower() != "post" && m.Type.ToLower() != "page").ToList();
+            var addons = context.Content.Where(m => m.Type.ToLower() != "post" && m.Type.ToLower() != "page").ToList();
             ViewBag.Addonlist = new SelectList(addons, "ID", "Name");
             //}
             //catch (Exception es)
@@ -66,7 +69,7 @@ namespace NITASA.Areas.Admin.Controllers
         {
             //try
             //{
-            if (!UserRights.HasRights(Rights.CreateNewAddons))
+            if (!aclService.HasRight(Rights.CreateNewAddons))
                 return RedirectToAction("AccessDenied", "Home");
 
             if (ModelState.IsValid)
@@ -161,12 +164,12 @@ namespace NITASA.Areas.Admin.Controllers
                 //{
                 if (Functions.CurrentUserID() == curCont.AddedBy)
                 {
-                    if (!UserRights.HasRights(Rights.EditOwnAddons))
+                    if (!aclService.HasRight(Rights.EditOwnAddons))
                         return RedirectToAction("AccessDenied", "Home");
                 }
                 else
                 {
-                    if (!UserRights.HasRights(Rights.EditOtherUsersAddons))
+                    if (!aclService.HasRight(Rights.EditOtherUsersAddons))
                         return RedirectToAction("AccessDenied", "Home");
                 }
 
@@ -195,12 +198,12 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 if (Functions.CurrentUserID() == content.AddedBy)
                 {
-                    if (!UserRights.HasRights(Rights.EditOwnAddons))
+                    if (!aclService.HasRight(Rights.EditOwnAddons))
                         return RedirectToAction("AccessDenied", "Home");
                 }
                 else
                 {
-                    if (!UserRights.HasRights(Rights.EditOtherUsersAddons))
+                    if (!aclService.HasRight(Rights.EditOtherUsersAddons))
                         return RedirectToAction("AccessDenied", "Home");
                 }
 
@@ -280,12 +283,12 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 if (Functions.CurrentUserID() == curCon.AddedBy)
                 {
-                    if (!UserRights.HasRights(Rights.DeleteOwnAddons))
+                    if (!aclService.HasRight(Rights.DeleteOwnAddons))
                         return RedirectToAction("AccessDenied", "Home");
                 }
                 else
                 {
-                    if (!UserRights.HasRights(Rights.DeleteOtherUsersAddons))
+                    if (!aclService.HasRight(Rights.DeleteOtherUsersAddons))
                         return RedirectToAction("AccessDenied", "Home");
                 }
 
@@ -324,7 +327,7 @@ namespace NITASA.Areas.Admin.Controllers
 
                 AddonMasterLayout = (string.IsNullOrEmpty(AddonMasterLayout) || !AddonMasterLayout.ToLower().Contains("{{sublayout}}")) ? AddonMasterLayout + "{{SubLayout}}" : AddonMasterLayout;
                 AddonSubLayout = (string.IsNullOrEmpty(AddonSubLayout) || !AddonSubLayout.ToLower().Contains("{{description}}")) ? AddonSubLayout + "{{Description}}" : AddonSubLayout;
-                
+
                 context.Content.Where(x => x.Type == addon.Type).ToList().ForEach(x =>
                     {
                         x.AddonMasterLayout = AddonMasterLayout;
@@ -344,17 +347,17 @@ namespace NITASA.Areas.Admin.Controllers
         public JsonResult GetAddonLayout(string addonguid)
         {
             var addon = context.Content.Where(m => m.GUID == addonguid).FirstOrDefault();
-            
+
             string AddonMasterLayout = addon.AddonMasterLayout;
             if (string.IsNullOrEmpty(AddonMasterLayout) || !AddonMasterLayout.ToLower().Contains("{{sublayout}}"))
-                AddonMasterLayout = AddonMasterLayout+"{{SubLayout}}";
+                AddonMasterLayout = AddonMasterLayout + "{{SubLayout}}";
 
             string AddonSubLayout = addon.AddonSubLayout;
             if (string.IsNullOrEmpty(AddonSubLayout))
                 AddonSubLayout = "{{Title}} {{Description}} {{URL}}";
 
             if (!AddonSubLayout.ToLower().Contains("{{description}}"))
-                AddonSubLayout = AddonSubLayout+"{{Description}}";
+                AddonSubLayout = AddonSubLayout + "{{Description}}";
 
             return Json(new { MasterLayout = AddonMasterLayout, SubLayout = AddonSubLayout }, JsonRequestBehavior.AllowGet);
         }

@@ -12,10 +12,12 @@ namespace NITASA.Services.Security
     public class AclService : IAclService
     {
         ICacheManager cacheManager;
+        NTSDBContext context;
 
-        public AclService(ICacheManager cacheManager)
+        public AclService(ICacheManager cacheManager, NTSDBContext context)
         {
             this.cacheManager = cacheManager;
+            this.context = context;
         }
 
         public Dictionary<string, string> GetAll()
@@ -83,45 +85,34 @@ namespace NITASA.Services.Security
             return RightsList;
         }
 
-        private List<string> RightsList
+        public List<string> GetRights(int userId)
         {
-            get
-            {
-                if (cacheManager.IsSet(CurrentUserID().ToString()))
-                    return cacheManager.Get<List<string>>(CurrentUserID().ToString());
-                return new List<string>();
-            }
-            set
-            {
-                cacheManager.Set(CurrentUserID().ToString(), value, 60);
-            }
+            if (cacheManager.IsSet(userId.ToString()))
+                return cacheManager.Get<List<string>>(userId.ToString());
+            return new List<string>();
         }
 
-        public bool HasRights(Rights value)
+        public bool HasRight(Rights right)
         {
+            int currentUser = CurrentUserID();
+
             if (CurrentUserRole() == "Administrator")
                 return true;
 
-            string rightsName = value.ToString("G");
-
-            if (RightsList.Contains(rightsName))
+            var temp = cacheManager.Get<List<string>>(currentUser.ToString());
+            string rightName = right.ToString("G");
+            if (temp.Contains(rightName))
                 return true;
-            else
-                return false;
+            return false;
         }
 
-        public void BindRights()
+        public void SetRights(int UserID, int RoleId)
         {
-            NTSDBContext db = new NTSDBContext();
+            var rights = (from d in context.RightsInRole
+                          where d.RoleID == RoleId
+                          select d.RightsName).ToList();
 
-            int UserID = CurrentUserID();
-            RightsList = new List<string>();
-            RightsList = (from rir in db.RightsInRole
-                          join usr in db.User on rir.RoleID equals usr.RoleID
-                          where usr.ID == UserID
-                          select rir.RightsName).ToList();
-
-            cacheManager.Set(UserID.ToString(), RightsList, 60);
+            cacheManager.Set(UserID.ToString(), rights, 60);
         }
 
         public int CurrentUserID()

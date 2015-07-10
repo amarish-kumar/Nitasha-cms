@@ -1,10 +1,14 @@
 ﻿@model Role
 @using NITASA.Data
-@using NITASA.Areas.Admin.Helper
+@*@using NITASA.Areas.Admin.Helper*@
+@using NITASA.Services.Security
 @{
     ViewBag.Title = "Add Role";
 
-    List<AccessPermission> AllRightsList = UserRights.GetAllAccessPermission();
+    //List<AccessPermission> AllRightsList = UserRights.GetAllAccessPermission();
+    IAclService aclService = ViewBag.aclService;
+    List<AccessPermission> AllRightsList = aclService.GetAllAccessPermission();
+    
     List<string> RightsType = AllRightsList.Select(m => m.Group).Distinct().ToList();
 }
 <div class="main-content">

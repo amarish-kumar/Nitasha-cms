@@ -1,128 +1,129 @@
-﻿@model List<Widget>
-    @using NITASA.Data
-    @using NITASA.Areas.Admin.Helper
-    @{
-        ViewBag.Title = "Manage Widgets";
-    }
+﻿@inherits NITASA.Views.AutofacEnabledViewPage<NITASA.Data.Widget>
+@using NITASA.Services.Security
+@using NITASA.Data
+@using NITASA.Areas.Admin.Helper
+@{
+    ViewBag.Title = "Manage Widgets";
+}
 
-    <div class="main-content">
-        <div class="container-fluid padded">
-            @if (TempData["SuccessMessage"] != null)
-            {
-                <div class="alert alert-success">
-                    <button class="close" data-dismiss="alert" type="button">×</button>
-                    @TempData["SuccessMessage"]
+<div class="main-content">
+    <div class="container-fluid padded">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                <button class="close" data-dismiss="alert" type="button">×</button>
+                @TempData["SuccessMessage"]
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-error">
+                <button class="close" data-dismiss="alert" type="button">×</button>
+                @TempData["ErrorMessage"]
+            </div>
+        }
+        <div class="row-fluid">
+            <div class="box">
+                <div class="box-header">
+                    <span class="title">Widget List</span>
+                    @*<ul class="box-toolbar">
+                          <li><span class="label label-green">2 left</span></li>
+                        </ul>*@
                 </div>
-            }
-            @if (TempData["ErrorMessage"] != null)
-            {
-                <div class="alert alert-error">
-                    <button class="close" data-dismiss="alert" type="button">×</button>
-                    @TempData["ErrorMessage"]
-                </div>
-            }
-            <div class="row-fluid">
-                <div class="box">
-                    <div class="box-header">
-                        <span class="title">Widget List</span>
-                        @*<ul class="box-toolbar">
-                              <li><span class="label label-green">2 left</span></li>
-                            </ul>*@
-                    </div>
-                    <div class="box-content">
-                        <table class="table table-normal">
-                            <thead>
-                                <tr>
-                                    <td></td>
-                                    <td>Name</td>
-                                    <td>Widget Title</td>
-                                    <td style="width: 100px">Widget Order</td>
-                                    <td style="width: 70px">Status</td>
-                                    @*<td style="width: 70px">Action</td>*@
-                                    <td style="width: 40px">Setting</td>
-                                </tr>
-                            </thead>
+                <div class="box-content">
+                    <table class="table table-normal">
+                        <thead>
+                            <tr>
+                                <td></td>
+                                <td>Name</td>
+                                <td>Widget Title</td>
+                                <td style="width: 100px">Widget Order</td>
+                                <td style="width: 70px">Status</td>
+                                @*<td style="width: 70px">Action</td>*@
+                                <td style="width: 40px">Setting</td>
+                            </tr>
+                        </thead>
 
-                            <tbody>
-                                @using (Html.BeginForm("List", "Widget", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+                        <tbody>
+                            @using (Html.BeginForm("List", "Widget", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+                            {
+                                for (int i = 0; i < @Model.Count(); i++)
                                 {
-                                    for (int i = 0; i < @Model.Count(); i++)
-                                    {
 
-                                        <tr class="status-pending">
-                                            <td class="icon"><i class="icon-certificate"></i></td>
-                                            <td><a href="#">@Model[i].Name</a></td>
-                                            <td><a href="#">@Model[i].Title</a></td>
-                                            <td style="text-align:center"><a href="#">@Model[i].DisplayOrder</a></td>
+                                    <tr class="status-pending">
+                                        <td class="icon"><i class="icon-certificate"></i></td>
+                                        <td><a href="#">@Model[i].Name</a></td>
+                                        <td><a href="#">@Model[i].Title</a></td>
+                                        <td style="text-align:center"><a href="#">@Model[i].DisplayOrder</a></td>
+                                        <td style="text-align:center">
+                                            @if (aclService.HasRight(Rights.ManageWidgets))
+                                            {
+                                                <input class="iButton-icons" type="checkbox" onchange="changestatus(this,'@Model[i].GUID');" @(Model[i].IsActive == true ? "checked='checked'" : "") />
+                                            }
+                                        </td>
+                                        @*<td style="text-align:center"><b>@(Model[i].IsActive == true ? "Active" : "In Active")</b></td>
                                             <td style="text-align:center">
-                                                @if (UserRights.HasRights(Rights.ManageWidgets))
+                                                @if (aclService.HasRight(Rights.ManageWidgets))
                                                 {
-                                                    <input class="iButton-icons" type="checkbox" onchange="changestatus(this,'@Model[i].GUID');" @(Model[i].IsActive == true ? "checked='checked'" : "") />
+                                                    <b>
+                                                        @Html.ActionLink((Model[i].IsActive == true ? "In Active" : "Active"), (Model[i].IsActive == true ? "Deactive" : "Active"), new { id = @Model[i].WidgetGUID },
+                                                    new { onclick = "return confirm('Are you sure you want to " + (Model[i].IsActive == true ? "In Active" : "Active") + " this widget?');" })
+                                                    </b>
                                                 }
-                                            </td>
-                                            @*<td style="text-align:center"><b>@(Model[i].IsActive == true ? "Active" : "In Active")</b></td>
-                                                <td style="text-align:center">
-                                                    @if (UserRights.HasRights(Rights.ManageWidgets))
-                                                    {
-                                                        <b>
-                                                            @Html.ActionLink((Model[i].IsActive == true ? "In Active" : "Active"), (Model[i].IsActive == true ? "Deactive" : "Active"), new { id = @Model[i].WidgetGUID },
-                                                        new { onclick = "return confirm('Are you sure you want to " + (Model[i].IsActive == true ? "In Active" : "Active") + " this widget?');" })
-                                                        </b>
-                                                    }
-                                                </td>*@
-                                            <td style="text-align:center">
-                                                @if (UserRights.HasRights(Rights.ManageWidgets))
-                                                {
-                                                    <div class="btn-group">
-                                                        <div>
-                                                            <a data-widgetid='@Model[i].ID' data-order='@Model[i].DisplayOrder'
-                                                               class="model-config btn btn-mini btn-default dropdown-toggle" style="padding:2px 6px;">
-                                                                <i class="icon-cog" style="margin-top:5px;"></i>
-                                                            </a>
-                                                            <input type="hidden" class="woption" value='@Model[i].Option' />
-                                                        </div>
+                                            </td>*@
+                                        <td style="text-align:center">
+                                            @if (aclService.HasRight(Rights.ManageWidgets))
+                                            {
+                                                <div class="btn-group">
+                                                    <div>
+                                                        <a data-widgetid='@Model[i].ID' data-order='@Model[i].DisplayOrder'
+                                                           class="model-config btn btn-mini btn-default dropdown-toggle" style="padding:2px 6px;">
+                                                            <i class="icon-cog" style="margin-top:5px;"></i>
+                                                        </a>
+                                                        <input type="hidden" class="woption" value='@Model[i].Option' />
                                                     </div>
-                                                }
-                                            </td>
-                                        </tr>
-                                    }
-
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
                                 }
-                            </tbody>
-                        </table>
-                    </div>
+
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div id="modal-config" class="modal hide fade" tabindex="-1" data-focus-on="input:second">
-        @using (Html.BeginForm("Update", "Widget", FormMethod.Post))
-        {
+<div id="modal-config" class="modal hide fade" tabindex="-1" data-focus-on="input:second">
+    @using (Html.BeginForm("Update", "Widget", FormMethod.Post))
+    {
 
-            <div class="modal-header">
-                <a class="close modal_Delete_icon_link" data-dismiss="modal" href=""><i class="icon-remove-sign modal_close_icon_fontsize"></i></a>
-                <button id="BtnDelete" name="BtnDeleteEthnicity" style="display: none;" class="close modal_icon_link" data-dismiss="modal" runat="server">
-                    <i class="icon-trash modal_icon_fontsize"></i>
-                </button>
-                <button id="BtnSave" name="BtnSave" class="close modal_icon_link" runat="server">
-                    <i class="icon-save modal_icon_fontsize"></i>
-                </button>
-                <h6 id="H14">
-                    <label runat="server" name="lblModalName" id="lblModalName">Widget Configuration</label>
-                </h6>
-            </div>
-            <div class="modal-body">
-                <ul class="padded separate-sections">
-                    <div style="display:none;">
-                        @Html.TextBox("ID", null, new { id = "WidgetID" })
-                    </div>
-                    @*<input id="WidgetID" type="hidden" value="0" />*@
-                    <li class="input li_input_bottom_space_settings">
-                        <label for="For Badge" class="required">
-                            Widget Order
-                        </label>
-                        @Html.DropDownList("DisplayOrder", new List<SelectListItem>() {
+        <div class="modal-header">
+            <a class="close modal_Delete_icon_link" data-dismiss="modal" href=""><i class="icon-remove-sign modal_close_icon_fontsize"></i></a>
+            <button id="BtnDelete" name="BtnDeleteEthnicity" style="display: none;" class="close modal_icon_link" data-dismiss="modal" runat="server">
+                <i class="icon-trash modal_icon_fontsize"></i>
+            </button>
+            <button id="BtnSave" name="BtnSave" class="close modal_icon_link" runat="server">
+                <i class="icon-save modal_icon_fontsize"></i>
+            </button>
+            <h6 id="H14">
+                <label runat="server" name="lblModalName" id="lblModalName">Widget Configuration</label>
+            </h6>
+        </div>
+        <div class="modal-body">
+            <ul class="padded separate-sections">
+                <div style="display:none;">
+                    @Html.TextBox("ID", null, new { id = "WidgetID" })
+                </div>
+                @*<input id="WidgetID" type="hidden" value="0" />*@
+                <li class="input li_input_bottom_space_settings">
+                    <label for="For Badge" class="required">
+                        Widget Order
+                    </label>
+                    @Html.DropDownList("DisplayOrder", new List<SelectListItem>() {
                                                     new SelectListItem { Text = "1", Value = "1" },
                                                     new SelectListItem { Text = "2", Value = "2" },
                                                     new SelectListItem { Text = "3", Value = "3" },
@@ -130,63 +131,63 @@
                                                     new SelectListItem { Text = "5", Value = "5" },
                                                     new SelectListItem { Text = "6", Value = "6" }
                    }, new { @class = "form-control", id = "WidgetOrder" })
-                        <label for="For Badge" class="required">
-                            Widget Title
-                        </label>
-                        @Html.TextBox("Title", null, new { @class = "form-control", maxlength = "50", id = "Title" })
-                        <label for="For Badge" class="required">
-                            Item Count
-                        </label>
-                        @Html.DropDownList("Count", new List<SelectListItem>() {
+                    <label for="For Badge" class="required">
+                        Widget Title
+                    </label>
+                    @Html.TextBox("Title", null, new { @class = "form-control", maxlength = "50", id = "Title" })
+                    <label for="For Badge" class="required">
+                        Item Count
+                    </label>
+                    @Html.DropDownList("Count", new List<SelectListItem>() {
                                                     new SelectListItem { Text = "3", Value = "3" },
                                                     new SelectListItem { Text = "5", Value = "5" },
                                                     new SelectListItem { Text = "7", Value = "7" },
                                                     new SelectListItem { Text = "10", Value = "10" }
                    }, new { @class = "form-control", id = "Count" })
-                        <div style="clear:both;"></div>
-                        @Html.CheckBox("ShowThumbnail", false, new { @class = "form-control", style = "float:left;", id = "ShowThumbnail" })
-                        <label for="For Badge" style="width:150px;float:left;padding-left:15px;">
-                            Show Thumbnail
-                        </label>
-                    </li>
-                </ul>
-            </div>
-        }
-    </div>
-    <div style="display:none">
-        @using (Html.BeginForm("changeStatus", "Widget", FormMethod.Get, new { id = "frmCS" }))
-        {
-            <input type="hidden" name="isActive" id="isActive" />
-            <input type="hidden" name="GUID" id="GUID" />
-        }
-    </div>
-    <script type="text/javascript" src="@Url.Content("~/Areas/Admin/assets/js/jquery-1.4.1-vsdoc.js")"></script>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('.model-config').click(function () {
-                $('#WidgetID').val($(this).attr("data-widgetid"));
-                var wOption = $(this).parent().find(".woption").val();
-                var obj = jQuery.parseJSON(wOption);
-                if (obj != null) {                    
-                    $('#Title').val(obj.title);
-                    $("#Count").val(obj.count);
-                    if (obj.showthumb == "true")
-                        $("#ShowThumbnail").prop('checked', true);
-                    else
-                        $("#ShowThumbnail").prop('checked', false);
-                }
-                else {
-                    $('#Title').val("");
-                    $("#Count").val(5);
+                    <div style="clear:both;"></div>
+                    @Html.CheckBox("ShowThumbnail", false, new { @class = "form-control", style = "float:left;", id = "ShowThumbnail" })
+                    <label for="For Badge" style="width:150px;float:left;padding-left:15px;">
+                        Show Thumbnail
+                    </label>
+                </li>
+            </ul>
+        </div>
+    }
+</div>
+<div style="display:none">
+    @using (Html.BeginForm("changeStatus", "Widget", FormMethod.Get, new { id = "frmCS" }))
+    {
+        <input type="hidden" name="isActive" id="isActive" />
+        <input type="hidden" name="GUID" id="GUID" />
+    }
+</div>
+<script type="text/javascript" src="@Url.Content("~/Areas/Admin/assets/js/jquery-1.4.1-vsdoc.js")"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.model-config').click(function () {
+            $('#WidgetID').val($(this).attr("data-widgetid"));
+            var wOption = $(this).parent().find(".woption").val();
+            var obj = jQuery.parseJSON(wOption);
+            if (obj != null) {
+                $('#Title').val(obj.title);
+                $("#Count").val(obj.count);
+                if (obj.showthumb == "true")
+                    $("#ShowThumbnail").prop('checked', true);
+                else
                     $("#ShowThumbnail").prop('checked', false);
-                }
-                $("#WidgetOrder").val($(this).attr("data-order"));
-                $('#modal-config').modal('show');
-            });
+            }
+            else {
+                $('#Title').val("");
+                $("#Count").val(5);
+                $("#ShowThumbnail").prop('checked', false);
+            }
+            $("#WidgetOrder").val($(this).attr("data-order"));
+            $('#modal-config').modal('show');
         });
-        function changestatus(obj, GUID) {
-            $("#isActive").val(obj.checked);
-            $("#GUID").val(GUID);
-            $("#frmCS").submit();
-        };
-    </script>
+    });
+    function changestatus(obj, GUID) {
+        $("#isActive").val(obj.checked);
+        $("#GUID").val(GUID);
+        $("#frmCS").submit();
+    };
+</script>

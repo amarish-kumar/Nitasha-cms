@@ -1,89 +1,90 @@
-﻿@model List<Content>
-    @using NITASA.Data
-    @using NITASA.Areas.Admin.Helper
-    @using GridMvc.Html
-    @{
-        ViewBag.Title = "Pages";
-    }
-    <div class="main-content">
-        <div class="container-fluid padded">
-            @if (TempData["SuccessMessage"] != null)
-            {
-                <div class="alert alert-success">
-                    <button class="close" data-dismiss="alert" type="button">×</button>
-                    @TempData["SuccessMessage"]
-                </div>
-            }
-            @if (TempData["ErrorMessage"] != null)
-            {
-                <div class="alert alert-error">
-                    <button class="close" data-dismiss="alert" type="button">×</button>
-                    @TempData["ErrorMessage"]
-                </div>
-            }
-            <div class="row-fluid">
-                <div class="box">
-                    <div class="box-header">
-                        <span class="title">Browse Pages</span>
-                        @if (UserRights.HasRights(Rights.CreateNewPages))
-                        {
+﻿@inherits NITASA.Views.AutofacEnabledViewPage<NITASA.Data.Content>
+@using NITASA.Services.Security
+@using NITASA.Data
+@using NITASA.Areas.Admin.Helper
+@using GridMvc.Html
+@{
+    ViewBag.Title = "Pages";
+}
+<div class="main-content">
+    <div class="container-fluid padded">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                <button class="close" data-dismiss="alert" type="button">×</button>
+                @TempData["SuccessMessage"]
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-error">
+                <button class="close" data-dismiss="alert" type="button">×</button>
+                @TempData["ErrorMessage"]
+            </div>
+        }
+        <div class="row-fluid">
+            <div class="box">
+                <div class="box-header">
+                    <span class="title">Browse Pages</span>
+                    @if (aclService.HasRight(Rights.CreateNewPages))
+                    {
                         <ul class="box-toolbar">
                             <li><a href="@Url.Action("Add")" title="Add New Page"><i class="icon-plus-sign" style="margin-top: 10px"></i></a></li>
                         </ul>
-                        }
-                    </div>
-                    <div class="box-content">
-                        @if (Model.Count() > 0)
-                        {
-                            @Html.Grid(Model).Columns(columns =>
+                    }
+                </div>
+                <div class="box-content">
+                    @if (Model.Count() > 0)
+                    {
+                        @Html.Grid(Model).Columns(columns =>
                                             {
                                                 columns.Add(x => x.Title).Titled("Page Title").Sortable(true).Filterable(true);
                                                 columns.Add(x => x.ContentView).Titled("Views").Sortable(true).Filterable(true);
                                                 columns.Add(x => x.user.FullName).Titled("Author").Sortable(true).Filterable(true);
                                                 columns.Add(c => c.isPublished).Sortable(true).Filterable(true).RenderValueAs(x => x.isPublished ? "Published" : "Draft").Titled("Type");
                                                 columns.Add().SetWidth(110).RenderValueAs(x => RenderButtons(x)).Sanitized(false).Encoded(false).Titled("");
-                                            }).WithPaging(10,5).WithMultipleFilters()
-                        }
-                        else
-                        {
-                            <div class="padded">No Pages Found.</div>
-                        }
+                                            }).WithPaging(10, 5).WithMultipleFilters()
+                    }
+                    else
+                    {
+                        <div class="padded">No Pages Found.</div>
+                    }
 
-                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 @helper RenderButtons(Content item)
 {
-     
-        if (Functions.CurrentUserID() == item.AddedBy)
+
+    if (Functions.CurrentUserID() == item.AddedBy)
+    {
+        if (aclService.HasRight(Rights.EditOwnPages))
         {
-            if (UserRights.HasRights(Rights.EditOwnPages))
-            {
-                @Html.ActionLink("Edit", "Add", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
-            }
+            @Html.ActionLink("Edit", "Add", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
         }
-        else
+    }
+    else
+    {
+        if (aclService.HasRight(Rights.EditOtherUsersPage))
         {
-            if (UserRights.HasRights(Rights.EditOtherUsersPage))
-            {
-                @Html.ActionLink("Edit", "Add", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
-            }
+            @Html.ActionLink("Edit", "Add", new { GUID = item.GUID }, new { @class = "btn btn-small btn-blue" })
         }
-    if (item.Title.ToLower()!="index")
+    }
+    if (item.Title.ToLower() != "index")
     {
         if (Functions.CurrentUserID() == item.AddedBy)
         {
-            if (UserRights.HasRights(Rights.DeleteOwnPages))
+            if (aclService.HasRight(Rights.DeleteOwnPages))
             {
                 @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Page ?');" })
             }
         }
         else
         {
-            if (UserRights.HasRights(Rights.DeleteOtherUsersPages))
+            if (aclService.HasRight(Rights.DeleteOtherUsersPages))
             {
                 @Html.ActionLink("Delete", "Delete", new { GUID = item.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Page ?');" })
             }

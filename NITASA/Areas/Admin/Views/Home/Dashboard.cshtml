@@ -1,15 +1,15 @@
-﻿@using Newtonsoft.Json;
+﻿@inherits NITASA.Views.AutofacEnabledViewPage<NITASA.Areas.Admin.ViewModels.CustomizedDashboard>
+@using NITASA.Services.Security
+@using Newtonsoft.Json;
 @using NITASA.Areas.Admin.Helper;
-@model NITASA.Areas.Admin.ViewModels.CustomizedDashboard
 @using NITASA.Services.Security
 @{
     ViewBag.Title = "Administrator";
-    bool CreateNewPosts = UserRights.HasRights(Rights.CreateNewPosts);
-    bool ViewAllPosts = UserRights.HasRights(Rights.ViewAllPosts);
-    bool ViewAllPages = UserRights.HasRights(Rights.ViewAllPages);
-    bool CreateNewPages = UserRights.HasRights(Rights.CreateNewPages);
-    bool ViewUsers = UserRights.HasRights(Rights.ViewUsers);
-    
+    bool CreateNewPosts = aclService.HasRight(Rights.CreateNewPosts);
+    bool ViewAllPosts = aclService.HasRight(Rights.ViewAllPosts);
+    bool ViewAllPages = aclService.HasRight(Rights.ViewAllPages);
+    bool CreateNewPages = aclService.HasRight(Rights.CreateNewPages);
+    bool ViewUsers = aclService.HasRight(Rights.ViewUsers);
 }
 <script src="~/Areas/Admin/assets/js/Chart.js"></script>
 @*<script src="~/Areas/Admin/assets/js/Chart.Doughnut.js"></script>*@
@@ -77,7 +77,7 @@
                     <span class="label label-green">@Model.TotalUsers</span>
                 </div>
 
-                @if (UserRights.HasRights(Rights.CreateNewPages))
+                @if (aclService.HasRight(Rights.CreateNewPages))
                 {
                 <div class="span2 action-nav-button">
                     <a href="@Url.Action("Add", "Page")" title="New Page">
