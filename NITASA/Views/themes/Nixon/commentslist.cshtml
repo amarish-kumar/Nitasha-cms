@@ -1,0 +1,39 @@
+@model List<NITASA.ViewModels.CL_Comments>
+    <div class="commenttab">
+        <h3>@Model.Count() Responses </h3>
+    </div>
+    <!-- Begin Comments -->
+    <div id="comment_section">
+        <ol class="comments first_level">
+            @foreach (var item in Model)
+            {
+                <li>
+                    <div class="comment_box commentbox1">
+                        <div class="gravatar">
+                            <img alt="Author" src="@(!string.IsNullOrEmpty(item.ProfilePicUrl) ? item.ProfilePicUrl : "/Content/gravatar.png")" height="60" width="60" class="avatar" />
+                        </div>
+                        <div class="comment_text">
+                            <div class="comment_author">
+                                <h3>
+                                    @if (!string.IsNullOrEmpty(item.Website))
+                                    {
+                                    <a target="_blank" href="@item.Website">
+                                        @(item.CommentAs != "anonymous" ? item.UserName : "Anonymous")
+                                    </a>
+                                    }
+                                    else
+                                    {
+                                    @(item.CommentAs != "anonymous" ? item.UserName : "Anonymous")
+                                    }
+                                </h3>
+                                <span class="date">@NITASA.Helpers.Functions.FormatDate(item.AddedOn, "MMMM dd, yyyy on hh:mm tt")</span>
+                            </div>
+                            <p>@item.Description</p>
+                        </div>
+                        <div class="cleaner"></div>
+                    </div>
+                </li>
+            }
+        </ol>
+    </div>
+    <!-- End Comments -->

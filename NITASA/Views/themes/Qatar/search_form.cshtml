@@ -1,0 +1,19 @@
+ <div class="sidebar-box">
+    <h4>Search</h4>     
+    @using (Html.BeginForm("Results", "Search", FormMethod.Post, new { id = "frmsearch", @class = "searchform" }))
+    {
+        <input type="text" id="SearchText" name="SearchText" placeholder="type and hit enter" style="width:190px;" />
+        <a href="#" id="submit-search" class="postfix button expand">Go</a>
+    }
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#submit-search").click(function (evt) {
+            if ($("#SearchText").val().trim() != '')
+                $("#frmsearch").submit();
+            else
+                alert("Please enter text to search");
+            return false;
+        });
+    });
+</script>

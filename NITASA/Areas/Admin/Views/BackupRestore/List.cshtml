@@ -5,20 +5,6 @@
     //List<string> BackupList = Directory.GetFiles(Server.MapPath(System.Configuration.ConfigurationManager.AppSettings["backupDir"]), "*.zip").ToList();
     List<FileInfo> BackupList = new DirectoryInfo(Server.MapPath(System.Configuration.ConfigurationManager.AppSettings["backupDir"])).GetFiles().Where(x => x.Extension.ToLower() == ".zip").ToList();
 }
-<style>
-    tfoot td {
-        line-height: 3 !important;
-    }
-
-    .custom-pagination td {
-        padding-left: 10px !important;
-    }
-
-    .table-normal tbody td.col1 {
-        width: 150px;
-        text-align: center;
-    }
-</style>
 <div class="main-content">
     <div class="container-fluid padded">
         @if (TempData["SuccessMessage"] != null)
@@ -60,7 +46,7 @@
                                 columns.Add().SetWidth(140).Encoded(false).Sanitized(false).RenderValueAs(x =>
                                 @Html.Raw("<a href='/backup/script/" + x.Name + "' target='_blank' class='btn btn-small btn-green'>Download</a>") + " " +
                                 @Html.ActionLink("Delete", "Delete", "BackupRestore", new { guid = Path.GetFileNameWithoutExtension(x.FullName) }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this Backup ?');" }));
-                            }).WithPaging(25).WithMultipleFilters()
+                            }).WithPaging(10,5).WithMultipleFilters()
                         }
                         else
                         {

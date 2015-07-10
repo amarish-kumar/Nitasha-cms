@@ -1,0 +1,19 @@
+<div class="cleaner_h40"></div>
+<h4>Search</h4>
+@using (Html.BeginForm("Results", "Search", FormMethod.Post, new { id = "frmsearch", @class = "searchform" }))
+{
+    <input type="text" id="SearchText" name="SearchText" placeholder="type and hit enter" style="width:190px;" />
+    <a href="#" id="submit-search" class="postfix button expand" style="border: 1px solid white; border-radius: 20%; padding: 3px 10px;background:green;color:white;text-decoration:none;">Go</a>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#submit-search").click(function (evt) {
+            if ($("#SearchText").val().trim() != '')
+                $("#frmsearch").submit();
+            else
+                alert("Please enter text to search");
+            return false;
+        });
+    });
+</script>

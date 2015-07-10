@@ -1,5 +1,6 @@
 ﻿using NITASA.Areas.Admin.Helper;
 using NITASA.Data;
+using NITASA.Services.Security;
 using NITASA.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,14 @@ namespace NITASA.Controllers
 {
     public class ConfigureController : Controller
     {
+
+        IAclService aclService;
+
+        public ConfigureController(IAclService aclService)
+        {
+            this.aclService = aclService;
+        }
+
         string ConnectionString = "Integrated Security=False;Initial Catalog=master;Data Source=#DSOURCE;User Id=#USERID;Password=#PASSWORD;";
 
         public ActionResult Install()
@@ -230,7 +239,7 @@ namespace NITASA.Controllers
             context.SaveChanges();
             int userID = user.ID;
 
-            List<AccessPermission> AllRightsList = UserRights.GetAllAccessPermission();
+            List<AccessPermission> AllRightsList = aclService.GetAllAccessPermission();
             #region Assign Admin Access Rights
             /*List<RightsInRole> AdminRightsInRoleList = new List<RightsInRole>();
             AdminRightsInRoleList = (from rid in AllRightsList select new RightsInRole { RightsName = rid.Name, RoleID = AdminRole.RoleID }).ToList();

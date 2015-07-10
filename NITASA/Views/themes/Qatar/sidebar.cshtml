@@ -1,0 +1,41 @@
+@{
+    string currentThemeName = ViewBag.ActiveTheme;
+    List<NITASA.ViewModels.CL_Widget> Widgets = NITASA.Helpers.Functions.GetWidgets();
+}
+<!-- SIDEBAR -->
+<div class="sidebar">
+       @Html.Partial("~" + currentThemeName + "/search_form.cshtml")
+    @foreach (var item in Widgets)
+    {
+        switch (item.WidgetID)
+        {
+            case 1:
+                @Html.Partial("~" + currentThemeName + "/sb_recentposts.cshtml", item.Option)
+                break;
+            case 2:
+            @Html.Partial("~" + currentThemeName + "/sb_mostpopular.cshtml", item.Option)
+                break;
+            case 3:
+                if (Convert.ToString(Request.RequestContext.RouteData.Values["Controller"]).ToLower() == "content")
+                {
+                    @Html.Partial("~" + currentThemeName + "/sb_related.cshtml", item.Option)
+                }
+                break;
+            case 4:
+            @Html.Partial("~" + currentThemeName + "/sb_pageview.cshtml", item.Option)
+                break;
+            case 5:
+            @Html.Partial("~" + currentThemeName + "/sb_categories.cshtml", item.Option)
+                break;
+            case 6:
+            @Html.Partial("~" + currentThemeName + "/sb_labels.cshtml", item.Option)
+                break;
+            case 7:
+            @Html.Partial("~" + currentThemeName + "/sb_recentcomments.cshtml", item.Option)
+                break;
+            case 8:
+            @Html.Partial("~" + currentThemeName + "/sb_pagelist.cshtml", item.Option)
+                break;
+        }
+    }
+</div>

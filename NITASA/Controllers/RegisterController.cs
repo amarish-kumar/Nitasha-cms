@@ -43,7 +43,7 @@ namespace NITASA.Controllers
                         user.ProfilePicURL = "/Areas/Admin/assets/images/avatars/noprofile.jpg";
                         user.IsActive = true;
                         user.IsDefault = true;
-                        user.AddedOn = DateTime.Now;
+                        user.AddedOn = DateTime.UtcNow;
                         user.RoleID = 2;
                         context.User.Add(user);
                         context.SaveChanges();

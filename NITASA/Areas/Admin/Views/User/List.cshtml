@@ -1,37 +1,12 @@
 ﻿@model List<Tuple<User, string>>
-        @using NITASA.Data
-        @using NITASA.Areas.Admin.Helper
-        @using GridMvc.Html
-        @{
-            ViewBag.Title = "Users";
-        }
-        @section PageLevelStyles
-{
-            <style>
-                tfoot td {
-                    line-height: 3 !important;
-                }
-
-                .custom-pagination td {
-                    padding-left: 10px !important;
-                }
-
-                .table-normal tbody td.col1 {
-                    width: 100px;
-                    text-align: center;
-                }
-
-                .table-normal tbody td.col2 {
-                    width: 100px;
-                    text-align: center;
-                }
-
-                .table-normal tbody td.col3 {
-                    width: 115px;
-                    text-align: center;
-                }
-            </style>
-        }
+@using NITASA.Data
+@*@using NITASA.Areas.Admin.Helper*@
+@using GridMvc.Html
+@using NITASA.Services.Security
+@{
+    ViewBag.Title = "Users";
+    IAclService aclService = ViewBag.aclService;
+}
         <div class="main-content">
             <div class="container-fluid padded">
                 @if (TempData["SuccessMessage"] != null)
@@ -57,8 +32,9 @@
                         <div class="box">
                             <div class="box-header">
                                 <span class="title">Browse Users</span>
-                                @if (UserRights.HasRights(Rights.CreateNewUsers))
-                                {
+                                @*@if (aclService.HasRight(Rights.CreateNewUsers))*@
+                                @if (aclService.HasRight(Rights.CreateNewUsers))
+                                {   
                                     <ul class="box-toolbar">
                                         <li><a href="@Url.Action("Add")" title="Add New User"><i class="icon-plus-sign" style="margin-top: 10px"></i></a></li>
                                     </ul>
@@ -73,9 +49,9 @@
                                                 columns.Add(x => x.Item1.Email).Titled("Email").Sortable(true).Filterable(true);
                                                 columns.Add(x => x.Item2).Titled("Roles").Sortable(true).Filterable(true);
                                                 columns.Add(x => x.Item1.IsActive).Titled("Status").RenderValueAs(x => x.Item1.IsActive ? "Active" : "In Active").Sortable(true).Filterable(true);
-                                                columns.Add().SetWidth(110).Titled("Change Status").RenderValueAs(x => RenderStatusButton(x)).Sanitized(false).Encoded(false);
-                                                columns.Add().SetWidth(110).Titled("").RenderValueAs(x => RenderActions(x)).Sanitized(false).Encoded(false);
-                                            }).WithPaging(25).WithMultipleFilters()
+                                                columns.Add().SetWidth(110).Titled("Change Status").RenderValueAs(x => RenderStatusButton(x, aclService)).Sanitized(false).Encoded(false);
+                                                columns.Add().SetWidth(110).Titled("").RenderValueAs(x => RenderActions(x,aclService)).Sanitized(false).Encoded(false);
+                                            }).WithPaging(10, 5).WithMultipleFilters()
                                 }
                                 else
                                 {
@@ -103,54 +79,60 @@
             };
         </script>
 
-@helper RenderStatusButton(Tuple<User, string> usr)
+@helper RenderStatusButton(Tuple<User, string> usr,IAclService aclService)
 {
     if (usr.Item1.IsSuperAdmin == false)
     {
-        if (Functions.CurrentUserID() == usr.Item1.ID)
+        if (NITASA.Areas.Admin.Helper.Functions.CurrentUserID() == usr.Item1.ID)
         {
-            if (UserRights.HasRights(Rights.EditUserSelf))
+            //if (aclService.HasRight(Rights.EditUserSelf))
+            if (aclService.HasRight(Rights.EditUserSelf))
             {
                 <input class="iButton-icons" type="checkbox" onchange="changestatus(this,'@usr.Item1.GUID');" @(usr.Item1.IsActive == true ? "checked='checked'" : "") />
             }
         }
         else
         {
-            if (UserRights.HasRights(Rights.EditOtherUsers))
+            //if (aclService.HasRight(Rights.EditOtherUsers))
+            if (aclService.HasRight(Rights.EditOtherUsers))
             {
                 <input class="iButton-icons" type="checkbox" onchange="changestatus(this,'@usr.Item1.GUID');" @(usr.Item1.IsActive == true ? "checked='checked'" : "") />
             }
         }
     }
 }
-@helper RenderActions(Tuple<User, string> usr)
+@helper RenderActions(Tuple<User, string> usr,IAclService aclService)
 {
     if (usr.Item1.IsSuperAdmin == false)
     {
-        if (Functions.CurrentUserID() == usr.Item1.ID)
+        if (NITASA.Areas.Admin.Helper.Functions.CurrentUserID() == usr.Item1.ID)
         {
-            if (UserRights.HasRights(Rights.EditUserSelf))
+            //if (aclService.HasRight(Rights.EditUserSelf))
+            if (aclService.HasRight(Rights.EditUserSelf))
             {
                 @Html.ActionLink("Edit", "Edit", new { GUID = usr.Item1.GUID }, new { @class = "btn btn-small btn-blue" })
             }
         }
         else
         {
-            if (UserRights.HasRights(Rights.EditOtherUsers))
+            //if (aclService.HasRight(Rights.EditOtherUsers))
+            if (aclService.HasRight(Rights.EditOtherUsers))
             {
                 @Html.ActionLink("Edit", "Edit", new { GUID = usr.Item1.GUID }, new { @class = "btn btn-small btn-blue" })
             }
         }
-        if (Functions.CurrentUserID() == usr.Item1.ID)
+        if (NITASA.Areas.Admin.Helper.Functions.CurrentUserID() == usr.Item1.ID)
         {
-            if (UserRights.HasRights(Rights.DeleteUserSelf))
+            //if (aclService.HasRight(Rights.DeleteUserSelf))
+            if (aclService.HasRight(Rights.DeleteUserSelf))
             {
                 @Html.ActionLink("Delete", "Delete", new { GUID = usr.Item1.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this User ?');" })
             }
         }
         else
         {
-            if (UserRights.HasRights(Rights.DeleteOtherUsers))
+            //if (aclService.HasRight(Rights.DeleteOtherUsers))
+            if (aclService.HasRight(Rights.DeleteOtherUsers))
             {
                 @Html.ActionLink("Delete", "Delete", new { GUID = usr.Item1.GUID }, new { @class = "btn btn-small btn-red", onclick = "return confirm('Are you sure to delete this User ?');" })
             }

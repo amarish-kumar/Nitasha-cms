@@ -5,20 +5,6 @@
     ViewBag.Title = "Categories";
     List<Category> CategoryList = ViewBag.CategoryList;
 }
-<style>
-    tfoot td {
-        line-height: 3 !important;
-    }
-
-    .custom-pagination td {
-        padding-left: 10px !important;
-    }
-
-    .table-normal tbody td.col1 {
-        width: 150px;
-        text-align: center;
-    }
-</style>
 <div class="main-content">
     <div class="container-fluid padded">
         @if (TempData["SuccessMessage"] != null)
@@ -47,13 +33,13 @@
                     <div class="box-content">
                         @if (CategoryList.Count() > 0)
                         {
-                        @Html.Grid(CategoryList).Columns(columns =>
-               {
-                   columns.Add(x => x.Name).Titled("Category Name").Sortable(true).Filterable(true);
-                   columns.Add().RenderValueAs(x =>
-                        @customcolumn(x)
-                       ).Sanitized(false).Encoded(false).Titled("Actions").SetWidth(80);
-               }).WithPaging(25).WithMultipleFilters()
+                            @Html.Grid(CategoryList).Columns(columns =>
+                            {
+                                columns.Add(x => x.Name).Titled("Category Name").Sortable(true).Filterable(true);
+                                columns.Add().RenderValueAs(x =>
+                                    @customcolumn(x)
+                                    ).Sanitized(false).Encoded(false).Titled("Actions").SetWidth(80);
+                            }).WithPaging(10, 5).WithMultipleFilters()
                         }
                         else
                         {

@@ -16,18 +16,28 @@ namespace NITASA.Controllers
         public NTSDBContext context;
         public ContentController()
         {
-            this.context = new NTSDBContext();                
+            this.context = new NTSDBContext();
         }
-        public ActionResult Details(string URL)
+        public ActionResult Details(string URL, string prv)
         {
-            Content content = context.Content.Where(x => x.URL.ToLower() == URL.ToLower() && x.IsDeleted == false && x.isPublished == true).FirstOrDefault();
-
-            if (string.IsNullOrEmpty(URL) || content == null)
+            Content content;
+            bool isPreview = false;
+            if (Session["Preview"] != null && prv == "true")
             {
-                return RedirectToAction("NotFound", "Home"); 
+                content = (Content)Session["Preview"];
+                isPreview = true;
             }
-            ViewBag.ContentID = content.ID;
+            else
+            {
+                content = context.Content.Where(x => x.URL.ToLower() == URL.ToLower() && x.IsDeleted == false && x.isPublished == true).FirstOrDefault();
 
+                if (string.IsNullOrEmpty(URL) || content == null)
+                {
+                    ActionResult actionResult = View(viewName: activeTheme + "404.cshtml");
+                    return actionResult;
+                }
+                ViewBag.ContentID = content.ID;
+            }
             CL_Content data = new CL_Content();
             data.ContentID = content.ID;
             data.URL = content.URL;
@@ -35,11 +45,11 @@ namespace NITASA.Controllers
             data.FeaturedImage = content.FeaturedImage;
             data.CoverContent = content.CoverContent;
             data.AddedBy = content.AddedBy;
-            data.PublishedOn = (DateTime)content.PublishedOn;
-            
+            data.PublishedOn = content.AddedOn;
+
             if (content.Type.ToLower() == "page")
             {
-                data.Description = ReplaceSliderAndAddons(content.Description);
+                data.Description = Functions.ReplaceSliderAndAddons(this.ControllerContext, activeTheme, content.Description);
                 data.Type = "page";
             }
             else
@@ -48,8 +58,20 @@ namespace NITASA.Controllers
                 data.Type = "post";
                 data.PostCommentEnable = content.EnableComment;
                 data.PostCommentEnabledTill = content.CommentEnabledTill;
-                var comments = context.Comment.Where(x => x.ContentID == content.ID && x.IsModerated == true && x.IsAbused == false).OrderBy(x=>x.AddedOn).ToList();
+                var comments = context.Comment.Where(x => x.ContentID == content.ID && x.IsModerated == true && x.IsAbused == false).OrderBy(x => x.AddedOn).ToList();
                 data.CommentsCount = comments.Count();
+                data.Category = content.Categories.Select(c => new CL_Category
+                            {
+                                Name = c.Category.Name,
+                                Description = c.Category.Description,
+                                URL = c.Category.Slug
+                            }).ToList();
+                data.Labels = content.Labels.Select(c => new CL_Label
+                {
+                    Name = c.Label.Name,
+                    Description = c.Label.Description,
+                    URL = c.Label.Slug
+                }).ToList();
                 data.Comments = comments.Select(x =>
                     new CL_Comments
                     {
@@ -63,95 +85,37 @@ namespace NITASA.Controllers
                         AddedOn = x.AddedOn
                     }).ToList();
             }
-            
-            int ContentView = content.ContentView;
-            if (ContentView == 0)
-                ContentView = 1;
-            else
-                ContentView++;
-            content.ContentView = ContentView;
-            context.Entry(content).State = EntityState.Modified; 
-            context.SaveChanges();
-
-            Functions.IncreaseContentView(content.ID, Request);
-
-            return View(viewName: activeTheme + "content.cshtml", model: data); 
-        }
-
-        private string ReplaceSliderAndAddons(string ContentText)
-        {
-            string HTMLContent = HttpUtility.HtmlDecode(ContentText);
-            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-
-            doc.OptionFixNestedTags = false;
-            doc.OptionCheckSyntax = false;
-            doc.LoadHtml(HTMLContent);
-
-            var Sliders = doc.DocumentNode.SelectNodes("//slider");
-            if (Sliders != null)
+            if (!isPreview)
             {
-                foreach (var item in Sliders)
-                {
-                    var HTMLSlider = "";
-                    int sliderid = 0;
-                    if (Int32.TryParse(item.InnerText, out sliderid))
-                    {
-                        List<CL_Slide> slides = context.Slides.Where(x => x.SliderId == sliderid).Select(x =>
-                            new CL_Slide { Image = x.Image, Link = x.Link, Text = x.Text, Title = x.Title, DisplayOrder = x.DisplayOrder }
-                            ).ToList();
-                        HTMLSlider = Functions.RenderRazorViewToString(this.ControllerContext, activeTheme + "slider.cshtml", slides);
-                    }
-                    //HtmlAgilityPack.HtmlNode newNode = HtmlAgilityPack.HtmlNode.CreateNode(HTMLSlider);
-                    //item.ParentNode.ReplaceChild(newNode, item);
+                int ContentView = content.ContentView;
+                if (ContentView == 0)
+                    ContentView = 1;
+                else
+                    ContentView++;
+                content.ContentView = ContentView;
+                context.Entry(content).State = EntityState.Modified;
+                context.SaveChanges();
 
-                    HtmlAgilityPack.HtmlNode newNode = doc.CreateElement("div");
-                    newNode.Attributes.Add("class", "divNTS");
-                    newNode.InnerHtml = HTMLSlider;
-                    item.ParentNode.ReplaceChild(newNode, item);
-                }
+                Functions.IncreaseContentView(content.ID, Request);
             }
-            var Addons = doc.DocumentNode.SelectNodes("//addon");
-            if (Addons != null)
-            {
-                foreach (var item in Addons)
-                {
-                    var HTMLAddon = "";
-                    int addonid = 0;
-                    if (Int32.TryParse(item.InnerText, out addonid))
-                    {
-                        Content addon = context.Content.Where(x => x.ID == addonid && x.isPublished == true && x.IsDeleted == false).FirstOrDefault();
-                        if (addon != null)
-                        {
-                            //string MasterLayout = addon.AddonMasterLayout;
-                            HTMLAddon = addon.AddonSubLayout;
-                            HTMLAddon = HTMLAddon.Replace("{{Title}}", addon.Title);
-                            HTMLAddon = HTMLAddon.Replace("{{URL}}", (string.IsNullOrEmpty(addon.URL) ? "#" : addon.URL));
-                            HTMLAddon = HTMLAddon.Replace("{{Description}}", addon.Description);
-                        }
-                    }
-                    var newNode = HtmlAgilityPack.HtmlNode.CreateNode(HTMLAddon);
-                    item.ParentNode.ReplaceChild(newNode, item);
-                }
-            }
-            HTMLContent = doc.DocumentNode.OuterHtml;
-            return HTMLContent;
+            return View(viewName: activeTheme + "content.cshtml", model: data);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult AddComment(string CommentDescription, string UserName, string ProfilePicUrl, string Website, string CommentAs, int ContentID)
         {
-            if(string.IsNullOrEmpty(CommentDescription) && ContentID != 0)
+            if (string.IsNullOrEmpty(CommentDescription) && ContentID != 0)
             {
-                TempData["comment-error"] ="Comment is required";
+                TempData["comment-error"] = "Comment is required";
             }
             else if (CommentAs == "google" && string.IsNullOrEmpty(UserName))
             {
-                TempData["comment-error"] ="Google login required";
+                TempData["comment-error"] = "Google login required";
             }
             else if (CommentAs == "nameurl" && (string.IsNullOrEmpty(UserName)))
             {
-                TempData["comment-error"] ="Name required";
+                TempData["comment-error"] = "Name required";
             }
             else
             {
@@ -172,7 +136,7 @@ namespace NITASA.Controllers
                 comment.Website = Website;
                 comment.CommentAs = CommentAs;
                 comment.ContentID = ContentID;
-                comment.AddedOn = DateTime.Now;
+                comment.AddedOn = DateTime.UtcNow;
                 comment.ProfilePicUrl = ProfilePicUrl;
                 context.Comment.Add(comment);
                 context.SaveChanges();
@@ -199,5 +163,5 @@ namespace NITASA.Controllers
             }
             return Redirect(Request.UrlReferrer.AbsolutePath);
         }
-	}
+    }
 }

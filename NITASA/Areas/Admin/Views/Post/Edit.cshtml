@@ -1,4 +1,5 @@
-﻿@model Content
+﻿@inherits NITASA.Views.AutofacEnabledViewPage<NITASA.Data.Content>
+@using NITASA.Services.Security
 @using NITASA.Data
 @using NITASA.Areas.Admin.Helper
 @{
@@ -104,6 +105,7 @@
                 <div class="box">
                     <div class="box-header">
                         <span class="title"><i class="icon-book"></i>&nbsp; Edit Post</span>
+                        <div class="span4 title pull-right" style="float:right;margin-right:10px;"><div class="inline pull-right">Status : @(Model.isPublished?"Published":"Draft")</div></div>
                     </div>
                     <div class="box-content">
                         <div class="padded">
@@ -121,8 +123,8 @@
                                                 <div>
                                                     <div id="slug-container">
                                                         <strong>Permalink:</strong>
-                                                        <span>
-                                                            /<span class="editable-container">
+                                                        <span>@(Request.Url.AbsoluteUri.Replace(Request.Url.AbsolutePath, ""))/Content/
+                                                            <span class="editable-container" style=" margin-left: -3px;">
                                                                 <span id="editable-slug">@Model.URL</span>
                                                                 <input type="text" value="@Model.URL" id="edit-slug-text" style="display: none;" />
                                                             </span>
@@ -132,6 +134,7 @@
                                                                href="#">Edit</a>
                                                             <a id="save-slug" class="button-small" href="#" style="display: none;">OK</a>
                                                             <a href="#" id="cancel-slug" class="cancel" style="display: none;">Cancel</a>
+                                                            <a href="#" id="pagePreview" class="button-small">Preview</a>
                                                         </span>
                                                         @Html.HiddenFor(m => m.URL)
                                                         @Html.CheckBoxFor(m => m.IsSlugEdited, new { style = "display:none;" })
@@ -158,7 +161,7 @@
                                         <div class="padded" style="padding: 0px 4px 13px 4px; ">
                                             @if (Functions.CurrentUserID() == Model.AddedBy)
                                             {
-                                                if (UserRights.HasRights(Rights.PublishOwnPosts))
+                                                if (aclService.HasRight(Rights.PublishOwnPosts))
                                                 {
                                                     <input type="button" class="btn btn-small btn-green" id="btnPost" style="text-align: center; width: 60px;"
                                                            value="Publish" />
@@ -166,7 +169,7 @@
                                             }
                                             else
                                             {
-                                                if (UserRights.HasRights(Rights.PublishOtherUsersPosts))
+                                                if (aclService.HasRight(Rights.PublishOtherUsersPosts))
                                                 {
                                                     <input type="button" class="btn btn-small btn-green" id="btnPost" style="text-align: center; width: 60px;"
                                                            value="Publish" />
@@ -186,9 +189,9 @@
                                                     @Html.DropDownList("LabelId", (List<SelectListItem>)ViewBag.Labellist, new { @class = "select2-container select2-container-multi chzn-select", multiple = "multiple", id = "ddlLabels" })
                                                     <input id="txtNewLabel" type="text" maxlength="40" placeholder="New Label" style="margin-bottom: 0px;
                                                         width: 84% !important;" />&nbsp;
-                                                    <button title="Add New Label" id="btnAddLabel" style="border: 0">
-                                                        <i class="icon-plus-sign" style="font-size: 20px"></i>
-                                                    </button>
+                                                    <a data-toggle="modal" title="Add New Label" id="btnAddLabel" href="#">
+                                                        <i class="icon-plus-sign" style="font-size: 20px; vertical-align:middle"></i>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -211,9 +214,9 @@
                                                     </div>
                                                     <input id="txtNewCategory" name="txtNewCategory" type="text" maxlength="40" placeholder="New Category" style="margin-bottom: 0px;
                                                         width: 84% !important;" />&nbsp;
-                                                    <button title="Add New Category" id="btnAddCategory" style="border: 0">
-                                                        <i class="icon-plus-sign" style="font-size: 20px"></i>
-                                                    </button>
+                                                    <a data-toggle="modal" title="Add New Category" id="btnAddCategory" href="#">
+                                                        <i class="icon-plus-sign" style="font-size: 20px; vertical-align:middle"></i>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -224,7 +227,7 @@
                                             </div>
                                             <div class="box-content">
                                                 <div class="padded">
-                                                    @*<textarea class="tags" placeholder="Meta with comma separated"></textarea>*@
+                                                    <input type="text" id="txtMetaTitle" name="txtMetaTitle" placeholder="Title" class="width100per" value="@meta.Title" />
                                                     <input type="text" id="txtMetaKeyword" name="txtMetaKeyword" placeholder="Keyword" class="width100per" value="@meta.Keyword" />
                                                     <input type="text" id="txtMetaDescription" name="txtMetaDescription" placeholder="Description" class="width100per" value="@meta.Description" />
                                                     <input type="text" id="txtMetaAuthor" name="txtMetaAuthor" placeholder="Author Name" class="width100per" value="@meta.Author" />
@@ -429,17 +432,21 @@
             $('#btnPost').click(function () {
                 $("#UpdateType").val("Publish");
                 tinyMCE.triggerSave();
-                checkCategory();
+                if (validpost()) {
+                    $('#frm1').submit();
+                }
             });
 
             $('#btnSaveToDraft').click(function () {
                 $("#UpdateType").val("SaveToDraft");
                 tinyMCE.triggerSave();
-                checkCategory();
-            });
-            function checkCategory() {
-                if ($("#frm1").valid()) {
+                if (validpost()) {
                     $('#frm1').submit();
+                }
+            });
+            function validpost() {
+                if ($("#frm1").valid()) {
+                    return true;
                 }
                 else {
                     var error = '<div class="alert alert-error"><button class="close" data-dismiss="alert" type="button">×</button>Please solve form errors</div>';
@@ -470,6 +477,28 @@
                     tinyMCE.activeEditor.execCommand('mceInsertContent', false, img);
                 }
                 $("#MediaPopup").modal("hide");
+            });
+            $('#pagePreview').click(function () {
+                tinyMCE.triggerSave();
+                if (validpost()) {
+                    var str = $( "#frm1" ).serialize();    
+                    console.log(str);
+                    var slug = $("#URL").val();
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("Preview", "Post")",
+                        data: str,
+                    success: function (data) {
+                        if (data == "success") {
+                            //alert(data);
+                            window.open('/Content/Details?prv=true&URL='+slug, "_blank");
+                        }
+                    },
+                    error: function (data) {
+                        alert('Sorry. Unable to Preview !!');
+                    }
+                });
+            }
             });
         });
     </script>

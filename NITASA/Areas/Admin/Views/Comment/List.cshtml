@@ -4,30 +4,6 @@
     @{
         ViewBag.Title = "Comments";
     }
-    <style>
-        tfoot td {
-            line-height: 3 !important;
-        }
-
-        .custom-pagination td {
-            padding-left: 10px !important;
-        }
-
-        .table-normal tbody td.col1 {
-            width: 100px;
-            text-align: center;
-        }
-
-        .table-normal tbody td.col2 {
-            width: 100px;
-            text-align: center;
-        }
-
-        .table-normal tbody td.col3 {
-            width: 115px;
-            text-align: center;
-        }
-    </style>
     <div class="main-content">
         <div class="container-fluid padded">
             <div class="row-fluid">
@@ -56,7 +32,7 @@
                                                            columns.Add(x => x.AddedOn).Titled("Commented On").Format("{0:MMM d, h:mm tt}").Sortable(true).Filterable(true).SetWidth(40);
                                                            columns.Add(x => x.IsModerated).Encoded(false).Sanitized(false).Titled("Display").RenderValueAs(x =>
                                                                @Html.Raw("<input type=\"checkbox\" class =\"iButton-icons\" data-id=\"" + x.ID + "\" " + (x.IsModerated == true ? "checked=checked" : "") + " />")).SetWidth(50);
-                                                       }).WithPaging(25).WithMultipleFilters()
+                                                       }).WithPaging(10, 5).WithMultipleFilters()
                                                     </div>
                                                 </div>
                                             }

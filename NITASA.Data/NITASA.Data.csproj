@@ -24,12 +24,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CsQuery">
@@ -95,6 +96,10 @@
     <Compile Include="Migrations\201507060525224_initial.Designer.cs">
       <DependentUpon>201507060525224_initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201507090532569_title-in-meta.cs" />
+    <Compile Include="Migrations\201507090532569_title-in-meta.Designer.cs">
+      <DependentUpon>201507090532569_title-in-meta.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -113,6 +118,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201507060525224_initial.resx">
       <DependentUpon>201507060525224_initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201507090532569_title-in-meta.resx">
+      <DependentUpon>201507090532569_title-in-meta.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

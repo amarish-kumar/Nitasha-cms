@@ -1,0 +1,24 @@
+@model string
+@using NITASA.ViewModels
+@{
+    CL_WidgetOption wOption = NITASA.Helpers.Functions.ParseJson<CL_WidgetOption>(Model);
+    List<CL_Content> MostPopularPosts = NITASA.Helpers.Functions.GetMostPopularPosts(wOption.Count);
+}
+@if (MostPopularPosts.Count() > 0)
+{
+    <div class="sidebar-box">
+        <h4 class="sidebartitle">@wOption.Title</h4>
+        <ul class="latest-posts">
+            @foreach (var item in MostPopularPosts)
+{
+    <li style="min-height:35px;">
+        <span class="date">
+            <em class="day">@NITASA.Helpers.Functions.GetDay(item.PublishedOn)</em>
+            <em class="month" style="vertical-align:top">@NITASA.Helpers.Functions.GetMonthName(item.PublishedOn)</em>
+        </span>
+        <a href="/Content/@item.URL">@item.Title</a>
+    </li>
+}
+        </ul>
+</div>
+}

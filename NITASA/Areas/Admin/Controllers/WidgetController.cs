@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using NITASA.Areas.Admin.Helper;
 using NITASA.Areas.Admin.ViewModels;
+using NITASA.Services.Security;
 
 namespace NITASA.Areas.Admin.Controllers
 {
@@ -13,9 +14,12 @@ namespace NITASA.Areas.Admin.Controllers
     public class WidgetController : Controller
     {
         public NTSDBContext context;
-        public WidgetController()
+        IAclService aclService;
+
+        public WidgetController(IAclService aclService)
         {
             context = new NTSDBContext();
+            this.aclService = aclService;
         }
 
         public ActionResult List()
@@ -26,7 +30,7 @@ namespace NITASA.Areas.Admin.Controllers
 
         //public ActionResult Active(string id)
         //{
-        //    if (!UserRights.HasRights(Rights.ManageWidgets))
+        //    if (!aclService.HasRight(Rights.ManageWidgets))
         //        return RedirectToAction("AccessDenied", "Home");
 
         //    Widget widgetToActivate = context.Widget.Where(m => m.WidgetGUID == id).FirstOrDefault();
@@ -45,7 +49,7 @@ namespace NITASA.Areas.Admin.Controllers
 
         //public ActionResult Deactive(string id)
         //{
-        //    if (!UserRights.HasRights(Rights.ManageWidgets))
+        //    if (!aclService.HasRight(Rights.ManageWidgets))
         //        return RedirectToAction("AccessDenied", "Home");
 
         //    Widget widgetToActivate = context.Widget.Where(m => m.WidgetGUID == id).FirstOrDefault();
@@ -68,7 +72,7 @@ namespace NITASA.Areas.Admin.Controllers
             Widget widget = context.Widget.Where(m => m.GUID == GUID).FirstOrDefault();
             if (widget != null)
             {
-                if (!UserRights.HasRights(Rights.ManageWidgets))
+                if (!aclService.HasRight(Rights.ManageWidgets))
                     return RedirectToAction("AccessDenied", "Home");
 
                 widget.IsActive = isActive;
@@ -86,7 +90,7 @@ namespace NITASA.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Update(WidgetOption wOption)
         {
-            if (!UserRights.HasRights(Rights.ManageWidgets))
+            if (!aclService.HasRight(Rights.ManageWidgets))
                 return RedirectToAction("AccessDenied", "Home");
 
             if (wOption.ID != null)

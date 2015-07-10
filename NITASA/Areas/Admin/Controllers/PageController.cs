@@ -1,6 +1,7 @@
 ﻿using CsQuery;
 using NITASA.Areas.Admin.Helper;
 using NITASA.Data;
+using NITASA.Services.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,21 +14,24 @@ namespace NITASA.Areas.Admin.Controllers
     public class PageController : Controller
     {
         private NTSDBContext dbContext;
-        public PageController()
+        IAclService aclService;
+
+        public PageController(IAclService aclService)
         {
             this.dbContext = new NTSDBContext();
+            this.aclService = aclService;
         }
 
         public ActionResult List()
         {
             List<Content> pages;
-            if (UserRights.HasRights(Rights.ViewAllPages))
+            if (aclService.HasRight(Rights.ViewAllPages))
                 pages = dbContext.Content
                     .Include("user")
                     .Where(m => m.Type == "page" && m.IsDeleted == false)
                     .OrderByDescending(m => m.AddedOn)
                     .ToList();
-            else if (UserRights.HasRights(Rights.ViewUnPublishedPages))
+            else if (aclService.HasRight(Rights.ViewUnPublishedPages))
                 pages = dbContext.Content
                     .Include("user")
                     .Where(m => m.Type == "page" && m.IsDeleted == false && m.isPublished == false)
@@ -44,7 +48,7 @@ namespace NITASA.Areas.Admin.Controllers
         {
             if (guid.Trim() == string.Empty)
             {
-                if (!UserRights.HasRights(Rights.CreateNewPages))
+                if (!aclService.HasRight(Rights.CreateNewPages))
                     return RedirectToAction("AccessDenied", "Home");
                 return View();
             }
@@ -55,12 +59,12 @@ namespace NITASA.Areas.Admin.Controllers
                 {
                     if (cont.AddedBy == Functions.CurrentUserID())
                     {
-                        if (!UserRights.HasRights(Rights.EditOwnPages))
+                        if (!aclService.HasRight(Rights.EditOwnPages))
                             return RedirectToAction("AccessDenied", "Home");
                     }
                     else
                     {
-                        if (!UserRights.HasRights(Rights.EditOtherUsersPage))
+                        if (!aclService.HasRight(Rights.EditOtherUsersPage))
                             return RedirectToAction("AccessDenied", "Home");
                     }
 
@@ -145,6 +149,8 @@ namespace NITASA.Areas.Admin.Controllers
                 contentNew.Description= contentPage.content.Description;
                 contentNew.Title = contentPage.content.Title;
                 contentNew.Type = "page";
+                if (string.IsNullOrEmpty(contentPage.content.URL))
+                    contentPage.content.URL = contentPage.content.Title;
                 contentNew.URL = Functions.ToUrlSlug(contentPage.content.URL, "page", 0);
                 contentNew.CoverContent = contentPage.content.CoverContent;
                 if (!string.IsNullOrEmpty(contentPage.content.FeaturedImage))
@@ -164,22 +170,23 @@ namespace NITASA.Areas.Admin.Controllers
                     contentNew.ContentPosition = null;
                 }
                 contentNew.AddedBy = Functions.CurrentUserID();
-                contentNew.AddedOn = DateTime.Now;
+                contentNew.AddedOn = DateTime.UtcNow;
                 contentNew.isPublished = contentPage.content.isPublished;
                 if (contentPage.content.isPublished)
-                    contentNew.PublishedOn = DateTime.Now;
+                    contentNew.PublishedOn = DateTime.UtcNow;
                 dbContext.Content.Add(contentNew);
                 dbContext.SaveChanges();
 
                 //Page meta data add
-                if (!string.IsNullOrWhiteSpace(contentPage.meta.Keyword) || !string.IsNullOrWhiteSpace(contentPage.meta.Description) || !string.IsNullOrWhiteSpace(contentPage.meta.Author))
+                if (!string.IsNullOrWhiteSpace(contentPage.meta.Title) || !string.IsNullOrWhiteSpace(contentPage.meta.Keyword) || !string.IsNullOrWhiteSpace(contentPage.meta.Description) || !string.IsNullOrWhiteSpace(contentPage.meta.Author))
                 {
                     Meta metaData = new Meta();
                     metaData.ContentID = contentNew.ID;
+                    metaData.Title = contentPage.meta.Title;
                     metaData.Keyword = contentPage.meta.Keyword;
                     metaData.Description = contentPage.meta.Description;
                     metaData.Author = contentPage.meta.Author;
-                    metaData.CreatedOn = DateTime.Now;
+                    metaData.CreatedOn = DateTime.UtcNow;
                     dbContext.Meta.Add(metaData);
                     dbContext.SaveChanges();
                 }
@@ -190,7 +197,7 @@ namespace NITASA.Areas.Admin.Controllers
                 //var sanitizer = new Html.HtmlSanitizer();
                 contentUpdate.Description= contentPage.content.Description.Replace("<img src=\"../../../", "<img src=\"../../");
                 contentUpdate.Title = contentPage.content.Title;
-                if (contentUpdate.URL.ToLower() != contentPage.content.URL.ToLower())
+                if (!string.IsNullOrEmpty(contentPage.content.URL) && contentUpdate.URL.ToLower() != contentPage.content.URL.ToLower())
                     contentUpdate.URL = Functions.ToUrlSlug(contentPage.content.URL, "Page", contentUpdate.ID);
                 contentUpdate.CoverContent = contentPage.content.CoverContent;
                 if (!string.IsNullOrEmpty(contentPage.content.FeaturedImage))
@@ -206,35 +213,32 @@ namespace NITASA.Areas.Admin.Controllers
                     contentUpdate.ContentPosition = contentPage.content.ContentPosition;
                 }
                 contentUpdate.ModifiedBy = Functions.CurrentUserID();
-                contentUpdate.ModifiedOn = DateTime.Now;
+                contentUpdate.ModifiedOn = DateTime.UtcNow;
                 contentUpdate.isPublished = contentPage.content.isPublished;
                 if (contentPage.content.isPublished)
-                    contentUpdate.PublishedOn = DateTime.Now;
+                    contentUpdate.PublishedOn = DateTime.UtcNow;
                 dbContext.SaveChanges();
 
-
-                if (dbContext.Meta.Where(m => m.ContentID == contentUpdate.ID).Count() > 0)
+                Meta meta = dbContext.Meta.FirstOrDefault(m => m.ContentID == contentUpdate.ID);
+                if (meta == null)
                 {
-                    Meta meta = dbContext.Meta.Where(m => m.ContentID == contentUpdate.ID).SingleOrDefault();
+                    meta = new Meta();
+                    meta.ContentID = contentUpdate.ID;
+                    meta.CreatedOn = DateTime.UtcNow;
+                    meta.Title = contentPage.meta.Title;
                     meta.Keyword = contentPage.meta.Keyword;
                     meta.Description = contentPage.meta.Description;
                     meta.Author = contentPage.meta.Author;
-                    dbContext.SaveChanges();
+                    dbContext.Meta.Add(meta);
                 }
                 else
                 {
-                    if (!string.IsNullOrWhiteSpace(contentPage.meta.Keyword) || !string.IsNullOrWhiteSpace(contentPage.meta.Description) || !string.IsNullOrWhiteSpace(contentPage.meta.Author))
-                    {
-                        Meta metaData = new Meta();
-                        metaData.ContentID = contentUpdate.ID;
-                        metaData.Keyword = contentPage.meta.Keyword;
-                        metaData.Description = contentPage.meta.Description;
-                        metaData.Author = contentPage.meta.Author;
-                        metaData.CreatedOn = DateTime.Now;
-                        dbContext.Meta.Add(metaData);
-                        dbContext.SaveChanges();
-                    }
+                    meta.Title = contentPage.meta.Title;
+                    meta.Keyword = contentPage.meta.Keyword;
+                    meta.Description = contentPage.meta.Description;
+                    meta.Author = contentPage.meta.Author;
                 }
+                dbContext.SaveChanges();
             }
         }
 
@@ -245,12 +249,12 @@ namespace NITASA.Areas.Admin.Controllers
             {
                 if (contentToDelete.AddedBy == Functions.CurrentUserID())
                 {
-                    if (!UserRights.HasRights(Rights.DeleteOwnPages))
+                    if (!aclService.HasRight(Rights.DeleteOwnPages))
                         return RedirectToAction("AccessDenied", "Home");
                 }
                 else
                 {
-                    if (!UserRights.HasRights(Rights.DeleteOtherUsersPages))
+                    if (!aclService.HasRight(Rights.DeleteOtherUsersPages))
                         return RedirectToAction("AccessDenied", "Home");
                 }
                 contentToDelete.IsDeleted = true;
@@ -262,6 +266,17 @@ namespace NITASA.Areas.Admin.Controllers
                 TempData["ErrorMessage"] = "Page Not Found.";
             }
             return RedirectToAction("List");
+        }
+
+        [HttpPost]
+        public ActionResult Preview(PageModel model)
+        {
+            Content page = model.content;
+            page.PublishedOn = new DateTime();
+            page.Type = "page";
+            Session["Preview"] = null;
+            Session["Preview"] = page;
+            return Content("success");
         }
     }
 }

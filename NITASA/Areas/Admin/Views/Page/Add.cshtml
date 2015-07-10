@@ -1,4 +1,5 @@
-﻿@model PageModel
+﻿@inherits NITASA.Views.AutofacEnabledViewPage<NITASA.Data.PageModel>
+@using NITASA.Services.Security
 @using NITASA.Data
 @using NITASA.Areas.Admin.Helper
 @{
@@ -139,9 +140,11 @@
                 <div class="span12" style="margin-left: 0px;">
                     <div class="box">
                         <div class="box-header">
-                            <span class="title">
-                                <i class="icon-tasks"></i>&nbsp; @(Model == null ? "New Page" : "Edit Page")
-                            </span>
+                            <span class="title"><i class="icon-tasks"></i>&nbsp; @(Model == null ? "New Page" : "Edit Page")</span>
+                            @if (Model != null && Model.content != null && Model.content.GUID != null)
+                            { 
+                                <div class="span4 title pull-right" style="float:right;margin-right:10px;"><div class="inline pull-right">Status : @(Model.content.isPublished ? "Published" : "Draft")</div></div>
+                            }
                         </div>
                         <div class="box-content">
                             <div class="padded">
@@ -156,7 +159,8 @@
                                                 <div>
                                                     <div id="slug-container">
                                                         <strong>Permalink:</strong>
-                                                        <span>/<span class="editable-container">
+                                                        <span>@(Request.Url.AbsoluteUri.Replace(Request.Url.AbsolutePath,""))/Content/
+                                                            <span class="editable-container" style=" margin-left: -3px;">
                                                                 <span id="editable-slug">@(Model != null ? Model.content.URL : "")</span>
                                                                 <input type="text" value="@(Model != null ? Model.content.URL : "")" id="edit-slug-text" style="display: none;" />
                                                             </span>
@@ -165,6 +169,8 @@
                                                             <a id="edit-slug" class="button-small" href="#">Edit</a>
                                                             <a id="save-slug" class="button-small" href="#" style="display: none;">OK</a>
                                                             <a href="#" id="cancel-slug" class="cancel" style="display: none;">Cancel</a>
+                                                            @if (ViewBag.isIndexpage == null)
+                                                            {<a href="#" id="pagePreview" class="button-small">Preview</a>}
                                                         </span>
                                                         @Html.HiddenFor(m => m.content.URL)
                                                     </div>
@@ -188,7 +194,7 @@
                                     </div>
                                     <div class="span3">
                                         <div class="padded" style="padding: 0px 4px 13px 4px; ">
-                                            @if (UserRights.HasRights(Rights.PublishOwnPages))
+                                            @if (aclService.HasRight(Rights.PublishOwnPages))
                                             {
                                                 <input type="button" id="btnPublish" class="btn btn-small btn-green 3" style="text-align: center; width: 60px;"
                                                        value="Publish" />
@@ -217,6 +223,7 @@
                                             </div>
                                             <div class="box-content">
                                                 <div class="padded">
+                                                    @Html.TextBoxFor(m => m.meta.Title, new { placeholder = "Title", @class = "width100per", id = "txtMetaTitle" })
                                                     @Html.TextBoxFor(m => m.meta.Keyword, new { placeholder = "Keyword", @class = "width100per", id = "txtMetaKeyword" })
                                                     @Html.TextBoxFor(m => m.meta.Description, new { placeholder = "Description", @class = "width100per", id = "txtMetaDescription" })
                                                     @Html.TextBoxFor(m => m.meta.Author, new { placeholder = "Author Name", @class = "width100per", id = "txtMetaAuthor" })
@@ -296,16 +303,23 @@
                     var name = $("#"+did+"-text").text();
                     tinyMCE.activeEditor.execCommand('mceInsertContent', false, "&lt;Slider name=\"" + name + "\"&gt;" + id+ "&lt;/Slider&gt;");
                 }
-                else if(did.indexOf('mceu')==-1){                    
-                    if(did.indexOf('tinyAll')!=-1){
-                        $(this).parent().find(".mce-menu-item").each(function( i ) {
-                            var id = $(this).attr("id");
-                            if (id.indexOf('tinyAll')==-1) {
-                                var name = $("#"+id+"-text").text();
-                                id = $(this).attr("id").replace("-addon","");;
-                                tinyMCE.activeEditor.execCommand('mceInsertContent', false, "&lt;Addon name=\"" + name + "\"&gt;" + id+ "&lt;/Addon&gt;");
+                else if(did.indexOf('-addon')!=-1){                    
+                    if(did.indexOf('All')!=-1){
+                        var name = $("#"+did+"-text").text();
+                        tinyMCE.activeEditor.execCommand('mceInsertContent', false, "&lt;Addon name=\"" + name + "\"&gt;All&lt;/Addon&gt;");
+                        // to hide current popup
+                        $(".mce-container.mce-panel.mce-floatpanel.mce-menu").each(function() {
+                            if($(this).attr("role")=="application"){
+                                $(this).hide();
                             }
                         });
+                        var addonbutton = $("#mceu_18-open");
+                        if(addonbutton)
+                        {
+                            addonbutton.click();
+                        }
+                        // end
+                        //tinymce.execCommand('mceFocus',false,'content_Description');
                     }
                     else{
                         var id = $(this).attr("id").replace("-addon","");
@@ -314,6 +328,31 @@
                     }
                 }
             });
+            //$("body").delegate(".mce-menu-item", "click", function () {
+            //    var did= $(this).attr("id");
+            //    if(did.indexOf('slider')>0){
+            //        var id = $(this).attr("id").replace("-slider","");
+            //        var name = $("#"+did+"-text").text();
+            //        tinyMCE.activeEditor.execCommand('mceInsertContent', false, "&lt;Slider name=\"" + name + "\"&gt;" + id+ "&lt;/Slider&gt;");
+            //    }
+            //    else if(did.indexOf('mceu')==-1){                    
+            //        if(did.indexOf('AllAddons')!=-1){
+            //            $(this).parent().find(".mce-menu-item").each(function( i ) {
+            //                var id = $(this).attr("id");
+            //                if (id.indexOf('AllAddons')==-1) {
+            //                    var name = $("#"+id+"-text").text();
+            //                    id = $(this).attr("id").replace("-addon","");;
+            //                    tinyMCE.activeEditor.execCommand('mceInsertContent', false, "&lt;Addon name=\"" + name + "\"&gt;" + id+ "&lt;/Addon&gt;");
+            //                }
+            //            });
+            //        }
+            //        else{
+            //            var id = $(this).attr("id").replace("-addon","");
+            //            var name = $("#"+did+"-text").text();
+            //            tinyMCE.activeEditor.execCommand('mceInsertContent', false, "&lt;Addon name=\"" + name + "\"&gt;" + id+ "&lt;/Addon&gt;");
+            //        }
+            //    }
+            //});
             @if (Model == null)
             {
                 <text>
@@ -353,16 +392,20 @@
             $('#btnPublish').click(function () {
                 $("#SaveType").val("Publish");
                 tinyMCE.triggerSave();
-                validpost();
+                if (validpost()) {
+                    $('#frm1').submit();
+                }
             });
             $('#btnDraft').click(function () {
                 $("#SaveType").val("SaveToDraft");
                 tinyMCE.triggerSave();
-                validpost();
+                if (validpost()) {
+                    $('#frm1').submit();
+                }
             });
             function validpost() {
                 if ($("#frm1").valid()) {
-                    $('#frm1').submit();
+                    return true;
                 }
                 else {
                     var error = '<div class="alert alert-error"><button class="close" data-dismiss="alert" type="button">×</button>Please solve form errors</div>';
@@ -395,7 +438,29 @@
                 }
                 $("#MediaPopup").modal("hide");
             });
+            $('#pagePreview').click(function () {
+                tinyMCE.triggerSave();
 
+                if (validpost()) {
+                    var str = $( "#frm1" ).serialize();    
+                    console.log(str);
+                    var slug = $("#content_URL").val();
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("Preview", "Page")",
+                        data: str,
+                        success: function (data) {
+                            if (data == "success") {
+                                //alert(data);
+                                window.open('/Content/Details?prv=true&URL='+slug, "_blank");
+                            }
+                        },
+                        error: function (data) {
+                            alert('Sorry. Unable to Preview !!');
+                        }
+                    });
+                }
+            });
         });
     </script>
 }

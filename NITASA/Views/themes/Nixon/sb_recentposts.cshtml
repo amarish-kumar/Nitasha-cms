@@ -1,0 +1,19 @@
+@model string
+@using NITASA.ViewModels
+@{
+    CL_WidgetOption wOption = NITASA.Helpers.Functions.ParseJson<CL_WidgetOption>(Model);
+    List<CL_Content> RecentViewPosts = NITASA.Helpers.Functions.GetRecentViewPosts(wOption.Count);
+}
+@if (RecentViewPosts.Count() > 0)
+{
+    <div class="cleaner_h40"></div>
+    <h4>@wOption.Title</h4>
+    <ul class="templatemo_list">
+        @foreach (var item in RecentViewPosts)
+        {
+            <li>
+                <a href="/Content/@item.URL">@item.Title</a>
+            </li>
+        }
+    </ul>
+}

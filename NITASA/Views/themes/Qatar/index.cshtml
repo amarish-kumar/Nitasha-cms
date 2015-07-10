@@ -1,0 +1,94 @@
+@model string
+@using NITASA.Helpers
+@{
+    string currentThemeName = ViewBag.ActiveTheme;
+    Layout = currentThemeName + "/master.cshtml";
+    ViewBag.Title = Functions.GetSiteTitle();
+    List<NITASA.ViewModels.CL_Content> posts = Functions.GetHomePagePosts();
+}
+
+@Html.Raw(Model)
+<!-- Begin Post -->
+<div class="content">
+    @foreach (var item in posts)
+    {
+        var lastLabel = (item.Labels !=null && item.Labels.Count > 0)? item.Labels.Last() : null;
+        var lastCategory = (item.Category != null &&  item.Category.Count > 0 ) ? item.Category.Last() : null;
+        <div class="post">
+
+            <!-- Begin Post Info -->
+            <div class="post-info">
+                <!-- Begin Date -->
+                <div class="post-date"><span class="day">@Functions.GetDay(item.PublishedOn)</span> <span class="month">@Functions.GetMonthName(item.PublishedOn)</span> <span class="year">@Functions.GetYear(item.PublishedOn)</span> </div>
+                <!-- End Date -->
+                <!-- Begin Title -->
+                <div class="post-title">
+                    <h1><a href="/Content/@item.URL">@item.Title</a></h1>
+                    <div class="post-meta"> <span class="comments"><a href="/Content/@item.URL#comments">@item.CommentsCount Comments</a></span> 
+                   @if (item.Labels != null && item.Labels.Count > 0)
+                    {
+                        @:<span class="categories">
+                        }
+                            @foreach (var itemLabel in item.Labels)
+{
+
+    if (itemLabel == lastLabel)
+    {
+        <a href="/Label/@itemLabel.URL">@itemLabel.Name</a>
+    }
+    else
+    {
+                                    <a href="/Label/@itemLabel.URL">@itemLabel.Name</a> <text>, </text>
+                                }
+
+                            }
+                         @if (item.Labels != null && item.Labels.Count > 0)
+                        {
+                            @:</span>
+                        }
+                    </div>
+                </div>
+                <!-- End Title -->
+            </div>
+            <!-- End Post Info -->
+
+            <div class="post-text">
+               
+                @*@if (item.FeaturedImage != null)
+                {
+                    @:<img src="@item.FeaturedImage" alt="" style="border-radius:50%;" width="40" />
+                }
+                 <br />*@
+                <p>
+                    @{string Description = Functions.RemoveHTMLTags(item.Description);}
+                    @(Description.Length > 156 ? Description.Substring(0, 156) + "..." : Description)<a class="more" href="/Content/@item.URL">Continue Reading ?</a>
+                </p>
+            </div>
+            <!-- End Text -->
+            @if (item.Category != null && item.Category.Count > 0)
+            { 
+             @:<span class="tags">
+            }
+
+            @foreach (var itemCat in item.Category)
+{
+    if (itemCat == lastCategory)
+    {
+        <a href="/Category/@itemCat.URL">@itemCat.Name</a>
+    }
+    else
+    {
+                    <a href="/Category/@itemCat.URL">@itemCat.Name</a>  <text>, </text>
+                }
+   
+            } 
+               
+            @if (item.Category != null && item.Category.Count > 0)
+            {
+                @:</span>
+            }
+        </div>
+        <!-- End Post -->
+    }
+</div>
+    @Html.Partial("~" + currentThemeName + "/sidebar.cshtml")
