@@ -25,7 +25,6 @@ namespace NITASA
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             //Database.SetInitializer<NTSDBContext>(new CreateDatabaseIfNotExists<NTSDBContext>());
             SetGlobleVariables();
-            NITASA.Core.Infrastructure.EngineContext.Initialize(false);
         }
         private void SetGlobleVariables()
         {
@@ -45,21 +44,19 @@ namespace NITASA
                     }
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 Application["CurrentTheme"] = "Default";
             }
         }
         protected void Application_BeginRequest(Object sender, EventArgs e)
         {
-
+            
         }
         void Application_Error(object sender, EventArgs e)
         {
             if (Request.Url.ToString().ToLower().Contains("/admin/"))
             {
-                var ex = HttpContext.Current.Server.GetLastError();
-
                 Server.TransferRequest("~/Admin/Home/NotFound");
             }
             else

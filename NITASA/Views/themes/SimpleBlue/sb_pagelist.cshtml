@@ -1,0 +1,31 @@
+@model string
+@using NITASA.ViewModels
+@{
+    CL_WidgetOption wOption = NITASA.Helpers.Functions.ParseJson<CL_WidgetOption>(Model);
+    List<NITASA.ViewModels.CL_Content> pages = NITASA.Helpers.Functions.GetPages(wOption.Count);
+}
+
+@if (pages.Count() > 0)
+{
+    <div class="art-box art-vmenublock">
+        <div class="art-bar art-blockheader">
+            <h3 class="t">@wOption.Title</h3>
+        </div>
+        <div class="art-box-body art-vmenublock-body">
+            <div class="art-box art-vmenublockcontent">
+                <div class="art-box-body art-vmenublockcontent-body">
+                    <ul class="art-vmenu">
+                        @foreach (var item in pages)
+                        {
+                            <li>
+                                <a href="@(string.IsNullOrEmpty(item.URL) ? "#" : "/Content/" + item.URL)">@item.Title</a>
+                            </li>
+                        }            
+                    </ul>
+                    <div class="cleared"></div>
+                </div>
+            </div>
+            <div class="cleared"></div>
+        </div>
+    </div>
+}
