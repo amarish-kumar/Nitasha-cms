@@ -23,7 +23,11 @@
         width: 115px;
         text-align: center;
     }
-    .code-file-editor {width:100%;height:657px; }
+    .padbottom10 {padding-bottom:10px;
+    } .code-file-editor {
+        width: 100%;
+        height: 657px;
+    }
     #dvfilename {font-size:20px;font-weight:700;color:burlywood;}
 </style>
 <div class="main-content">
@@ -54,24 +58,19 @@
                     </div>
                     <div class="box-content">
                         <div class="padded">
-                            @*@using (Html.BeginForm("GetFiles", "Template", FormMethod.Get))
-                            {*@
+    @Html.DropDownList("ddlFileType", (IEnumerable<SelectListItem>)ViewBag.typeList, "All")                        
+    @*@using (Html.BeginForm("GetFiles", "Template", FormMethod.Get))
+                            {
                                 <table class="form-horizontal fill-up validatable width100per">
-                                    @*<tr>
-                                        <td class="width10per">Select File Type</td>
-                                    </tr>*@
+                                  
                                     <tr>
                                         <td class="width70per">
-                                            @Html.DropDownList("ddlFileType", (IEnumerable<SelectListItem>)ViewBag.typeList, "All")
+                                            
                                         </td>
                                     </tr>
-                                    @*<tr>
-                                        <td class="width20per">
-                                            <input type="submit" class="btn btn-blue" value="Search" />
-                                        </td>
-                                    </tr>*@
+                                   
                                 </table>
-                            @*}*@
+                            }*@
                         </div>
                     </div>
                 </div>
@@ -83,21 +82,13 @@
                         <div class="padded">
                             @using (Html.BeginForm("GetFiles", "Template", FormMethod.Get))
                             {
-                                <table class="form-horizontal fill-up validatable width100per">
-                                    @*<tr>
-                                        <td class="width10per">Select File</td>
-                                    </tr>*@
+                                @Html.DropDownList("ddlFile", (List<SelectListItem>)ViewData["fileList"], new { style = "height:400px;", size = 4 })
+                                @*<table class="form-horizontal fill-up validatable width100per">
                                     <tr>
                                         <td class="width70per">
-                                            @Html.DropDownList("ddlFile", (List<SelectListItem>)ViewData["fileList"], new { style = "height:400px;", size = 4 })
                                         </td>
                                     </tr>
-                                    @*<tr>
-                                        <td class="width20per">
-                                            <input type="submit" class="btn btn-blue" value="Search" />
-                                        </td>
-                                    </tr>*@
-                                </table>
+                                </table>*@
                             }
                         </div>
                     </div>
@@ -108,8 +99,7 @@
                 {
                     <div>
                         <div class="span10" id="dvfilename"></div>
-                        <div class="span2 pull-right"><input type="submit" class="btn btn-blue pull-right" value="Save" /></div>
-                        &nbsp;
+                        <div class="span2 pull-right padbottom10"><input type="submit" class="btn btn-blue pull-right" value="Save" /></div>
                     </div>
     <div>
         @Html.TextArea("txtFileContent", new { rows = "100", cols = "150", @class = "code-file-editor" })
