@@ -1,11 +1,9 @@
-﻿@model List<Tuple<Role, int>>
+﻿@inherits NITASA.Views.AutofacEnabledViewPage<List<Tuple<Role, int>>>
 @using NITASA.Data
-@*@using NITASA.Areas.Admin.Helper*@
 @using GridMvc.Html
 @using NITASA.Services.Security
 @{
     ViewBag.Title = "Roles";
-    IAclService aclService = ViewBag.aclService;
 }
 
         <div class="main-content">

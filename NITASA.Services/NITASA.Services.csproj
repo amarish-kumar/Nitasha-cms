@@ -61,10 +61,6 @@
     <Compile Include="Security\IAclService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NITASA.Core\NITASA.Core.csproj">
-      <Project>{298fc22e-a529-4cf2-9ae6-b03bebef933d}</Project>
-      <Name>NITASA.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\NITASA.Data\NITASA.Data.csproj">
       <Project>{2700f7f0-9e34-4de6-9efe-95d95513792d}</Project>
       <Name>NITASA.Data</Name>

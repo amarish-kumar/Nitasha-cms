@@ -249,7 +249,6 @@
     <Content Include="Areas\Admin\assets\css\bootstrap-timepicker.min.css" />
     <Content Include="Areas\Admin\assets\css\custom.css" />
     <Content Include="Areas\Admin\assets\css\images\animated-overlay.gif" />
-    <Content Include="Areas\Admin\assets\css\images\logo.png" />
     <Content Include="Areas\Admin\assets\css\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Areas\Admin\assets\css\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Areas\Admin\assets\css\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -267,7 +266,6 @@
     <Content Include="Areas\Admin\assets\css\nested-menu.css" />
     <Content Include="Areas\Admin\assets\css\xcharts.min.css" />
     <Content Include="Areas\Admin\assets\images\add1.png" />
-    <Content Include="Areas\Admin\assets\images\avatars\Chrysanthemum.jpg" />
     <Content Include="Areas\Admin\assets\images\avatars\noprofile.jpg" />
     <Content Include="Areas\Admin\assets\images\bg.png" />
     <Content Include="Areas\Admin\assets\images\blue.png" />
@@ -372,16 +370,10 @@
     <Content Include="Areas\Admin\assets\js\typeahead.bundle.js" />
     <Content Include="Areas\Admin\assets\js\xcharts.min.js" />
     <Content Include="Content\default.css" />
+    <Content Include="Content\favicon.ico" />
     <Content Include="Content\gravatar.png" />
     <Content Include="Content\Gridmvc.css" />
-    <Content Include="Content\logo1.png" />
-    <Content Include="Content\logo2.png" />
-    <Content Include="Content\logo3.png" />
-    <Content Include="Content\logo4.png" />
-    <Content Include="Content\media\s1.jpg" />
-    <Content Include="Content\media\s2.jpg" />
-    <Content Include="Content\media\s3.jpg" />
-    <Content Include="Content\media\s4.jpg" />
+    <Content Include="Content\logo.png" />
     <Content Include="Content\postdefult.png" />
     <Content Include="Global.asax" />
     <Content Include="Areas\Admin\Views\Web.config" />
@@ -1153,9 +1145,8 @@
     <Folder Include="Areas\Admin\assets\js\tinymce\jscripts\tiny_mce\themes\simple\skins\default\" />
     <Folder Include="Areas\Admin\assets\js\tinymce\jscripts\tiny_mce\themes\simple\skins\o2k7\img\" />
     <Folder Include="Areas\Admin\assets\js\tinymce\jscripts\tiny_mce\utils\" />
-    <Folder Include="Areas\Admin\Views\OpenID\" />
     <Folder Include="backup\script\temp\" />
-    <Folder Include="Views\App\" />
+    <Folder Include="Content\media\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
