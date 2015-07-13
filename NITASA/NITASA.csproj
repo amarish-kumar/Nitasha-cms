@@ -1304,6 +1304,7 @@
     <Folder Include="Areas\Admin\Views\OpenID\" />
     <Folder Include="backup\script\temp\" />
     <Folder Include="Views\App\" />
+    <Folder Include="Views\themes\Asardar\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
