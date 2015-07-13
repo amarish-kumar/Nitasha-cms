@@ -1,0 +1,10 @@
+@model List<NITASA.ViewModels.CL_Slide>
+
+    <div id="showcase" class="showcase">
+        @foreach (var item in Model)
+        {
+            <div class="showcase-slide">
+                <div class="showcase-content"> <img src="@item.Image" alt=""></div>
+            </div>
+        }
+    </div>

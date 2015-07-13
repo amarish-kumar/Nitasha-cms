@@ -1,0 +1,72 @@
+@model string
+@using NITASA.Helpers
+@{
+    string currentThemeName = ViewBag.ActiveTheme;
+    Layout = currentThemeName + "/master.cshtml";
+    ViewBag.Title = Functions.GetSiteTitle();
+    List<NITASA.ViewModels.CL_Content> posts = Functions.GetHomePagePosts();
+}
+@Html.Raw(Model)
+<div id="wrapper">
+    <div class="container">
+        <h3 class="line">Latest Posts</h3>
+        @foreach (var item in posts)
+        {
+            var lastLabel = (item.Labels != null && item.Labels.Count > 0) ? item.Labels.Last() : null;
+            var lastCategory = (item.Category != null && item.Category.Count > 0) ? item.Category.Last() : null;
+            <div class="post text">
+                @if (item.FeaturedImage != null)
+                {<div class="icon-text"></div>
+                }
+                else
+                {<div class="icon-photo"></div>
+                }
+                <div class="content">
+                    <div class="top"></div>
+                    <div class="middle">
+                        <div class="post-text">
+                            <h2 class="title active"><a href="/Content/@item.URL">@item.Title</a></h2>
+                            <p>
+                                @{string Description = Functions.RemoveHTMLTags(item.Description);}
+                                @(Description.Length > 156 ? Description.Substring(0, 156) + "..." : Description)<a class="more" href="/Content/@item.URL">Continue Reading ?</a>
+                            </p>
+                        </div>
+                        <div class="meta-wrapper">
+                            <div class="meta">
+                                <ul class="post-info">
+                                    <li><span class="post-link"></span><a href="/Content/@item.URL">@Functions.GetDay(item.PublishedOn) @Functions.GetMonthName(item.PublishedOn) @Functions.GetYear(item.PublishedOn)</a></li>
+                                    <li><span class="post-comment"></span><a href="/Content/@item.URL#comments">@item.CommentsCount</a></li>
+                                    @*<li><span class="post-tag"></span><a href="#">quote</a>, <a href="#">library</a></li>*@
+                                    @if (item.Labels != null && item.Labels.Count > 0)
+                                    {
+                                    @:<li><span class="post-tag">
+                                    }
+                                    @foreach (var itemLabel in item.Labels)
+                                    {
+                                        if (itemLabel == lastLabel)
+                                        {
+                                            <a href="/Label/@itemLabel.URL">@itemLabel.Name</a>
+                                        }
+                                        else
+                                        {
+                                            <a href="/Label/@itemLabel.URL">@itemLabel.Name</a> <text>, </text>
+                                        }
+                                    }
+                                    @if (item.Labels != null && item.Labels.Count > 0)
+                                    {
+                                    @:</span></li>
+                                    }
+                                        </ul>                                        
+                                        <div class="clear"></div>
+                                    </div>
+                                </div>
+                            </div>
+                                        <div class="bottom"></div>
+                                    </div>
+                                </div>
+        }
+    </div>
+    @Html.Partial("~" + currentThemeName + "/sidebar.cshtml")
+    <div class="clear"></div>
+</div>
+<div class="push"></div>

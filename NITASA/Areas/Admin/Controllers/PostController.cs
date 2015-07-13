@@ -442,7 +442,7 @@ namespace NITASA.Areas.Admin.Controllers
                     }
                     else
                     {
-                        TempData["ErrorMessage"] = "Please enter post content";
+                        TempData["ErrorMessage"] = "Please enter post content.";
                         return RedirectToAction("Edit");
                     }
                 }

@@ -126,7 +126,7 @@ namespace NITASA.Areas.Admin.Controllers
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "Please enter page description";
+                    TempData["ErrorMessage"] = "Please enter page description.";
                 }
             }
             return View(contentPage);

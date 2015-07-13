@@ -97,7 +97,7 @@ namespace NITASA.Areas.Admin.Controllers
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "Please enter Addon content";
+                    TempData["ErrorMessage"] = "Please enter addon content.";
                 }
             }
             //}
@@ -252,7 +252,7 @@ namespace NITASA.Areas.Admin.Controllers
                     }
                     else
                     {
-                        TempData["ErrorMessage"] = "Please enter addon content";
+                        TempData["ErrorMessage"] = "Please enter addon content.";
                         return RedirectToAction("Edit");
                     }
                 }

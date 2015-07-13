@@ -82,7 +82,7 @@ namespace NITASA.Areas.Admin.Controllers
                 User userToChange = context.User.Where(m => m.ID == currentUserID).Single();
                 if (userToChange == null)
                 {
-                    TempData["Error"] = "Oops, there seemps to be some problem please try again";
+                    TempData["Error"] = "Oops, there seemps to be some problem please try again.";
                     return RedirectToAction("ChangePassword");
                 }
                 else
@@ -97,7 +97,7 @@ namespace NITASA.Areas.Admin.Controllers
                     }
                     else
                     {
-                        TempData["Error"] = "Please enter correct current password";
+                        TempData["Error"] = "Please enter correct current password.";
                     }
                 }
             }
