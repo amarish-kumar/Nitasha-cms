@@ -17,6 +17,11 @@ namespace NITASA.Areas.Admin.Controllers
         public NTSDBContext context;
         IAclService aclService;
 
+        public HomeController()
+        {
+
+        }
+
         public HomeController(IAclService aclService)
         {
             this.context = new NTSDBContext();

@@ -5,7 +5,7 @@ using System.Runtime.Caching;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NITASA.Core.Caching
+namespace NITASA.Services.Caching
 {
     public class UserRoleCacheManager : ICacheManager
     {

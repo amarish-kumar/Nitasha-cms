@@ -4,13 +4,20 @@ using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using NITASA.Data;
+using NITASA.Services.Caching;
 using NITASA.Services.Security;
 
 namespace NITASA.Areas.Admin.Helper
 {
     public class CheckLoginAttribute : ActionFilterAttribute
     {
-        IAclService aclService;
+        public IAclService aclService { get; set; }
+
+        public CheckLoginAttribute()
+        {
+
+        }
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
@@ -21,7 +28,7 @@ namespace NITASA.Areas.Admin.Helper
             else
             {
                 HttpContext hContext = HttpContext.Current;
-#if DEBUG
+
                 if (hContext.Session["UserID"] == null)
                 {
                     hContext.Session["UserID"] = 1;
@@ -29,7 +36,6 @@ namespace NITASA.Areas.Admin.Helper
                     hContext.Session["UserRole"] = temp.Select(m => m.Name).FirstOrDefault();
                     aclService.SetRights(1, temp.FirstOrDefault().ID);
                 }
-#endif
 
                 string url = HttpContext.Current.Request.Url.AbsoluteUri;
 

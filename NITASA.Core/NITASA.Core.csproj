@@ -87,8 +87,6 @@
   <ItemGroup>
     <Compile Include="AspNetException.cs" />
     <Compile Include="BaseEntity.cs" />
-    <Compile Include="Caching\ICacheManager.cs" />
-    <Compile Include="Caching\UserRoleCacheManager.cs" />
     <Compile Include="CmsEngine.cs" />
     <Compile Include="CmsException.cs" />
     <Compile Include="CommonHelper.cs" />

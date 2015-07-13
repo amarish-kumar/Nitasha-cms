@@ -1154,10 +1154,8 @@
     <Folder Include="Areas\Admin\assets\js\tinymce\jscripts\tiny_mce\themes\simple\skins\default\" />
     <Folder Include="Areas\Admin\assets\js\tinymce\jscripts\tiny_mce\themes\simple\skins\o2k7\img\" />
     <Folder Include="Areas\Admin\assets\js\tinymce\jscripts\tiny_mce\utils\" />
-    <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Admin\Views\OpenID\" />
     <Folder Include="backup\script\temp\" />
-    <Folder Include="Models\" />
     <Folder Include="Views\App\" />
   </ItemGroup>
   <ItemGroup>
