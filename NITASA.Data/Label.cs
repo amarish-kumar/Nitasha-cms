@@ -14,10 +14,10 @@ namespace NITASA.Data
         public int ID { get; set; }
         public string GUID { get; set; }
 
-        [Required(ErrorMessage = "Please enter label")]
+        [Required(ErrorMessage = "Please enter label.")]
         [MaxLength(100)]
-        [StringLength(100, ErrorMessage = "Label cannot exceed 100 characters")]
-        [RegularExpression(@"^[A-Za-z0-9\ _.#&*+-]*$", ErrorMessage = "Only alpha numeric, space and special characters like '_ , . , # , & , * , + , - '  are allowed")]
+        [StringLength(100, ErrorMessage = "Label cannot exceed 100 characters.")]
+        [RegularExpression(@"^[A-Za-z0-9\ _.#&*+-]*$", ErrorMessage = "Only alpha numeric, space and special characters like '_ , . , # , & , * , + , - '  are allowed.")]
         [Display(Name = "Label")]
         [AllowHtml]
         public string Name { get; set; }
