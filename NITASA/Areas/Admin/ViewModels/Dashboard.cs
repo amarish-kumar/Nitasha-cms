@@ -50,9 +50,9 @@ namespace NITASA.Areas.Admin.ViewModels
         public string LastNewUsers { get; set; }
 
         [Display(Name = "Title")]
-        [Required(ErrorMessage = "Please Enter Title.")]
+        [Required(ErrorMessage = "Please enter title.")]
         // [MaxLength(100)]
-        [StringLength(100, ErrorMessage = "Post Title should not be greater than 100 characters long.")]
+        [StringLength(100, ErrorMessage = "Post title should not be greater than 100 characters long.")]
         public string PostTitle { get; set; }
 
         public List<Content> PostList { get; set; }
@@ -62,7 +62,7 @@ namespace NITASA.Areas.Admin.ViewModels
         
 
         [Display(Name = "Description")]
-        [Required(ErrorMessage = "Please Enter Description.")]
+        [Required(ErrorMessage = "Please enter description.")]
         public string PostDescription { get; set; }
 
         public string chartData { get; set; }

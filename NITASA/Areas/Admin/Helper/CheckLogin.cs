@@ -28,19 +28,15 @@ namespace NITASA.Areas.Admin.Helper
             else
             {
                 HttpContext hContext = HttpContext.Current;
-
-                if (hContext.Session["UserID"] == null)
-                {
-                    hContext.Session["UserID"] = 1;
-                    var temp = new NITASA.Data.NTSDBContext().Role.Where(model => model.ID == 1 && model.IsDeleted == false);
-                    hContext.Session["UserRole"] = temp.Select(m => m.Name).FirstOrDefault();
-                    aclService.SetRights(1, temp.FirstOrDefault().ID);
-                }
-
                 string url = HttpContext.Current.Request.Url.AbsoluteUri;
 
                 if (hContext.Session["UserID"] == null)
                     filterContext.Result = new RedirectResult(@"~/Admin/Authenticate/Login?retUrl=" + HttpUtility.UrlEncode(url));
+                else if (!aclService.IsActiveUser(Convert.ToInt32(hContext.Session["UserID"])))
+                {
+                    hContext.Session["UserID"] = null;
+                    filterContext.Result = new RedirectResult(@"~/Admin/Authenticate/Login?retUrl=" + HttpUtility.UrlEncode(url));
+                }
             }
             base.OnActionExecuting(filterContext);
         }

@@ -180,6 +180,7 @@ namespace NITASA.Areas.Admin.Controllers
                         userUpdate.IsActive = user.IsActive;
                         userUpdate.IsDefault = user.IsDefault;
                         context.SaveChanges();
+                        aclService.SetRights(user.ID, userUpdate.RoleID);
                         TempData["SuccessMessage"] = "User updated successfully.";
                         return RedirectToAction("List");
                     }
@@ -255,6 +256,12 @@ namespace NITASA.Areas.Admin.Controllers
                 user.ModifiedOn = DateTime.UtcNow;
                 user.ModifiedBy = CurrentUserID;                
                 context.SaveChanges();
+
+                if (isActive)
+                    aclService.SetActiveUser(user.ID);
+                else
+                    aclService.RemoveActiveUser(user.ID);
+
                 if(isActive == false && CurrentUserID == user.ID)
                 {
                     Session.RemoveAll();
