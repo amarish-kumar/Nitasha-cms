@@ -14,19 +14,19 @@ namespace NITASA.Areas.Admin.ViewModels
 
         public SitemapChangeFrequency? postFreqency { get; set; }
 
-        [Range(0.1, 1.0, ErrorMessage = "Only 0.1 to 1.0 allowed")]
+        [Range(0.1, 1.0, ErrorMessage = "Only 0.1 to 1.0 allowed.")]
         public double? postPriority { get; set; }
 
         public SitemapChangeFrequency? pageFreqency { get; set; }
-        [Range(0.1, 1.0, ErrorMessage = "Only 0.1 to 1.0 allowed")]
+        [Range(0.1, 1.0, ErrorMessage = "Only 0.1 to 1.0 allowed.")]
         public double? pagePriority { get; set; }
 
         public SitemapChangeFrequency? categoryFreqency { get; set; }
-        [Range(0.1, 1.0, ErrorMessage = "Only 0.1 to 1.0 allowed")]
+        [Range(0.1, 1.0, ErrorMessage = "Only 0.1 to 1.0 allowed.")]
         public double? categoryPriority { get; set; }
 
         public SitemapChangeFrequency? labelFreqency { get; set; }
-        [Range(0.1, 1.0, ErrorMessage = "Only 0.1 to 1.0 allowed")]
+        [Range(0.1, 1.0, ErrorMessage = "Only 0.1 to 1.0 allowed.")]
         public double? labelPriority { get; set; }
     }
 }

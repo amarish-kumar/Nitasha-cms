@@ -84,14 +84,61 @@ namespace NITASA.Services.Security
 
             return RightsList;
         }
-
-        public List<string> GetRights(int userId)
+        
+        public void SetActiveUser(int UserID)
         {
-            if (cacheManager.IsSet(userId.ToString()))
-                return cacheManager.Get<List<string>>(userId.ToString());
-            return new List<string>();
+            if (cacheManager.IsSet("ActiveUsers"))
+            {
+                var ActiveUsers = cacheManager.Get<List<int>>("ActiveUsers");
+                if (!ActiveUsers.Contains(UserID))
+                {
+                    ActiveUsers.Add(UserID);
+                    cacheManager.Set("ActiveUsers", ActiveUsers, 60);
+                }
+            }
+            else
+            {
+                List<int> ActiveUsers = new List<int> { UserID };
+                cacheManager.Set("ActiveUsers", ActiveUsers, 60);
+            }
         }
+        public void RemoveActiveUser(int UserID)
+        {
+            if (cacheManager.IsSet("ActiveUsers"))
+            {
+                var ActiveUsers = cacheManager.Get<List<int>>("ActiveUsers");
+                if (ActiveUsers.Contains(UserID))
+                {
+                    ActiveUsers.Remove(UserID);
+                    cacheManager.Set("ActiveUsers", ActiveUsers, 60);
+                }
+            }
+        }
+        public bool IsActiveUser(int UserID)
+        {
+            if (CurrentUserRole() == "Administrator")
+                return true;
 
+            if (cacheManager.IsSet("ActiveUsers"))
+            {
+                var ActiveUsers = cacheManager.Get<List<int>>("ActiveUsers");
+                if (ActiveUsers.Contains(UserID))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+        public void SetRights(int UserID, int RoleId)
+        {
+            var rights = (from d in context.RightsInRole
+                          where d.RoleID == RoleId
+                          select d.RightsName).ToList();
+
+            SetActiveUser(UserID);
+            cacheManager.Set(UserID.ToString(), rights, 60);
+        }
         public bool HasRight(Rights right)
         {
             int currentUser = CurrentUserID();
@@ -101,18 +148,7 @@ namespace NITASA.Services.Security
 
             var temp = cacheManager.Get<List<string>>(currentUser.ToString());
             string rightName = right.ToString("G");
-            if (temp.Contains(rightName))
-                return true;
-            return false;
-        }
-
-        public void SetRights(int UserID, int RoleId)
-        {
-            var rights = (from d in context.RightsInRole
-                          where d.RoleID == RoleId
-                          select d.RightsName).ToList();
-
-            cacheManager.Set(UserID.ToString(), rights, 60);
+            return temp.Contains(rightName);
         }
 
         public int CurrentUserID()

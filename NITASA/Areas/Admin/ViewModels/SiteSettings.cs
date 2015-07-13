@@ -17,16 +17,16 @@ namespace NITASA.Areas.Admin.ViewModels
         public string FaviconPath { get; set; }
 
         [MaxLength(50)]
-        [StringLength(50, ErrorMessage = "Site Name cannot exceed 50 characters.")]
-        [Required(ErrorMessage = "Please enter Site Name")]
+        [StringLength(50, ErrorMessage = "Site name cannot exceed 50 characters.")]
+        [Required(ErrorMessage = "Please enter site name.")]
         [Display(Name = "Site Name")]
         [AllowHtml]
         public string SiteName { get; set; }
 
         [MaxLength(50)]
-        [StringLength(50, ErrorMessage = "Site Title cannot exceed 50 characters")]
-        [Required(ErrorMessage = "Please enter Site title")]
-        [Display(Name = "Site Title ")]
+        [StringLength(50, ErrorMessage = "Site title cannot exceed 50 characters.")]
+        [Required(ErrorMessage = "Please enter site title.")]
+        [Display(Name = "Site Title")]
         [AllowHtml]
         public string SiteTitle { get; set; }
 
