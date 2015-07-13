@@ -1,0 +1,22 @@
+@model string
+@using NITASA.ViewModels
+@{
+    CL_WidgetOption wOption = NITASA.Helpers.Functions.ParseJson<CL_WidgetOption>(Model);
+    List<NITASA.ViewModels.CL_Content> pages = NITASA.Helpers.Functions.GetPages(wOption.Count);
+}
+
+@if (pages.Count() > 0)
+{
+
+ <div class="sidebox">
+     <h3 class="line">@wOption.Title</h3>
+      <div class="cat-list">
+      <ul>
+          @foreach (var item in pages)
+            {
+                <li><a href="@(string.IsNullOrEmpty(item.URL) ? "#" : "/Content/" + item.URL)">@item.Title</a></li>
+            }
+      </ul>
+      </div>
+      </div>
+}

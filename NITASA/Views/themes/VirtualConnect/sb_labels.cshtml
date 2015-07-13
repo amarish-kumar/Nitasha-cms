@@ -1,0 +1,22 @@
+@model string
+@using NITASA.ViewModels
+@{
+    CL_WidgetOption wOption = NITASA.Helpers.Functions.ParseJson<CL_WidgetOption>(Model);
+    List<NITASA.ViewModels.CL_Label> Labels = NITASA.Helpers.Functions.GetLabels(wOption.Count);
+}
+
+
+@if (Labels.Count() > 0)
+{
+    <div class="sidebox">
+        <h3 class="line">@wOption.Title</h3>            
+            <ul class="cat-list">
+                @foreach (var item in Labels)
+                {
+
+                    <li><a href="@(string.IsNullOrEmpty(item.URL) ? "#" : "/Label/"+item.URL)">@item.Name</a></li>
+                }
+
+            </ul>
+    </div>
+}

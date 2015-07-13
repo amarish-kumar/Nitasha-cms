@@ -1,0 +1,20 @@
+
+<div class="sidebox">
+    <h3 class="line">Search</h3>
+@using (Html.BeginForm("Results", "Search", FormMethod.Post, new { id = "frmsearch", @class = "searchform" }))
+{
+    <input type="text" id="SearchText" name="SearchText" value="type and hit enter" onfocus="this.value=''" onblur="this.value='type and hit enter'" style="width:175px;">
+    <a href="#" id="submit-search" class="postfix button expand">Go</a>
+}
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#submit-search").click(function (evt) {
+            if ($("#SearchText").val().trim() != '')
+                $("#frmsearch").submit();
+            else
+                alert("Please enter text to search");
+            return false;
+        });
+    });
+</script>

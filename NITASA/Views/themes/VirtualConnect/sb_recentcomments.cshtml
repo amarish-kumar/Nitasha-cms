@@ -1,0 +1,10 @@
+@model string
+@using NITASA.ViewModels
+@{
+    CL_WidgetOption wOption = NITASA.Helpers.Functions.ParseJson<CL_WidgetOption>(Model);
+    List<CL_Comments> Comments = NITASA.Helpers.Functions.GetRecentComments(wOption.Count);
+}
+@if (Comments.Count() > 0)
+{
+<div class="sidebox">      <h3 class="line">@wOption.Title</h3>      <ul class="latest-posts">          @foreach (var item in Comments)
+          {          <li style="min-height:35px;"><span class="date"><em class="day">@NITASA.Helpers.Functions.GetDay(item.AddedOn)</em><em class="month">@NITASA.Helpers.Functions.GetMonthName(item.AddedOn)</em></span>@(item.Description.Length > 95 ? item.Description.Substring(0, 95) + "..." : item.Description) </li>         }        </ul>              </div> }
