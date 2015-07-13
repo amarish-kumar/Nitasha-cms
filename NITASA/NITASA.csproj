@@ -1067,7 +1067,6 @@
     <Content Include="Views\themes\Nixon\search_result.cshtml" />
     <Content Include="Views\themes\Nixon\sidebar.cshtml" />
     <Content Include="Views\themes\Nixon\slider.cshtml" />
-    <Content Include="Views\themes\Nixon\Thumbs.db" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Admin\assets\js\tinymce\examples\css\" />
