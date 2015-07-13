@@ -1,11 +1,9 @@
-﻿@model List<Tuple<User, string>>
+﻿@inherits NITASA.Views.AutofacEnabledViewPage<List<Tuple<User, string>>>
 @using NITASA.Data
-@*@using NITASA.Areas.Admin.Helper*@
 @using GridMvc.Html
 @using NITASA.Services.Security
 @{
     ViewBag.Title = "Users";
-    IAclService aclService = ViewBag.aclService;
 }
         <div class="main-content">
             <div class="container-fluid padded">

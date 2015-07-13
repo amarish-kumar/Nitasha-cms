@@ -1,6 +1,5 @@
-﻿@model Role
+﻿@inherits NITASA.Views.AutofacEnabledViewPage<Role>
 @using NITASA.Data
-@*@using NITASA.Areas.Admin.Helper*@
 @using NITASA.Services.Security
 @{
     ViewBag.Title = "Edit Role";
@@ -40,21 +39,24 @@
                                 @Html.HiddenFor(m => m.ID)
                                 @Html.HiddenFor(m => m.AddedBy)
                                 <div class="box-content">
-                                    <div class="">
-                                        @*Padded*@
-                                        <div class="">
-                                            @*span12*@
-                                            <div class="span10">
-                                                <div class="span2">
-                                                    @Html.LabelFor(m => m.Name)
+                                    
+                                        <div class="span10">
+                                            <div class="form-horizontal fill-up">
+                                                <div class="control-group">
+                                                    @Html.LabelFor(m => m.Name, new { @class = "control-label", style = "text-align: left;" })
+                                                    <div class="controls">
+                                                        @Html.TextBoxFor(m => m.Name)
+                                                        <div style="color: red">
+                                                            @Html.ValidationMessageFor(m => m.Name)
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                @Html.TextBoxFor(m => m.Name)
-                                                @Html.ValidationMessageFor(m => m.Name, "", new { style = "color:red;" })
-                                            </div>
-                                            <div class="span2">
-                                                <input type="submit" value="Update Role" class="btn btn-blue" />
                                             </div>
                                         </div>
+                                        <div class="span2">
+                                            <input type="submit" value="Update Role" class="btn btn-blue" />
+                                        </div>
+                                        
                                         <div class="clear" style="font-size: 14px; padding-top: 10px; margin-bottom: 10px;">
                                             Assign Rights :
                                         </div>
@@ -96,7 +98,6 @@
                                                 }
                                             }
                                         }
-                                    </div>
                                     <div class="clear">
                                     </div>
                                 </div>

@@ -557,7 +557,7 @@ namespace NITASA.Helpers
             if (ListingPostsPageSize != null)
                 return Convert.ToInt32(ListingPostsPageSize.Value);
             else
-                return 0;
+                return 1;
         }
 
         public static bool HasThumbnail(int contentID)

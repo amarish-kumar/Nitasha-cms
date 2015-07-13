@@ -1,10 +1,11 @@
-﻿@model List<Content>
-    @using NITASA.Data
-    @using NITASA.Areas.Admin.Helper
-    @using GridMvc.Html
-    @{
-        ViewBag.Title = "Addons";
-    }
+﻿@inherits NITASA.Views.AutofacEnabledViewPage<List<NITASA.Data.Content>>
+@using NITASA.Data
+@using NITASA.Services.Security
+@using NITASA.Areas.Admin.Helper
+@using GridMvc.Html
+@{
+    ViewBag.Title = "Addons";
+}
     
     <div class="main-content">
         <div class="container-fluid padded">
