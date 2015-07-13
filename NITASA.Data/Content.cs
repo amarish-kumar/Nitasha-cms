@@ -16,14 +16,14 @@ namespace NITASA.Data
         public string GUID { get; set; }
         public string Type { get; set; }
 
-        [Required(ErrorMessage = "Please enter title")]
+        [Required(ErrorMessage = "Please enter title.")]
         [MaxLength(200)]
-        [StringLength(200, ErrorMessage = "Title cannot exceed 200 characters")]        
+        [StringLength(200, ErrorMessage = "Title cannot exceed 200 characters.")]
         [Display(Name = "Title")]
         [AllowHtml]
         public string Title { get; set; }
 
-        [Required(ErrorMessage = "Please enter description")]
+        [Required(ErrorMessage = "Please enter description.")]
         [Display(Name = "Description")]
         [UIHint("tinymce_simple"), AllowHtml]
         public string Description { get; set; }
@@ -37,8 +37,8 @@ namespace NITASA.Data
         public bool IsFeatured { get; set; }
 
 
-        [Required(ErrorMessage = "Please enter display order")]
-        [RegularExpression(@"^[0-9]*$", ErrorMessage = "Enter display order in integer only")]
+        [Required(ErrorMessage = "Please enter display order.")]
+        [RegularExpression(@"^[0-9]*$", ErrorMessage = "Enter display order in integer only.")]
         [DefaultValue(0)]
         public int ContentOrder { get; set; }
 

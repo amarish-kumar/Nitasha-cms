@@ -1,0 +1,41 @@
+@model NITASA.Helpers.Pager
+
+@if (Model.PageCount > 1)
+{
+    using (Html.BeginForm(Model.Action, Model.Controller, FormMethod.Post, new { id = "frm1" }))
+    {
+        @Html.Hidden("PageCount", Model.PageCount)
+        @Html.Hidden("PageSize", Model.PageSize)
+        @Html.Hidden("CurrentPageIndex", Model.CurrentPageIndex)
+        @Html.Hidden("SearchText", Model.SearchText)
+    }    
+    			<div class="page-navi">
+    				<ul>
+                        @for (var i = 0; i < Model.PageCount; i++)
+                        {
+                            if (i == Model.CurrentPageIndex)
+                            {
+                                <li class="current"><a href="">@(i + 1)</a></li>
+                            }
+                            else
+                            {
+                                <li><a href="" class="pager" pageindex="@i">@(i + 1)</a></li>
+                            }
+                        }
+    					@*<li><a href="#" class="current">1</a></li>
+    					<li><a href="#">2</a></li>
+    					<li><a href="#">3</a></li>*@
+    				</ul>
+    			</div>
+    			<!-- End Page Navi -->
+    <script>
+        $(document).ready(function () {
+            $(".pager").click(function (evt) {
+                evt.preventDefault();
+                var pageindex = $(this).attr("pageindex");
+                $("#CurrentPageIndex").val(pageindex);
+                $('#frm1').submit();
+            });
+        });
+    </script>
+}

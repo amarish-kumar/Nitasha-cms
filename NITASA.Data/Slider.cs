@@ -17,13 +17,13 @@ namespace NITASA.Data
 
         public int SliderId { get; set; }
 
-        [Required(ErrorMessage = "Please select slider image")]
+        [Required(ErrorMessage = "Please select slider image.")]
         public string Image { get; set; }
         [AllowHtml]
         public string Title { get; set; }
         [AllowHtml]
         public string Text { get; set; }
-        [RegularExpression(@"^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$", ErrorMessage = "Enter Valid Image Link")]
+        [RegularExpression(@"^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$", ErrorMessage = "Enter valid image link.")]
         public string Link { get; set; }
 
         public int DisplayOrder { get; set; }
@@ -40,7 +40,7 @@ namespace NITASA.Data
         [Key]
         public int Id { get; set; }
         public string GUID { get; set; }
-        [Required(ErrorMessage = "Please enter slider name")]
+        [Required(ErrorMessage = "Please enter slider name.")]
         [AllowHtml]
         public string Name { get; set; }
         public string Code { get; set; }

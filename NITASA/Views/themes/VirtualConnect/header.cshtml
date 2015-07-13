@@ -1,0 +1,5 @@
+@using NITASA.Helpers
+@{
+    string currentThemeName = ViewBag.ActiveTheme;
+}
+<div class="logo"> <a href="@Functions.GetSiteURL()"><img src="@Functions.GetLogoPath()" alt="@Functions.GetSiteName()"></a> </div>

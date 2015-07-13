@@ -1,0 +1,99 @@
+@{
+    string currentThemeName = ViewBag.ActiveTheme;
+    List<NITASA.ViewModels.CL_Widget> Widgets = NITASA.Helpers.Functions.GetWidgets();
+}
+<!-- SIDEBAR -->
+<div class="sidebar">
+       @Html.Partial("~" + currentThemeName + "/search_form.cshtml")
+    @foreach (var item in Widgets)
+    {
+        switch (item.WidgetID)
+        {
+            case 1:
+                @Html.Partial("~" + currentThemeName + "/sb_recentposts.cshtml", item.Option)
+                break;
+            case 2:
+            @Html.Partial("~" + currentThemeName + "/sb_mostpopular.cshtml", item.Option)
+                break;
+            case 3:
+                if (Convert.ToString(Request.RequestContext.RouteData.Values["Controller"]).ToLower() == "content")
+                {
+                    @Html.Partial("~" + currentThemeName + "/sb_related.cshtml", item.Option)
+                }
+                break;
+            case 4:
+            @Html.Partial("~" + currentThemeName + "/sb_pageview.cshtml", item.Option)
+                break;
+            case 5:
+            @Html.Partial("~" + currentThemeName + "/sb_categories.cshtml", item.Option)
+                break;
+            case 6:
+            @Html.Partial("~" + currentThemeName + "/sb_labels.cshtml", item.Option)
+                break;
+            case 7:
+            @Html.Partial("~" + currentThemeName + "/sb_recentcomments.cshtml", item.Option)
+                break;
+            case 8:
+            @Html.Partial("~" + currentThemeName + "/sb_pagelist.cshtml", item.Option)
+                break;
+        }
+    }
+</div>
+
+
+
+@*<div class="one-third last">
+    <div class="sidebox">
+        <h3 class="line">Popular Posts</h3>
+        <ul class="popular-posts">
+            <li>
+                <a href="#"><img alt="" src="style/images/art/postdefult.png"></a>
+                <h5><a href="#">Carnival Time</a></h5>
+                <span>28 October 2015 | <a href="#">3 Comments</a></span>
+            </li>
+            <li>
+                <a href="#"><img alt="" src="style/images/art/postdefult.png"></a>
+                <h5><a href="#">Entertainment</a></h5>
+                <span>21 April 2015 | <a href="#">1 Comments</a></span>
+            </li>
+            <li>
+                <a href="#"><img alt="" src="style/images/art/postdefult.png"></a>
+                <h5><a href="#">Father's Dream</a></h5>
+                <span>24 July 2015 | <a href="#">5 Comments</a></span>
+            </li>
+        </ul>
+    </div>
+    <h3 class="line">Popular Tags</h3>
+    <ul class="latest-posts">
+        <li>
+            <h5>Internet Marketing</h5>
+            <!-- <p>Maecenas faucibus mollis interdum. Lorem ipsum… <a href="#" class="more">Continue Reading &rarr;</a></p> -->
+        </li>
+        <li>
+            <h5>Blogging</h5>
+            <!-- <p>Maecenas faucibus mollis interdum. Lorem ipsum… <a href="#" class="more">Continue Reading &rarr;</a></p> -->
+        </li>
+        <li>
+            <h5>Communication</h5>
+            <!--           <p>Maecenas faucibus mollis interdum. Lorem ipsum… <a href="#" class="more">Continue Reading &rarr;</a></p> -->
+        </li>
+    </ul>
+    <br />
+    <h3 class="line">Category List</h3>
+    <ul class="latest-posts">
+        <li>
+            <h5>Graphics</h5>
+            <!-- <p>Maecenas faucibus mollis interdum. Lorem ipsum… <a href="#" class="more">Continue Reading &rarr;</a></p> -->
+        </li>
+        <li>
+            <h5>Synchronization</h5>
+            <!-- <p>Maecenas faucibus mollis interdum. Lorem ipsum… <a href="#" class="more">Continue Reading &rarr;</a></p> -->
+        </li>
+        <li>
+            <h5>Utilization</h5>
+            <!--           <p>Maecenas faucibus mollis interdum. Lorem ipsum… <a href="#" class="more">Continue Reading &rarr;</a></p> -->
+        </li>
+    </ul>
+    <br />
+
+</div>*@

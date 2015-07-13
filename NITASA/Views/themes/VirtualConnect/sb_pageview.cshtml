@@ -1,0 +1,9 @@
+@model string
+@using NITASA.ViewModels
+@{
+    CL_WidgetOption wOption = NITASA.Helpers.Functions.ParseJson<CL_WidgetOption>(Model);
+    int pageviews = NITASA.Helpers.Functions.PagesView();
+}
+<div class="sidebox">
+                @wOption.Title <span>@pageviews</span>
+                </div>

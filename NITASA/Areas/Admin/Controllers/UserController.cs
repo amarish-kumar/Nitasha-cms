@@ -27,7 +27,7 @@ namespace NITASA.Areas.Admin.Controllers
             //if (!aclService.HasRight(Rights.ViewUsers))
             if (!aclService.HasRight(Rights.ViewUsers))
                 return RedirectToAction("AccessDenied", "Home");
-            ViewBag.aclService = aclService;
+            
             List<User> Users = context.User.Where(m => (m.FirstName.Contains(userName) || m.LastName.Contains(userName)) && m.IsDeleted != true).ToList();
             List<Tuple<User, string>> UserList = 
             (from role in Users select new Tuple<User, string>(role, String.Join(",", (from rl in context.Role where role.RoleID == rl.ID select rl.Name).ToArray()))).ToList();
@@ -180,6 +180,7 @@ namespace NITASA.Areas.Admin.Controllers
                         userUpdate.IsActive = user.IsActive;
                         userUpdate.IsDefault = user.IsDefault;
                         context.SaveChanges();
+                        aclService.SetRights(user.ID, userUpdate.RoleID);
                         TempData["SuccessMessage"] = "User updated successfully.";
                         return RedirectToAction("List");
                     }
@@ -255,6 +256,12 @@ namespace NITASA.Areas.Admin.Controllers
                 user.ModifiedOn = DateTime.UtcNow;
                 user.ModifiedBy = CurrentUserID;                
                 context.SaveChanges();
+
+                if (isActive)
+                    aclService.SetActiveUser(user.ID);
+                else
+                    aclService.RemoveActiveUser(user.ID);
+
                 if(isActive == false && CurrentUserID == user.ID)
                 {
                     Session.RemoveAll();

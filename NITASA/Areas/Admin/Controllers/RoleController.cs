@@ -1,5 +1,4 @@
 ﻿using NITASA.Areas.Admin.Helper;
-using NITASA.Core.Caching;
 using NITASA.Data;
 using NITASA.Services.Security;
 using System;
@@ -30,7 +29,7 @@ namespace NITASA.Areas.Admin.Controllers
             //if (!aclService.HasRight(Rights.ViewRoles))
             if (!aclService.HasRight(Rights.ViewRoles))
                 return RedirectToAction("AccessDenied", "Home");
-            ViewBag.aclService = aclService;
+            
             List<Role> Roles = context.Role.Where(m => m.Name.Contains(roleName) && m.IsDeleted == false).ToList();
             List<Tuple<Role, int>> RoleList = (from role in Roles
                                                select new Tuple<Role, int>(role, (from ur in context.User where ur.RoleID == role.ID select ur.ID).Count())).ToList();
@@ -44,7 +43,7 @@ namespace NITASA.Areas.Admin.Controllers
             //if (!aclService.HasRight(Rights.CreateNewRoles))
             if (!aclService.HasRight(Rights.CreateNewRoles))
                 return RedirectToAction("AccessDenied", "Home");
-            ViewBag.aclService = aclService;
+            
             return View();
         }
 
@@ -93,7 +92,7 @@ namespace NITASA.Areas.Admin.Controllers
                     TempData["ErrorMessage"] = "Role is already exist with this name. Please enter different role name.";
                 }
             }
-            ViewBag.aclService = aclService;
+            
             return View(role);
         }
         [HttpGet]
@@ -121,7 +120,7 @@ namespace NITASA.Areas.Admin.Controllers
                                  select new AccessPermission() { Name = r.Name, Group = r.Group, IsChecked = RightsInRoleList.Exists(rir => rir.RightsName == r.Name) }).ToList();
 
                 ViewBag.AllRightsList = AllRightsList;
-                ViewBag.aclService = aclService;
+                
                 return View(role);
             }
             else
@@ -198,7 +197,7 @@ namespace NITASA.Areas.Admin.Controllers
                     TempData["ErrorMessage"] = "Role is already exist with this name. Please enter different role name.";
                 }
             }
-            ViewBag.aclService = aclService;
+            
             return RedirectToAction("Edit");
         }
         [HttpGet]

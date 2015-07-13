@@ -45,6 +45,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -53,15 +54,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Caching\ICacheManager.cs" />
+    <Compile Include="Caching\UserRoleCacheManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\AclService.cs" />
     <Compile Include="Security\IAclService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NITASA.Core\NITASA.Core.csproj">
-      <Project>{298fc22e-a529-4cf2-9ae6-b03bebef933d}</Project>
-      <Name>NITASA.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\NITASA.Data\NITASA.Data.csproj">
       <Project>{2700f7f0-9e34-4de6-9efe-95d95513792d}</Project>
       <Name>NITASA.Data</Name>

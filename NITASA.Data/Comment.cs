@@ -17,7 +17,7 @@ namespace NITASA.Data
 
         [MaxLength(int.MaxValue)]
         [StringLength(int.MaxValue)]
-        [Required(ErrorMessage = "Please enter comment description")]
+        [Required(ErrorMessage = "Please enter comment description.")]
         [Display(Name = "Description")]
         public string Description { get; set; }
 

@@ -92,13 +92,9 @@
     <Compile Include="Media.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Meta.cs" />
-    <Compile Include="Migrations\201507060525224_initial.cs" />
-    <Compile Include="Migrations\201507060525224_initial.Designer.cs">
-      <DependentUpon>201507060525224_initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201507090532569_title-in-meta.cs" />
-    <Compile Include="Migrations\201507090532569_title-in-meta.Designer.cs">
-      <DependentUpon>201507090532569_title-in-meta.cs</DependentUpon>
+    <Compile Include="Migrations\201507130645222_initial.cs" />
+    <Compile Include="Migrations\201507130645222_initial.Designer.cs">
+      <DependentUpon>201507130645222_initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs">
       <SubType>Code</SubType>
@@ -116,11 +112,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201507060525224_initial.resx">
-      <DependentUpon>201507060525224_initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201507090532569_title-in-meta.resx">
-      <DependentUpon>201507090532569_title-in-meta.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201507130645222_initial.resx">
+      <DependentUpon>201507130645222_initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

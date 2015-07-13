@@ -12,10 +12,11 @@ namespace NITASA.Services.Security
 
         List<AccessPermission> GetAllAccessPermission();
 
-        bool HasRight(Rights value);
+        void SetActiveUser(int UserId);
+        void RemoveActiveUser(int UserId);
+        bool IsActiveUser(int UserId);
 
         void SetRights(int UserId,int RoleId);
-
-        List<string> GetRights(int userId);
+        bool HasRight(Rights value);
     }
 }

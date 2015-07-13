@@ -1,12 +1,9 @@
-﻿@model Role
+﻿@inherits NITASA.Views.AutofacEnabledViewPage<Role>
 @using NITASA.Data
-@*@using NITASA.Areas.Admin.Helper*@
 @using NITASA.Services.Security
 @{
     ViewBag.Title = "Add Role";
 
-    //List<AccessPermission> AllRightsList = UserRights.GetAllAccessPermission();
-    IAclService aclService = ViewBag.aclService;
     List<AccessPermission> AllRightsList = aclService.GetAllAccessPermission();
     
     List<string> RightsType = AllRightsList.Select(m => m.Group).Distinct().ToList();
@@ -37,21 +34,24 @@
                             @using (Html.BeginForm("Add", "Role", FormMethod.Post))
                             {
                                 <div class="box-content">
-                                    <div class="">
-                                        @*Padded*@
-                                    <div class="">
-                                        @*span12*@
+                                    
                                     <div class="span10">
-                                        <div class="span2">
-                                            @Html.LabelFor(m => m.Name)
+                                        <div class="form-horizontal fill-up">
+                                            <div class="control-group">
+                                                @Html.LabelFor(m => m.Name, new { @class="control-label", style="text-align: left;"})
+                                                <div class="controls">
+                                                    @Html.TextBoxFor(m => m.Name)
+                                                    <div style="color: red">
+                                                        @Html.ValidationMessageFor(m => m.Name)
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        @Html.TextBoxFor(m => m.Name)
-                                        @Html.ValidationMessageFor(m => m.Name, "", new { style = "color:red;" })
                                     </div>
                                     <div class="span2">
                                         <input type="submit" value="Add Role" class="btn btn-blue" />
                                     </div>
-                                </div>
+                                
                                 <div class="clear" style="font-size: 14px; padding-top: 10px; margin-bottom: 10px;">Assign Rights :</div>
                                 @if (AllRightsList.Count > 0)
                                 {
@@ -91,7 +91,7 @@
                                     }
                                 }
 
-                            </div>
+                            
                             <div class="clear"></div>
                         </div>
                             }

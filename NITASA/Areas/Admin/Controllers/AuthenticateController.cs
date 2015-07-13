@@ -57,7 +57,6 @@ namespace NITASA.Areas.Admin.Controllers
                     {
                         HttpContext.Session["UserID"] = User.ID;
                         HttpContext.Session["UserRole"] = context.Role.Where(m => m.ID == User.RoleID && m.IsDeleted == false).Select(m => m.Name).FirstOrDefault();
-                        //UserRights.BindRights();
                         aclService.SetRights(User.ID,User.RoleID);
 
                         if (Request.QueryString["retUrl"] != null)

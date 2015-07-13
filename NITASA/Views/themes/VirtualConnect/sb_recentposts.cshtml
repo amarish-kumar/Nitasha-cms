@@ -1,0 +1,29 @@
+@model string
+@using NITASA.ViewModels
+@{
+    CL_WidgetOption wOption = NITASA.Helpers.Functions.ParseJson<CL_WidgetOption>(Model);
+    List<CL_Content> RecentViewPosts = NITASA.Helpers.Functions.GetRecentViewPosts(wOption.Count);
+}
+
+@if (RecentViewPosts.Count() > 0)
+{
+    <div class="sidebox">
+        <h3 class="line">@wOption.Title</h3>
+        <ul class="latest-posts">
+            @foreach (var item in RecentViewPosts)
+            {
+                <li>
+                    <span class="date">
+                        <em class="day">@NITASA.Helpers.Functions.GetDay(item.PublishedOn)</em>
+                        <em class="month">@NITASA.Helpers.Functions.GetMonthName(item.PublishedOn)</em>
+                    </span>
+                    <a href="/Content/@item.URL">
+                        @item.Title
+                        @*@{string Description = NITASA.Helpers.Functions.RemoveHTMLTags(item.Description);}
+                        @(Description.Length > 80 ? Description.Substring(0, 80) + "..." : Description)*@
+                    </a>
+                </li>
+            }
+        </ul>
+</div>
+}

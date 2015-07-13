@@ -48,19 +48,26 @@ namespace NITASA.Core
         /// <param name="config">Config</param>
         protected virtual void RegisterDependencies(CmsConfig config)
         {
+            var typeFinder = new WebAppTypeFinder(config);
+
             var builder = new ContainerBuilder();
+            
+            builder.RegisterControllers(typeFinder.GetAssemblies().ToArray());
+            builder.RegisterFilterProvider();
+            builder.RegisterSource(new ViewRegistrationSource());
+
             var container = builder.Build();
 
             //we create new instance of ContainerBuilder
             //because Build() or Update() method can only be called once on a ContainerBuilder.
 
             //dependencies
-            var typeFinder = new WebAppTypeFinder(config);
+            
             builder = new ContainerBuilder();
             builder.RegisterInstance(config).As<CmsConfig>().SingleInstance();
             builder.RegisterInstance(this).As<IEngine>().SingleInstance();
             builder.RegisterInstance(typeFinder).As<ITypeFinder>().SingleInstance();
-            
+
             builder.Update(container);
 
             //register dependencies provided by other assemblies
@@ -99,7 +106,6 @@ namespace NITASA.Core
             {
                 RunStartupTasks();
             }
-
         }
 
         /// <summary>

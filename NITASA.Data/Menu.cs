@@ -16,8 +16,8 @@ namespace NITASA.Data
         public int ParentMenuID { get; set; }
 
         [MaxLength(40)]
-        [StringLength(40, ErrorMessage = "Menu title should not exceed 40 characters")]
-        [Required(ErrorMessage = "Please enter menu title")]
+        [StringLength(40, ErrorMessage = "Menu title should not exceed 40 characters.")]
+        [Required(ErrorMessage = "Please enter title.")]
         [AllowHtml]
         public string Title { get; set; }
 

@@ -1,0 +1,84 @@
+﻿@using NITASA.Helpers
+@{
+    string currentTheme = ViewBag.ActiveTheme;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    @Html.Raw(Functions.GetMetaData(Request))
+    <title>@ViewBag.Title :: @Functions.GetSiteName()</title>
+    <link rel="stylesheet" type="text/css" href="@currentTheme/css/style.css" media="all">
+    <link rel="stylesheet" type="text/css" href="@currentTheme/css/prettyPhoto.css">
+    <link rel="stylesheet" type="text/css" href="@currentTheme/css/classic.css" media="all">
+    <link rel="stylesheet" type="text/css" href="@currentTheme/css/goudy.css" media="all">
+    <script src="@currentTheme/js/jquery-1.6.2.min.js"></script>
+    <script src="@currentTheme/js/superfish.js"></script>
+    <script src="@currentTheme/js/jquery.prettyPhoto.js"></script>
+    <script src="@currentTheme/js/jquery.aw-showcase.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#showcase").awShowcase({
+                content_width: 960,
+                content_height: 450,
+                fit_to_parent: false,
+                auto: true,
+                interval: 3000,
+                continuous: false,
+                loading: true,
+                tooltip_width: 200,
+                tooltip_icon_width: 10,
+                tooltip_icon_height: 10,
+                tooltip_offsetx: 18,
+                tooltip_offsety: 0,
+                arrows: true,
+                buttons: true,
+                btn_numbers: true,
+                keybord_keys: true,
+                mousetrace: false,
+                pauseonover: true,
+                stoponclick: false,
+                transition: 'hslide',
+                /* hslide/vslide/fade */
+                transition_delay: 0,
+                transition_speed: 500,
+                show_caption: 'onload',
+                thumbnails: false,
+                thumbnails_position: 'outside-last',
+                /* outside-last/outside-first/inside-last/inside-first */
+                thumbnails_direction: 'vertical',
+                /* vertical/horizontal */
+                thumbnails_slidex: 1,
+                /* 0 = auto / 1 = slide one thumbnail / 2 = slide two thumbnails / etc. */
+                dynamic_height: false,
+                /* For dynamic height to work in webkit you need to set the width and height of images in the source. Usually works to only set the dimension of the first slide in the showcase. */
+                speed_change: true,
+                /* Set to true to prevent users from swithing more then one slide at once. */
+                viewline: false,
+                /* If set to true content_width, thumbnails, transition and dynamic_height will be disabled. As for dynamic height you need to set the width and height of images in the source. */
+                custom_function: null
+                /* Define a custom function that runs on content change */
+            });
+        });
+    </script>
+    @Html.Raw(Functions.GetFaviconURL())
+    @Html.Raw(Functions.GetHeaderCustomCode())
+    @Html.Raw(Functions.GetCustomCSS())
+    @RenderSection("PageLevelStyles", false)
+</head>
+<body>
+    <div id="body-wrapper">
+        <div id="header">
+            @Html.Partial("~" + currentTheme + "/header.cshtml")
+            @Html.Partial("~" + currentTheme + "/navigation.cshtml")
+            <div class="clear"></div>
+        </div>
+              @RenderBody()  
+    </div>
+    @Html.Partial("~" + currentTheme + "/footer.cshtml")
+    <script src="@currentTheme/js/scripts.js"></script>
+    @RenderSection("PageLevelScripts", false)
+    @Html.Raw(Functions.GetCustomJavaScript())
+    @Html.Raw(Functions.GetGoogleAnalytics())
+</body>
+</html>

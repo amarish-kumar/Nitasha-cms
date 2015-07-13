@@ -97,14 +97,14 @@
             <div class="span9">
                 @using (Html.BeginForm("SaveFile", "Template", FormMethod.Post))
                 {
-                    <div>
+                    <div id="divFileInfo">
                         <div class="span10" id="dvfilename"></div>
                         <div class="span2 pull-right padbottom10"><input type="submit" class="btn btn-blue pull-right" value="Save" /></div>
                     </div>
-    <div>
-        @Html.TextArea("txtFileContent", new { rows = "100", cols = "150", @class = "code-file-editor" })
-        <input type="hidden" value=@ViewData["lastupdatedfile"] id="hdnfilename" name="hdnfilename" />
-    </div>
+                    <div>
+                        @Html.TextArea("txtFileContent", new { rows = "100", cols = "150", @class = "code-file-editor" })
+                        <input type="hidden" value=@ViewData["lastupdatedfile"] id="hdnfilename" name="hdnfilename" />
+                    </div>
                 }
             </div>
         </div>
@@ -113,8 +113,12 @@
 <script type="text/javascript">
     $(document).ready(function () {
         if ($("#hdnfilename").val() != '') {
-            $('#ddlFile option[value="'+$("#hdnfilename").val()+'"]').attr('selected', 'selected');
+            $('#ddlFile option[value="' + $("#hdnfilename").val() + '"]').attr('selected', 'selected');
             $('#dvfilename').text($("#hdnfilename").val());
+            $("#divFileInfo").show();
+        }
+        else {
+            $("#divFileInfo").hide();
         }
         $("#ddlFileType").change(function () {
             var ddlFileType = $(this).val();
@@ -161,6 +165,7 @@
                     else {
                         $('#txtFileContent').val(data);
                     }
+                    $("#divFileInfo").show();
                 }
             });
         });

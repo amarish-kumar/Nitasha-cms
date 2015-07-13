@@ -1,6 +1,5 @@
 ﻿using NITASA.Areas.Admin.Helper;
 using NITASA.Data;
-using NITASA.Services.Security;
 using NITASA.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -17,13 +16,6 @@ namespace NITASA.Controllers
 {
     public class ConfigureController : Controller
     {
-
-        IAclService aclService;
-
-        public ConfigureController(IAclService aclService)
-        {
-            this.aclService = aclService;
-        }
 
         string ConnectionString = "Integrated Security=False;Initial Catalog=master;Data Source=#DSOURCE;User Id=#USERID;Password=#PASSWORD;";
 
@@ -239,33 +231,6 @@ namespace NITASA.Controllers
             context.SaveChanges();
             int userID = user.ID;
 
-            List<AccessPermission> AllRightsList = aclService.GetAllAccessPermission();
-            #region Assign Admin Access Rights
-            /*List<RightsInRole> AdminRightsInRoleList = new List<RightsInRole>();
-            AdminRightsInRoleList = (from rid in AllRightsList select new RightsInRole { RightsName = rid.Name, RoleID = AdminRole.RoleID }).ToList();
-
-            context.RightsInRole.AddRange(AdminRightsInRoleList);
-            context.SaveChanges();*/
-            #endregion
-
-            #region Add Editors Role and Assign Access Rights
-            Role EditorsRole = new Role();
-            EditorsRole.GUID = Functions.GetRandomGUID();
-            EditorsRole.Name = "Editors";
-            EditorsRole.AddedBy = userID;
-            EditorsRole.AddedOn = DateTime.UtcNow;
-            context.Role.Add(EditorsRole);
-            context.SaveChanges();
-            string[] EditorsRights = new string[]{"ShowDashboard","AddNewMedias","DeleteMedias",
-                "ViewAllPosts","ViewAllPages","ViewRoles","ViewUsers"};
-
-            List<RightsInRole> EditorsRightsInRoleList = new List<RightsInRole>();
-            EditorsRightsInRoleList = (from rid in AllRightsList.Where(m => EditorsRights.Contains(m.Name))
-                                       select new RightsInRole { RightsName = rid.Name, RoleID = EditorsRole.ID }).ToList();
-            context.RightsInRole.AddRange(EditorsRightsInRoleList);
-            context.SaveChanges();
-            #endregion
-
             /*Config config = new Config();
             config.FacebookPageName = "netcms";
             config.FacebookUserName = "netcms";
@@ -331,16 +296,6 @@ namespace NITASA.Controllers
             contentCategory.AddedBy = userID;
             contentCategory.AddedOn = DateTime.UtcNow;
             context.ContentCategory.Add(contentCategory);
-            context.SaveChanges();
-
-            //Add Default Meta
-            Meta meta = new Meta();
-            meta.ContentID = content.ID;
-            meta.Keyword = "Lorem, Ipsum,dummy,industry";
-            meta.Description = "Contrary to popular belief, Lorem Ipsum is not simply random text.";
-            meta.Author = "Tarun Dudhatra";
-            meta.CreatedOn = DateTime.UtcNow;
-            context.Meta.Add(meta);
             context.SaveChanges();
 
             //Add Widget
